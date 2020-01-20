@@ -1,0 +1,28 @@
+{
+  "name": "gui-scraper",
+  "version": "1.0.0",
+  "description": "A GUI Based Web-Scraper for scraping website using NodeJS",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/h26k2/node-gui-scraper.git"
+  },
+  "keywords": [
+    "h26k2",
+    "web-scraper-node"
+  ],
+  "author": "h26k2",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/h26k2/node-gui-scraper/issues"
+  },
+  "homepage": "https://github.com/h26k2/node-gui-scraper#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1"
+  }
+}
