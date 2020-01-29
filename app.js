@@ -9,9 +9,7 @@ app.set("view engine","ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
-let data ;
-
-app.get("/",async(req,res) => {
+async function logic(){
 
     let url = "http://designer-discreet.ru/product-category/replica-bags/";
     let browser = await puppeteer.launch({headless: false});
@@ -90,30 +88,12 @@ app.get("/",async(req,res) => {
 
     });
 
-    
-    
-    
-});
+
+}
 
 
-app.get("/something",async(req,res)=>{
-
-    console.log('hello world');
-   
-    let url = "http://designer-discreet.ru/product-category/replica-bags/";
-    let browser = await puppeteer.launch({headless : false});
-
-    let page = await browser.newPage();
-
-    await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
-    
-    let data = await page.evaluate(()=>{
-        let a = localStorage.getItem("h26k2");
-        return a;
-    });
-
-    console.log(`here is data : ${data}`);
-
+app.get("/",async(req,res) => {
+    res.render("home");
 });
 
 app.listen(port,()=>{
