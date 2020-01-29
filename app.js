@@ -9,9 +9,10 @@ app.set("view engine","ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
-async function logic(){
+const openPuppeteer = async(url , times) =>{
 
-    let url = "http://designer-discreet.ru/product-category/replica-bags/";
+    let count = 0;
+
     let browser = await puppeteer.launch({headless: false});
 
     let page = await browser.newPage();
@@ -23,6 +24,7 @@ async function logic(){
     await page.evaluate(()=>{
         
         let prev = undefined;
+        let data = [];
         
         window.addEventListener("mouseover",(e)=>{
 
@@ -60,6 +62,11 @@ async function logic(){
                     if(dom_elem.length == 1){
                         
                         data = elem;
+                        count++;
+
+                        if(count == times){
+                            
+                        }
 
                         const blob = new Blob([`main_container\n${data}`],{type : 'text/csv'});
                         const url = window.URL.createObjectURL(blob);
@@ -95,6 +102,20 @@ async function logic(){
 app.get("/",async(req,res) => {
     res.render("home");
 });
+
+app.post("/mainProducts",async(req,res)=>{
+
+    let {url} = req.body;
+
+    
+    
+    
+
+
+}); 
+
+
+
 
 app.listen(port,()=>{
     console.log(`node app is live at port : ${port}`);
