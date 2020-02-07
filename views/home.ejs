@@ -21,11 +21,17 @@
 
 <div class="container form-container">
     
+   <!--  ********************************
+        S E T T I N G  M E T A D A T A
+   ************************************** -->
+
     <div class="row title-row">
         <h2>Setting Metadata</h2>
         <div class="divider"></div>
     </div>
 
+    <!-- website URL Container -->
+    
     <div class="row top-margin">
         <div class="col-6">
             <p>Enter website URL you want to scrape</p>
@@ -34,6 +40,8 @@
             <input type="text" class="form-control main-container-chooser"/>
         </div>
     </div>
+
+    <!-- Brand Name -->
 
     <div class="row">
         <div class="col-6">
@@ -44,19 +52,11 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-6">
-            <p>Enter columns name(s)</p>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control main-container-chooser"/>
-            <small>(you can seperate column names using coma)</small>
-        </div>
-    </div>
+    <!-- Main container which contains all the products -->
 
     <div class="row">
         <div class="col-6">
-            <p>choose products main container and product link</p>
+            <p>choose products main container</p>
         </div>
         <div class="col-6">
             <button class="btn btn-success w-100" onclick="mainContainerChooser()">
@@ -65,15 +65,49 @@
         </div>
     </div>
 
+    <!-- single product link -->
+
     <div class="row">
         <div class="col-6">
-            <p>choose data for fields you want to scrape</p>
+            <p>choose product page link</p>
         </div>
         <div class="col-6">
-            <button class="btn btn-success w-100" onclick="productDetailChooser()">
+            <button class="btn btn-success w-100" onclick="productPageLink()">
                 <i class="fas fa-map-marker-alt"></i> Choose Element
             </button>
         </div>
+    </div>
+
+    <!-- add column container -->
+
+    <div class="row">
+        <div class="col-6">
+            <p>Enter columns name(s)</p>
+        </div>
+        <div class="col-6">
+            <input type="text" class="form-control main-container-chooser" onkeydown="addColumn(event)"/>
+            <small>(enter a column name and press enter)</small>
+        </div>
+    </div>
+
+    <!-- columns created on click -->
+
+    <div class="col-12" id="columns">
+       <!-- <div class="row">
+            <div class="col-6">
+                <p>enter  something</p>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-success w-100" onclick="mainContainerChooser()">
+                    <i class="fas fa-map-marker-alt"></i> Choose Element
+                </button>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-danger w-100">
+                    <i class="far fa-trash-alt"></i> Delete Column
+                </button>  
+            </div>
+        </div>-->
     </div>
 
     <div class="row">
@@ -83,10 +117,17 @@
         </div>
     </div>
 
+
+    <!-- ********************************** 
+        L O A D I N G  M E T A D A T A
+        *********************************** -->
+
     <div class="row title-row">
         <h2>Loading Metadata</h2>
         <div class="divider"></div>
     </div>
+
+    <!-- Path of the metadata -->
 
     <div class="row">
         <div class="col-6">
@@ -104,11 +145,16 @@
         </div>
     </div>
 
-    
+    <!-- *********************************
+        S C R A P I N G  P R O D U C T S
+    ************************************** -->
+
     <div class="row title-row">
         <h2>Scraping Products</h2>
         <div class="divider"></div>
     </div>
+
+    <!-- Start Page -->
 
     <div class="row">
         <div class="col-6">
@@ -118,6 +164,8 @@
             <input type="text" class="form-control"/>
         </div>
     </div>
+
+    <!-- End Page -->
 
     <div class="row">
         <div class="col-6">
@@ -137,6 +185,17 @@
         </div>
     </div>
 
+    <!-- ************************************
+        S C R A P I N G  P R O D U C T S 
+    ***************************************** -->
+
+    <div class="row title-row">
+        <h2>Scraping Products</h2>
+        <div class="divider"></div>
+    </div>
+
+    <!--- Generating CSV -->
+
     <div class="row">
         <div class="col-6">
             <p>generate csv</p>
@@ -145,8 +204,6 @@
             <button class="btn btn-success w-100" >Generate CSV</button>
         </div>
     </div>
-
-
 
 </div>
 

@@ -3,15 +3,14 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const puppeteer = require("puppeteer");
+const fs = require("fs");
 
 app.use(express.static("public"));
 app.set("view engine","ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
-const openPuppeteer = async(url , times) =>{
-
-    let count = 0;
+const openPuppeteer = async(url  , filename , brandName , uniqueCheck , isLinkElement) =>{
 
     let browser = await puppeteer.launch({headless: false});
 
@@ -21,7 +20,7 @@ const openPuppeteer = async(url , times) =>{
     
     await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
     
-    await page.evaluate(()=>{
+    await page.evaluate((filename , brandName , uniqueCheck , isLinkElement)=>{
         
         let prev = undefined;
         let data = [];
@@ -48,39 +47,72 @@ const openPuppeteer = async(url , times) =>{
         window.addEventListener("click",async(e)=>{
             
             let elem = e.target;
+            
+            let anchors = elem.getElementsByTagName("a");
 
+            for(let i=0 ; i<anchors.length ; i++){
+                
+                let a_href = anchors[i].getAttribute("href");
+                let a_class = anchors[i].getAttribute("class");
+
+                let confirm_string = `URL : ${a_href}\nElement : ${a_class}\nDo you want to want to select this element ? `;
+
+                if(confirm(confirm_string)){
+                    alert("done");
+                    break;
+                }
+                else{
+                    continue;
+                }
+
+
+            }
+
+           
+
+            return;
             if(elem !== undefined && elem.getAttribute("data-name") == undefined){
 
                 let status = window.confirm("Select this element ? ");
                 
                 if(status == true){
                     
-                    elem = elem.getAttribute("class");
-                    elem = elem.replace("h26k2-color","");
+
+                    if(isLinkElement){
+                        console.log(elem);
+                    }
+                    else{
+                        elem = elem.getAttribute("class");
+                        elem = elem.replace("h26k2-color","");
+                    }
+
                     let dom_elem = document.getElementsByClassName(elem);
                     
-                    if(dom_elem.length == 1){
+                    if(dom_elem.length == 1 || uniqueCheck == false){
                         
                         data = elem;
-                        count++;
+                        console.log(data);
+                        alert(data); /*
+                        try{
+                            const blob = new Blob([`${filename}\n${data}`],{type : 'text/csv'});
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.setAttribute("data-name","csv");
+                            a.setAttribute('hidden','');
+                            a.setAttribute('href',url);
+                            a.setAttribute('download',`${brandName}_${filename}.csv`);
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
 
-                        if(count == times){
+                            alert(`successfully saved metafile as : ${brandName}_${filename}.csv\n You can now close this window`);
                             
                         }
+                        catch(err){
+                            alert(`error occured while downloading meta file\n Check console for error`);
+                            console.log(err);
+                        }*/
 
-                        const blob = new Blob([`main_container\n${data}`],{type : 'text/csv'});
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.setAttribute("data-name","csv");
-                        a.setAttribute('hidden','');
-                        a.setAttribute('href',url);
-                        a.setAttribute('download','products_csv.csv');
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-
-                        alert(data);
-                        alert("done hogaya");
                     }
                     else{
                         alert(`This element can't be select as there are some conflicts in XPATH`)
@@ -93,7 +125,7 @@ const openPuppeteer = async(url , times) =>{
 
         });
 
-    });
+    },filename  , brandName , uniqueCheck , isLinkElement);
 
 
 }
@@ -105,15 +137,26 @@ app.get("/",async(req,res) => {
 
 app.post("/mainProducts",async(req,res)=>{
 
-    let {url} = req.body;
+    let {url , filename ,brand} = req.body;
 
-    
-    
-    
+    let uniqueCheck = true;
+    let isLinkElement = false;
 
+    openPuppeteer(url, filename,brand , uniqueCheck , isLinkElement);
 
 }); 
 
+
+app.post("/productPageLink",async(req,res)=>{
+
+    let {url , filename ,brand} = req.body;
+
+    let uniqueCheck = false;
+    let isLinkElement = true;
+
+    openPuppeteer(url,filename,brand , uniqueCheck , isLinkElement);
+
+});
 
 
 
