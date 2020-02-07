@@ -83,6 +83,9 @@ const addColumn = (event) => {
 
         let row = document.createElement("div");
         row.setAttribute("class","row");
+
+        let sku = `DEM-${Math.floor(Math.random() * 999)}`;
+
         row.innerHTML = `
             
             <div class="col-6">
@@ -90,13 +93,13 @@ const addColumn = (event) => {
             </div>
 
             <div class="col-3">
-                <button class="btn btn-success w-100" onClick="">
+                <button class="btn btn-success w-100" onClick="" data-sku="${sku}" >
                     <i class="fas fa-map-marker-alt"></i> Choose Element
                 </button>
             </div>
 
             <div class="col-3">
-                <button class="btn btn-danger w-100" onClick="delCol(event)" data-sku="DEM-${Math.floor(Math.random() * 999)}">
+                <button class="btn btn-danger w-100" onClick="delCol(event)" data-sku="${sku}">
                     <i class="far fa-trash-alt"></i> Delete Column
                 </button>
             </div>
