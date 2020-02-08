@@ -68,7 +68,6 @@ const saveMetaData = () => {
 
 }
 
-
 const addColumn = (event) => {
     
     let {keyCode} = event;
@@ -93,7 +92,7 @@ const addColumn = (event) => {
             </div>
 
             <div class="col-3">
-                <button class="btn btn-success w-100" onClick="" data-sku="${sku}" >
+                <button class="btn btn-success w-100" onClick="productDetailLink(event)" data-sku="${sku}" data-val="${value}" >
                     <i class="fas fa-map-marker-alt"></i> Choose Element
                 </button>
             </div>
@@ -141,7 +140,6 @@ const delCol = (event) => {
 
 }
 
-
 const productPageLink = () => {
     
     let inputs = document.getElementsByClassName("main-container-chooser");
@@ -169,5 +167,57 @@ const productPageLink = () => {
             brand : brandName
         })
     });
+
+}
+
+const productDetailLink = (e) => {
+
+    let {target} = e;
+    let {nodeName} = target;
+    let elem ;
+
+    if(nodeName == "BUTTON"){
+        elem = target;
+    }
+    else{
+        elem = currentTarget;
+    }
+
+
+    let inputs = document.getElementsByClassName("main-container-chooser");
+    inputs = [inputs[0],inputs[1],inputs[2]];
+    console.log(inputs);
+    if(checkForEmpty(inputs)){
+        alert(`You can't leave above fields empty...`);
+        return;
+    }
+
+    let websiteURL = inputs[0].value;
+    let brandName = inputs[1].value;
+    let demoProductURL = inputs[2].value;
+
+    console.log(`website url is : ${websiteURL}`);
+    console.log(`brand name is : ${brandName}`);
+    console.log(`demo product url : ${demoProductURL}`);
+
+    let col_val , sku;
+
+    col_val = elem.getAttribute("data-val");
+    sku = elem.getAttribute("data-sku");
+
+
+    fetch(`/productDetail`,{
+        method : 'POST',
+        headers : {
+            'Content-type' : 'application/json;charset=utf-8'
+        },
+        body : JSON.stringify({
+            col : col_val,
+            sku : sku,
+            url : demoProductURL,
+            brand : brandName,
+        })
+    })
+
 
 }

@@ -23,7 +23,6 @@ const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>
     await page.evaluate((filename , brandName , uniqueCheck )=>{
         
         let prev = undefined;
-        let data = [];
         
         window.addEventListener("mouseover",(e)=>{
 
@@ -101,7 +100,7 @@ const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>
 
 }
 
-const selectProduct = async (url,filename,brandName , uniqueCheck) => {
+const selectProduct = async (url,filename,brandName ) => {
 
     let browser = await puppeteer.launch({headless: false});
 
@@ -111,10 +110,9 @@ const selectProduct = async (url,filename,brandName , uniqueCheck) => {
     
     await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
 
-    await page.evaluate((filename,brandName,uniqueCheck)=>{
+    await page.evaluate((filename,brandName)=>{
         
         let prev = undefined;
-        let data = [];
         
         window.addEventListener("mouseover",(e)=>{
 
@@ -195,11 +193,122 @@ const selectProduct = async (url,filename,brandName , uniqueCheck) => {
         });
 
 
-    },filename,brandName,uniqueCheck);
+    },filename,brandName);
 
 
 }
 
+const selectProductDetails = async (url , filename , brandName, uniqueCheck) => {
+
+    let browser = await puppeteer.launch({headless: false  });
+
+    let page = await browser.newPage();
+
+    await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
+    
+    await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
+    
+    await page.evaluate((filename,brandName,uniqueCheck)=>{
+
+        let prev = undefined;
+        let data = [];
+
+        window.addEventListener("mouseover",(e)=>{
+
+            let current = e.target;
+            
+            if(current !== undefined && current.classList.contains("h26k2-color") != true){
+                current.classList.add("h26k2-color");
+                prev = current;
+            }
+            
+        });
+
+        window.addEventListener("mouseout",(e)=>{
+    
+            if(prev !== undefined && prev.classList.contains("h26k2-color") == true){
+                prev.classList.remove("h26k2-color");
+            }
+        
+        });
+
+        window.addEventListener("click",async(e)=>{
+
+            let elem = e.target;
+
+            if(elem != undefined && elem.getAttribute("data-name") == undefined){
+
+                let status = window.confirm("Select this element ? ");
+                    
+                    if(status == true){
+                        console.log(`this is element`);
+                        console.log(elem);
+                        console.log(elem.parentElement);
+                        while(true){
+                            
+                            if(elem.parentElement.nodeName == "HTML"){
+                                break;
+                            }
+
+                            console.log(`****************`);
+                            console.log(elem.parentElement);
+                            console.log(`index of element is : ${[...elem.parentElement.children].indexOf(elem)}`)
+                            elem = elem.parentElement;
+                            
+                           
+
+                        }
+
+
+                        elem = elem.getAttribute("class");
+                        elem = elem.replace("h26k2-color","")
+
+                        let dom_elem = document.getElementsByClassName(elem);
+
+                        if(dom_elem.length == 1 || uniqueCheck == false){
+                            
+                            data = elem;
+                            console.log(data);
+                            alert(data); 
+                            try{
+                                const blob = new Blob([`${filename}\n${data}`],{type : 'text/csv'});
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.setAttribute("data-name","csv");
+                                a.setAttribute('hidden','');
+                                a.setAttribute('href',url);
+                                a.setAttribute('download',`${brandName}_${filename}.csv`);
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+
+                                alert(`successfully saved metafile as : ${brandName}_${filename}.csv\n You can now close this window`);
+                                
+                            }
+                            catch(err){
+                                alert(`error occured while downloading meta file\n Check console for error`);
+                                console.log(err);
+                            }
+
+                        }
+                        else{
+                            alert(`This element can't be select as there are some conflicts in XPATH`)
+                        }
+
+
+
+                    }
+                    
+
+            }
+
+        });
+
+    },filename,brandName,uniqueCheck);
+
+    
+
+}
 
 
 app.get("/",async(req,res) => {
@@ -219,10 +328,17 @@ app.post("/productPageLink",async(req,res)=>{
 
     let {url , filename ,brand} = req.body;
 
-    selectProduct(url,filename,brand , false );
+    selectProduct(url,filename,brand);
 
 });
 
+app.post("/productDetail",(req,res)=>{
+   
+    let {col , sku , url ,brand} = req.body;
+    let filename = `product_detail_${col}_${sku}`;
+    selectProductDetails(url,filename,brand,true);
+
+});
 
 
 app.listen(port,()=>{
