@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const axios = require("axios");
+const cheerio = require("cheerio");
 
 app.use(express.static("public"));
 app.set("view engine","ejs");
@@ -16,7 +17,7 @@ let JSON_file;
 
 const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>{
 
-    let browser = await puppeteer.launch({headless: false,userDataDir :`${__dirname}/danyal` });
+    let browser = await puppeteer.launch({headless: false});
 
     let page = await browser.newPage();
 
@@ -414,6 +415,7 @@ app.get("/scrapProducts",async(req,res)=>{
 
     let metadata = fs.readFileSync(JSON_file);
     metadata = JSON.parse(metadata);
+    console.log(metadata);
     
     let {page} = req.query;
     let mainContainerClass  , productCatalog , url , brand , productCatalog_a;
@@ -487,15 +489,35 @@ app.get("/scrapProducts",async(req,res)=>{
 
         let allProducts = [];
 
-        for(let i=0 ; i<urls.length ; i++){
+        for(let i=0 ; i<1 ; i++){
 
             await axios.get(urls[i]).then((resp)=>{
                 
                 let $$ = cheerio.load(resp.data);
+                console.log($$("body"));
+                return;
+
                 let single_p_detail = [];
 
                 Array.from(productDetails).forEach((p_detail)=>{
                     
+                    let val = p_detail.val;
+                    let elems = val.split("/");
+                    let indexes = [];
+                    Array.from(elems).forEach((elem)=>{
+                        
+                        let s = elem.indexOf(`[`) + 1;
+                        let e = elem.length - 1;
+
+                        indexes.push(parseInt(elem.substr(s,e)));
+
+                    });
+                    let data = $$("body");
+                    for(let j = 0 ; j<indexes.length ; j++){
+                        data.children[j];
+                    }
+                    console.log(data.text());
+
                 });
 
             }); 
@@ -522,6 +544,14 @@ app.post('/loadMetaData',(req,res)=>{
     console.log(`Here is path : ${path}`);
     JSON_file = path;
     res.status(200).end();
+    
+
+});
+
+app.get("/has",(req,res)=>{
+    
+    let url = "http://designer-discreet.ru/product/bottega-vaenta-butter/";
+
     
 
 });
