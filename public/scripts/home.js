@@ -300,3 +300,27 @@ const handleScrapRequest = (e) => {
 
 }
 
+const loadMetaData = () => {
+    
+    let path = document.getElementById("metadata-input").value;
+    
+    fetch('/loadMetaData',{
+        method : 'POST',
+        headers : {
+            'Content-type' : 'application/json;charset=utf-8'
+        },
+        body : JSON.stringify({
+            path
+        })
+    }).then((res)=>{
+        if(res.status == 200){
+            let btn = document.getElementById("metadata-btn");
+            btn.setAttribute("disabled",true);
+            btn.innerText = "Loaded Metadata";
+        }
+    }).catch((err)=>{
+        alert(`Error occured while loading metadata`);
+        console.log(err);
+    })
+
+}

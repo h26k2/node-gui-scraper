@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
+const axios = require("axios");
 
 app.use(express.static("public"));
 app.set("view engine","ejs");
@@ -11,6 +12,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
 let metadata = [];
+let JSON_file;
 
 const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>{
 
@@ -407,10 +409,12 @@ app.post("/saveMetaData",(req,res)=>{
 });
 
 app.get("/scrapProducts",async(req,res)=>{
+    
     console.log(`request recieved`);
-    let metadata = fs.readFileSync('replica-bags-metadata.json');
+
+    let metadata = fs.readFileSync(JSON_file);
     metadata = JSON.parse(metadata);
-    //console.log(metadata);
+    
     let {page} = req.query;
     let mainContainerClass  , productCatalog , url , brand , productCatalog_a;
     let productDetails = [];
@@ -429,6 +433,7 @@ app.get("/scrapProducts",async(req,res)=>{
             productCatalog_a = val.substr(0,index);
         }
         else if(type == 'productDetail'){
+            
             let name = metadata[i].name;
 
             productDetails.push({
@@ -445,7 +450,7 @@ app.get("/scrapProducts",async(req,res)=>{
     }
 
     let urlToFetch = `${url}page/${page}`;
-    console.log(urlToFetch);
+    console.log(urlToFetch,`fetching this url`);
     try{
 
         let browser = await puppeteer.launch({headless : false});
@@ -454,20 +459,18 @@ app.get("/scrapProducts",async(req,res)=>{
         await page.goto(urlToFetch , {waitUntil : 'networkidle2'});
 
         let data = await page.evaluate((mainContainerClass,productCatalog,productCatalog_a)=>{
-            console.log(productCatalog_a);
             
             let mainContainer = document.getElementsByClassName(mainContainerClass)[0];
            
             let products = mainContainer.getElementsByClassName(productCatalog);
-            //console.log(products);
-            console.log(products);
+          
             let urls = [];
 
             Array.from(products).forEach((p)=>{
                 
                 let temp = p.getElementsByClassName(productCatalog_a)[0].getAttribute("href");
-               
                 urls.push(temp);
+
             });
 
             return{
@@ -481,11 +484,44 @@ app.get("/scrapProducts",async(req,res)=>{
         let {urls} = data;
         console.log(`you will have to scrap these....`);
         console.log(urls);
+
+        let allProducts = [];
+
+        for(let i=0 ; i<urls.length ; i++){
+
+            await axios.get(urls[i]).then((resp)=>{
+                
+                let $$ = cheerio.load(resp.data);
+                let single_p_detail = [];
+
+                Array.from(productDetails).forEach((p_detail)=>{
+                    
+                });
+
+            }); 
+        }
+
     }
     catch(err){
-
+        console.log(`******************`);
+        console.log(`ERROR OCCURED`);
+        console.log(err);
+        console.log(`*******************`);
     }
 
+    
+
+});
+
+app.post('/loadMetaData',(req,res)=>{
+
+    let {path} = req.body;
+    let start_index = path.lastIndexOf(`\\`) + 1;
+    let end_index = path.length;
+    path = path.substr(start_index,end_index);
+    console.log(`Here is path : ${path}`);
+    JSON_file = path;
+    res.status(200).end();
     
 
 });
