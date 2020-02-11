@@ -147,14 +147,14 @@
             <p>Enter Path of metadata file</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control"/>
+            <input type="text" class="form-control" id="metadata-input"/>
         </div>
     </div>
 
     <div class="row">
         <div class="col-6"></div>
         <div class="col-6">
-            <button class="btn btn-primary w-100" >Load Metadata</button>
+            <button class="btn btn-primary w-100" id="metadata-btn">Load Metadata</button>
         </div>
     </div>
 
@@ -174,7 +174,7 @@
             <p>Enter Start Page</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control"/>
+            <input type="text" class="form-control" id="start-page"/>
         </div>
     </div>
 
@@ -185,7 +185,7 @@
             <p>Enter End Page</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control"/>
+            <input type="text" class="form-control" id="end-page"/>
         </div>
     </div>
 
@@ -194,7 +194,7 @@
             <p>scrap products</p>
         </div>
         <div class="col-6">
-            <button class="btn btn-primary w-100" >Scrap Products</button>
+            <button class="btn btn-primary w-100" id="scrap-products-btn" onclick="handleScrapRequest(event)" data-first="true">Scrap Products</button>
         </div>
     </div>
 

@@ -10,15 +10,32 @@ app.set("view engine","ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
+let metadata = [];
+
 const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>{
 
-    let browser = await puppeteer.launch({headless: false});
+    let browser = await puppeteer.launch({headless: false,userDataDir :`${__dirname}/danyal` });
 
     let page = await browser.newPage();
 
     await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
     
     await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
+
+    page.on('console',(msg)=>{
+        
+        let val = msg.text();
+        
+        if(val.match("h26k2-data:")){
+            
+            let data = val.substr(val.indexOf(":")+1,val.length);    
+            metadata.push({
+                type : 'mainContainer',
+                val : data
+            })
+        }
+
+    });
     
     await page.evaluate((filename , brandName , uniqueCheck )=>{
         
@@ -61,8 +78,10 @@ const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>
                     if(dom_elem.length == 1 || uniqueCheck == false){
                         
                         data = elem;
-                        console.log(data);
-                        alert(data); 
+                        console.log(`h26k2-data:${data}`);
+                        alert(`DONE! Now you can close the window\nData : ${data}`);
+                        /*
+
                         try{
                             const blob = new Blob([`${filename}\n${data}`],{type : 'text/csv'});
                             const url = window.URL.createObjectURL(blob);
@@ -77,11 +96,14 @@ const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>
 
                             alert(`successfully saved metafile as : ${brandName}_${filename}.csv\n You can now close this window`);
                             
+//                            window.open("localhost:3000/fuck?qterimaki");
+                            
+                            
                         }
                         catch(err){
                             alert(`error occured while downloading meta file\n Check console for error`);
                             console.log(err);
-                        }
+                        }*/
 
                     }
                     else{
@@ -95,9 +117,9 @@ const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>
 
         });
 
-    },filename  , brandName , uniqueCheck );
-
-
+    },filename  , brandName , uniqueCheck  );
+    
+    
 }
 
 const selectProduct = async (url,filename,brandName ) => {
@@ -109,6 +131,22 @@ const selectProduct = async (url,filename,brandName ) => {
     await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
     
     await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
+
+    page.on('console',(msg)=>{
+        
+        let val = msg.text();
+        
+        if(val.match("h26k2-data:")){
+            
+            let data = val.substr(val.indexOf(":")+1,val.length); 
+            console.log(data);   
+            metadata.push({
+                type : 'productCatalogProduct',
+                val : data
+            })
+        }
+
+    });
 
     await page.evaluate((filename,brandName)=>{
         
@@ -154,11 +192,10 @@ const selectProduct = async (url,filename,brandName ) => {
                         let product_string = `Please enter the name you want us to target on individual product from the given below data\n${element_classes}`;
 
                         let elem = prompt(product_string);
-                        
                         alert("done");
-
                         let data = `${a_class}|${elem}`;
-
+                        console.log(`h26k2-data:${data}`);
+                        /*
                         try{
                             const blob = new Blob([`${filename}\n${data}`],{type : 'text/csv'});
                             const url = window.URL.createObjectURL(blob);
@@ -177,7 +214,7 @@ const selectProduct = async (url,filename,brandName ) => {
                         catch(err){
                             alert(`error occured while downloading meta file\n Check console for error`);
                             console.log(err);
-                        }
+                        }*/
 
                         break;
                     }
@@ -208,10 +245,27 @@ const selectProductDetails = async (url , filename , brandName, uniqueCheck) => 
     
     await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
     
-    await page.evaluate((filename,brandName,uniqueCheck)=>{
+    page.on('console',(msg)=>{
+        
+        let val = msg.text();
+        
+        if(val.match("h26k2-data:")){
+            
+            let data = val.substr(val.indexOf(":")+1,val.length);    
+            metadata.push({
+                
+                type : 'productDetail',
+                name : filename,
+                val : data
+                
+            });
+        }
+
+    });
+
+    await page.evaluate(()=>{
 
         let prev = undefined;
-        let data = [];
 
         window.addEventListener("mouseover",(e)=>{
 
@@ -240,71 +294,54 @@ const selectProductDetails = async (url , filename , brandName, uniqueCheck) => 
 
                 let status = window.confirm("Select this element ? ");
                     
-                    if(status == true){
-                        console.log(`this is element`);
-                        console.log(elem);
+                if(status == true){
+                    console.log(`this is element`);
+                    console.log(elem);
+                    console.log(elem.parentElement);
+                    let structureDetails = [];
+                    
+                    while(true){
+                        
+                        if(elem.parentElement.nodeName == "HTML"){
+                            break;
+                        }
+
+                        console.log(`****************`);
                         console.log(elem.parentElement);
-                        while(true){
-                            
-                            if(elem.parentElement.nodeName == "HTML"){
-                                break;
+                        console.log(`index of element is : ${[...elem.parentElement.children].indexOf(elem)}`)
+
+                        structureDetails.push(
+                            {
+                                elem : elem.parentElement.nodeName,
+                                index : [...elem.parentElement.children].indexOf(elem)
                             }
+                        );
 
-                            console.log(`****************`);
-                            console.log(elem.parentElement);
-                            console.log(`index of element is : ${[...elem.parentElement.children].indexOf(elem)}`)
-                            elem = elem.parentElement;
-                            
-                           
-
-                        }
-
-
-                        elem = elem.getAttribute("class");
-                        elem = elem.replace("h26k2-color","")
-
-                        let dom_elem = document.getElementsByClassName(elem);
-
-                        if(dom_elem.length == 1 || uniqueCheck == false){
-                            
-                            data = elem;
-                            console.log(data);
-                            alert(data); 
-                            try{
-                                const blob = new Blob([`${filename}\n${data}`],{type : 'text/csv'});
-                                const url = window.URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.setAttribute("data-name","csv");
-                                a.setAttribute('hidden','');
-                                a.setAttribute('href',url);
-                                a.setAttribute('download',`${brandName}_${filename}.csv`);
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
-
-                                alert(`successfully saved metafile as : ${brandName}_${filename}.csv\n You can now close this window`);
-                                
-                            }
-                            catch(err){
-                                alert(`error occured while downloading meta file\n Check console for error`);
-                                console.log(err);
-                            }
-
-                        }
-                        else{
-                            alert(`This element can't be select as there are some conflicts in XPATH`)
-                        }
-
-
+                        elem = elem.parentElement;
 
                     }
                     
+                    let structureString = ``;
+                    
+                    for(let i=structureDetails.length  - 1; i>= 0 ; i--){
+                        
+                        let elem = structureDetails[i].elem;
+                        let index = structureDetails[i].index;
+
+                        structureString += `${elem}[${index}]/`
+                    }
+
+                    structureString = structureString.substr(0,structureString.length - 1);
+                    alert(`Done! Xpath is : ${structureString}`);
+                    console.log(`h26k2-data:${structureString}`);
+
+                }
 
             }
 
         });
 
-    },filename,brandName,uniqueCheck);
+    });
 
     
 
@@ -335,8 +372,121 @@ app.post("/productPageLink",async(req,res)=>{
 app.post("/productDetail",(req,res)=>{
    
     let {col , sku , url ,brand} = req.body;
-    let filename = `product_detail_${col}_${sku}`;
+    let filename = `product-detail_${col}`;
     selectProductDetails(url,filename,brand,true);
+
+});
+
+app.post("/saveMetaData",(req,res)=>{
+
+    let {url,brand,p_url} = req.body;
+    console.log(`here is all the data : ${metadata}`);
+    console.log(metadata);
+    metadata.push(
+        {
+            type : 'websiteURL',
+            val : url
+        },
+        {
+            type : 'brand',
+            val : brand
+        },
+        {
+            type : 'productURL',
+            val : p_url
+        }
+    )
+    try{
+        let data = metadata;
+        fs.writeFileSync(`${brand}-metadata.json`,JSON.stringify(data));
+        res.status(200).json(JSON.stringify(`${brand}-metadata.json`));
+    }catch(err){
+        console.log(err);
+    }
+
+});
+
+app.get("/scrapProducts",async(req,res)=>{
+    console.log(`request recieved`);
+    let metadata = fs.readFileSync('replica-bags-metadata.json');
+    metadata = JSON.parse(metadata);
+    //console.log(metadata);
+    let {page} = req.query;
+    let mainContainerClass  , productCatalog , url , brand , productCatalog_a;
+    let productDetails = [];
+    
+    for(let i=0 ; i<metadata.length ; i++){
+
+        let type = metadata[i].type;
+        let val = metadata[i].val;
+        
+        if(type == 'mainContainer'){
+            mainContainerClass = val;
+        }
+        else if(type == 'productCatalogProduct'){
+            let index = val.indexOf("|");
+            productCatalog= val.substr(index+1,val.length);
+            productCatalog_a = val.substr(0,index);
+        }
+        else if(type == 'productDetail'){
+            let name = metadata[i].name;
+
+            productDetails.push({
+                name , val
+            })
+        }
+        else if(type == 'websiteURL'){
+            url = val;
+        }
+        else if(type == 'brand'){
+            brand = val;
+        }
+
+    }
+
+    let urlToFetch = `${url}page/${page}`;
+    console.log(urlToFetch);
+    try{
+
+        let browser = await puppeteer.launch({headless : false});
+        let page = await browser.newPage();
+
+        await page.goto(urlToFetch , {waitUntil : 'networkidle2'});
+
+        let data = await page.evaluate((mainContainerClass,productCatalog,productCatalog_a)=>{
+            console.log(productCatalog_a);
+            
+            let mainContainer = document.getElementsByClassName(mainContainerClass)[0];
+           
+            let products = mainContainer.getElementsByClassName(productCatalog);
+            //console.log(products);
+            console.log(products);
+            let urls = [];
+
+            Array.from(products).forEach((p)=>{
+                
+                let temp = p.getElementsByClassName(productCatalog_a)[0].getAttribute("href");
+               
+                urls.push(temp);
+            });
+
+            return{
+                urls
+            }
+
+        },mainContainerClass,productCatalog,productCatalog_a);
+
+        await browser.close();
+        
+        let {urls} = data;
+        console.log(`you will have to scrap these....`);
+        console.log(urls);
+    }
+    catch(err){
+
+    }
+
+    
 
 });
 

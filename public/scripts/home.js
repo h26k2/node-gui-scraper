@@ -58,11 +58,39 @@ const saveMetaData = () => {
 
     let inputs = document.getElementsByClassName("main-container-chooser");
 
+    inputs = [inputs[0],inputs[1],inputs[2]];
+
     if(checkForEmpty(inputs)){
         alert(`You can't leave above fields empty...`);
         return;
     }
 
+    
+    let websiteURL = inputs[0].value;
+    let brandName = inputs[1].value;
+    let demoProductURL = inputs[2].value;
+
+    fetch(`/saveMetaData`,{
+        method  : 'POST',
+        headers : {
+            'Content-type' : 'application/json;charset=utf-8'
+        },
+        body : JSON.stringify({
+            url : websiteURL,
+            brand : brandName,
+            p_url : demoProductURL
+        })
+    }).then((res)=>{
+        if(res.status == 200){
+            res.json().then((data)=>{
+                console.log(data);
+                let btn = document.getElementById("metadata-btn");
+                btn.innerText = "Loaded Data";
+                btn.setAttribute("disabled",true);
+                document.getElementById("metadata-input").value = data.replace(/\"/gi,"");
+            })
+        }
+    });
 
 
 
@@ -221,3 +249,54 @@ const productDetailLink = (e) => {
 
 
 }
+
+let products_scraped = [];
+
+const scrapProducts = () => {
+
+    let button = document.getElementById("scrap-products-btn");
+
+    
+    let page = parseInt(button.getAttribute("data-page"));
+    let startPage = parseInt(button.getAttribute("data-start"));
+    let endPage = parseInt(button.getAttribute("data-end"));
+
+    if(page >= startPage && page <= endPage){
+        
+        console.log(`sending request for page : ${page}`);
+        
+        fetch(`/scrapProducts?page=${1}`).then((data)=>{
+    
+        }).catch((err)=>{
+            console.log(`error : ${err}`);
+        })
+
+    }
+
+}
+
+const handleScrapRequest = (e) => {
+
+    let elem = e.target;
+    let start = document.getElementById("start-page");
+    let end = document.getElementById("end-page");
+    
+    start = start.value;
+    end = end.value;
+
+    if(elem.getAttribute("data-first")){
+
+        elem.removeAttribute("data-first");
+        elem.setAttribute("data-start",start)
+        elem.setAttribute("data-end",end);
+        elem.setAttribute("data-page",start);
+        scrapProducts();
+    }
+    else if(!elem.getAttribute("data-first")){
+        scrapProducts();
+    }
+    
+
+
+}
+
