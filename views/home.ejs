@@ -199,24 +199,37 @@
     </div>
 
     <!-- ************************************
-        S C R A P I N G  P R O D U C T S 
+        G E N E R A T I N G  C S V S
     ***************************************** -->
 
     <div class="row title-row">
-        <h2>Scraping Products</h2>
+        <h2>Generating CSVs</h2>
         <div class="divider"></div>
     </div>
 
-    <!--- Generating CSV -->
+    <!--- Viewing Scraped Products -->
 
     <div class="row">
         <div class="col-6">
-            <p>generate csv</p>
+            <p>View Scraped Data</p>
         </div>
         <div class="col-6">
-            <button class="btn btn-success w-100" >Generate CSV</button>
+            <button class="btn btn-success w-100" onclick="viewScrapedProducts()">View Scraped Products</button>
         </div>
     </div>
+
+
+    <!-- Table which contains the data -->
+
+    <div  class="container">
+        <div class="row">
+            <div class="col-12" id="product-data">
+
+            </div>
+        </div>
+    </div>
+
+
 
 </div>
 

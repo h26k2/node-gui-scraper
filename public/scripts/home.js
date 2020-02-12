@@ -256,7 +256,6 @@ const scrapProducts = () => {
 
     let button = document.getElementById("scrap-products-btn");
 
-    
     let page = parseInt(button.getAttribute("data-page"));
     let startPage = parseInt(button.getAttribute("data-start"));
     let endPage = parseInt(button.getAttribute("data-end"));
@@ -265,8 +264,22 @@ const scrapProducts = () => {
         
         console.log(`sending request for page : ${page}`);
         
-        fetch(`/scrapProducts?page=${1}`).then((data)=>{
-    
+        fetch(`/scrapProducts?page=${page}`,
+        {
+            method : 'POST',
+            
+        }).then((res)=>{
+            res.json().then((data)=>{
+                console.log(`successfully scraped ${data.length} products`);
+                console.log(`timing out for 10sec`);
+                products_scraped.push(...data);
+                setTimeout(()=>{
+                    page++;
+                    button.setAttribute("data-page",page);
+                    scrapProducts();
+                },10000)
+
+            });
         }).catch((err)=>{
             console.log(`error : ${err}`);
         })
@@ -322,5 +335,85 @@ const loadMetaData = () => {
         alert(`Error occured while loading metadata`);
         console.log(err);
     })
+
+}
+
+let data = [
+    [
+    "Bottega Vaenta Butter","$389.00","Categories Bags Bottega Veneta",
+    `Description
+
+    Product code #191213-20
+    100% Genuine Leather Matching Quality of Original Louis Vuitton Production (imported from Europe)
+    Comes with dust bag, authentication cards, box, shopping bag and pamphlets. Receipts are only included upon request.
+    Counter Quality Replica (True Mirror Image Replica)
+    Dimensions: 31.5x37x10
+    
+    Our Guarantee: The handbag you receive will look exactly as pictured on our professionally shot photos on our website (of our own stock) in terms of quality and description! Order from Designer Discreet and experience the difference today!
+    
+    Receive 15% off when you pay through Moneygram, Western Union, or wire transfer.`],
+    [
+        "Bottega Vaenta Butter","$389.00","Categories Bags Bottega Veneta",
+        `Description
+    
+        Product code #191213-20
+        100% Genuine Leather Matching Quality of Original Louis Vuitton Production (imported from Europe)
+        Comes with dust bag, authentication cards, box, shopping bag and pamphlets. Receipts are only included upon request.
+        Counter Quality Replica (True Mirror Image Replica)
+        Dimensions: 31.5x37x10
+        
+        Our Guarantee: The handbag you receive will look exactly as pictured on our professionally shot photos on our website (of our own stock) in terms of quality and description! Order from Designer Discreet and experience the difference today!
+        
+        Receive 15% off when you pay through Moneygram, Western Union, or wire transfer.`]
+]
+
+
+const viewScrapedProducts = () => {
+    
+    let tableHeadData = document.getElementById("columns").getElementsByTagName("p");
+
+    //for Column Names
+
+    let headers = [];
+
+    let temp_head_string = `<tr>`;
+    Array.from(tableHeadData).forEach((hd)=>{
+        temp_head_string += `<th>${hd.innerText}</th>`
+    });
+
+    temp_head_string += `</tr>`;
+
+    // Body Content
+
+    let bodyContent = [];
+
+    for(let i=0 ; i<products_scraped.length ; i++){
+        let temp_row = `<tr>`;
+        for(let j=0 ; j<products_scraped[i].length ; j++){
+            temp_row += `<td>${products_scraped[i][j]}</td>`
+        }
+        temp_row += `</tr>`
+        bodyContent.push(temp_row);
+    }
+
+    let temp_body_string = ``;
+
+    Array.from(bodyContent).forEach((bd)=>{
+        temp_body_string += bd;
+    })
+
+
+    let temp_html = `<table class="table table-striped table-bordered" style="text-align:center">
+        <thead>
+            ${temp_head_string}
+        </thead>
+        <tbody>
+            ${temp_body_string}
+        </tbody>
+    </table>`
+
+
+    document.getElementById("product-data").innerHTML = temp_html;
+
 
 }
