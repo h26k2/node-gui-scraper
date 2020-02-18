@@ -315,7 +315,7 @@
         <!-- Modal body -->
         <div class="modal-body">
             <div class="container">
-                <div class="row">
+                <div class="row" id="modal-product-images">
                     <div class="col-3 modal-img-main-con" onclick="something(event)" oncontextmenu="s1(event)" data-clicked="no" >
                         <div class="col-img"></div>
                     </div>
@@ -358,6 +358,8 @@
 
 .modal-img-main-con{
     position: relative;
+    margin-top:10px;
+    margin-bottom:10px;
 }
 
 .checked{
@@ -366,7 +368,7 @@
     height:40px;
     border-radius: 50%;
     top:-5%;
-    background:teal;;
+    background:#a5dc86;
     right:0;
 }
 
@@ -380,13 +382,15 @@
     color:#fff;
 }
 
+
+
 .featured{
     position: absolute;
     width: 40px;
     height: 40px;
     border-radius: 50%;
     top: -5%;
-    background: yellow;
+    background: #3fc3ee;
     left: 0;
 }
 

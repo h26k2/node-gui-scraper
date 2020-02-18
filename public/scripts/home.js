@@ -404,10 +404,28 @@ let images = ["https://officialchansneakers.com/image/cache/catalog/d_social_log
 
 
 
-let modal_body = document.getElementsByClassName("modal-body")[0];
+let modal_body = document.getElementById("modal-product-images");
+let temp_images_html = ``;
+
+for(let i=0 ; i<images.length ; i++){
+
+    let temp_html = `
+        <div class="col-3 modal-img-main-con" onclick="productImageSelect(event)" oncontextmenu="featuredImageSelect(event)" data-clicked="no">
+            <div class="col-img"></div>
+        </div>
+    `;
+
+    temp_images_html += temp_html;
+
+}
+
+modal_body.innerHTML = temp_images_html;
 
 
-const something = (e) => {
+
+
+
+const productImageSelect = (e) => {
     
     let elem = e.currentTarget;
     let clicked = elem.getAttribute("data-clicked");
@@ -439,7 +457,7 @@ const something = (e) => {
 
 let hasFeaturedImage = false;
 
-const s1 = (e) => {
+const featuredImageSelect = (e) => {
     
     e.preventDefault();
 
