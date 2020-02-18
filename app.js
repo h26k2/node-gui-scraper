@@ -353,6 +353,21 @@ const selectProductDetails = async (url , filename , brandName, uniqueCheck) => 
 
 }
 
+const selectImages = async (url,filename,isFeatured) => {
+   
+  
+
+    
+    
+
+
+    
+
+
+}
+
+
+
 
 app.get("/",async(req,res) => {
     res.render("home");
@@ -617,6 +632,145 @@ app.get("/check",(req,res)=>{
     })
    
 })
+
+app.post("/featuredImage",async(req,res)=>{
+
+    let {url} = req.body;
+
+    req.setTimeout(0);
+    
+    let browser = await puppeteer.launch({headless: false});
+
+    let page = await browser.newPage();
+    
+    await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
+    
+    await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
+    
+    page.on('console',(msg)=>{
+
+        let data = msg.text();
+
+        if(data.match("h26k2-data")){
+
+            data = data.replace("h26k2-data:","");
+            res.json(data);
+
+        }
+
+    });
+
+    await page.evaluate(()=>{
+
+        let prev = undefined;
+       
+        window.addEventListener("mouseover",(e)=>{
+
+            let current = e.target;
+            
+            if(current !== undefined && current.classList.contains("h26k2-color") != true){
+                current.classList.add("h26k2-color");
+                prev = current;
+            }
+            
+        });
+
+        window.addEventListener("mouseout",(e)=>{
+    
+            if(prev !== undefined && prev.classList.contains("h26k2-color") == true){
+                prev.classList.remove("h26k2-color");
+            }
+        
+        });
+
+        window.addEventListener("click",async(e)=>{
+           
+            let elem = e.target;
+            
+            if(elem !== undefined && elem.getAttribute("data-name") == undefined){
+
+                let status = window.confirm("Select this element ? ");
+                
+                if(status == true){
+                    console.log(elem);
+                    let elem_classes = elem.getAttribute("class");
+                    elem_classes = elem_classes.replace("h26k2-color","");
+
+                    elem.setAttribute("class",elem_classes);
+                    
+                    let images = document.getElementsByTagName("img");
+                    console.log(images);
+
+                    if(images.length < 1){
+                        alert(`The container which you've selected doesn't have any image element`);
+                    }
+                    else{
+
+                        if(confirm(`The container have ${images.length} images, we'll let you choose which element you want, for now if you are okay with this press YES`)){
+                            
+                            let structureDetails = [];
+
+                            while(true){
+                            
+                                if(elem.parentElement.nodeName  == "HTML"){
+                                    break;
+                                }
+    
+                                console.log(`****************`);
+                                console.log(elem.parentElement);
+                                console.log(`index of element is : ${[...elem.parentElement.children].indexOf(elem)}`);
+    
+                                structureDetails.push(
+                                    {
+                                        elem : elem.parentElement.nodeName,
+                                        index : [...elem.parentElement.children].indexOf(elem)
+                                    }
+                                );
+    
+                                elem = elem.parentElement;
+    
+                            }
+
+                            console.log(structureDetails);
+
+                            let structureString = ``;
+                    
+                            for(let i=structureDetails.length  - 1; i>= 0 ; i--){
+                                
+                                let elem = structureDetails[i].elem;
+                                let index = structureDetails[i].index;
+
+                                structureString += `${elem}[${index}]/`
+                            }
+
+                            structureString = structureString.substr(0,structureString.length - 1);
+                            alert(`Done! Xpath is : ${structureString}`);
+                            
+                            let str_imgs = ``;
+
+                            Array.from(images).forEach((image)=>{
+                                str_imgs += `${image.getAttribute("src")},`;
+                            });
+
+                            str_imgs = str_imgs.substr(0,str_imgs.length - 1);
+
+                            console.log(`h26k2-data:${structureString}||${str_imgs}`);
+                        }
+
+                    }
+                    
+
+                }
+
+            }
+
+        });
+
+    })
+
+
+});
+
 
 app.listen(port,()=>{
     console.log(`node app is live at port : ${port}`);

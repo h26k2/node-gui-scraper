@@ -392,3 +392,126 @@ const viewScrapedProducts = () => {
 
 
 }
+
+let some = ``;
+
+let images = ["https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
+"https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
+"https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
+"https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
+"https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
+"https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg"]
+
+
+
+let modal_body = document.getElementsByClassName("modal-body")[0];
+
+
+const something = (e) => {
+    
+    let elem = e.currentTarget;
+    let clicked = elem.getAttribute("data-clicked");
+    
+    if(clicked == "yes"){
+
+        elem.setAttribute("data-clicked","no");
+        console.log(elem.children);
+        
+        for(let i=0 ; i<elem.children.length ; i++){
+            
+            if(elem.children[i].getAttribute("class") == "checked"){
+                elem.removeChild(elem.children[i]);
+            }
+        }
+
+
+    }
+    else if(clicked == "no"){
+        
+        elem.setAttribute("data-clicked","yes");
+        let html_text = `<div class="checked"><i class="fas fa-check"></i></div>`;
+        elem.innerHTML += html_text;
+
+    }
+
+
+}
+
+let hasFeaturedImage = false;
+
+const s1 = (e) => {
+    
+    e.preventDefault();
+
+    let elem = e.currentTarget;
+    let atr_check = elem.hasAttribute("data-featured");
+
+    //for showing featured image
+    if(atr_check == false && hasFeaturedImage == false){
+
+        elem.setAttribute("data-featured",true);
+        let temp_html = `<div class="featured"><i class="fas fa-bahai fa-lg"></i></div>`;
+        elem.innerHTML += temp_html;
+        hasFeaturedImage = true;
+
+    } //for hiding the featured image
+    else if(atr_check == true && hasFeaturedImage == true){
+        
+        elem.removeAttribute("data-featured");
+        hasFeaturedImage = false;
+        
+        for(let i=0 ; i<elem.children.length ; i++ ){
+            if(elem.children[i].getAttribute("class") == "featured"){
+                elem.removeChild(elem.children[i]);
+            }
+        }
+
+
+    }
+    
+
+}
+
+
+const productFeaturedImage = () => {
+    
+    let product_link = document.getElementsByClassName("main-container-chooser")[2].value;
+
+    if(product_link.length < 2){
+        alert("Please enter the individual product link to continue...");
+        return;
+    }
+
+
+    fetch(`/featuredImage`,{
+        method : 'POST',
+        headers : {
+            'Content-type' : 'application/json;charset=utf-8'
+        },
+        body : JSON.stringify({
+            url : product_link
+        })
+    }).then((res)=>{
+        console.log(`this is response `);
+        console.log(res);
+        res.json().then((data)=>{
+            console.log(data);
+            some = data;
+
+            let xpath_index = data.indexOf("||");
+            let xpath = data.substr(0,xpath_index);
+            console.log(xpath);
+
+            let image_paths = data.substr(xpath_index + 2 , data.length);
+            let images = image_paths.split(",");
+            console.log(images);
+
+
+        })
+    }).catch((err)=>{
+        console.log(`error occured while getting product featured image..`);
+    })
+
+
+    
+}

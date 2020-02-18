@@ -91,6 +91,37 @@
     </div>
 
 
+    <!-- single product featured image -->
+
+    <div class="row">
+        <div class="col-6">
+            <p>choose featured image</p>
+        </div>
+        <div class="col-6">
+            <button class="btn btn-success w-100" onclick="productFeaturedImage()">
+                <i class="fas fa-map-marker-alt"></i> Choose Element
+            </button>
+        </div>
+    </div>
+
+
+    <!-- single product all images -->
+
+    <div class="row">
+        <div class="col-6">
+            <p>choose product images</p>
+        </div>
+        <div class="col-6">
+            <button class="btn btn-success w-100" onclick="productAllImages()">
+                <i class="fas fa-map-marker-alt"></i> Choose Element
+            </button> 
+        </div> 
+    </div>
+ 
+
+
+
+
     <!-- add column container -->
 
     <div class="row">
@@ -210,9 +241,34 @@
     <!--- Viewing && Editiog Scraped Products -->
 
     <div class="row">
-        <div class="col-6">
-            <input type="text" placeholder="Enter "/>
+        <div class="col-3">
+            <label for="user-input-field">Enter your data</label>
+            <input type="text" placeholder="" class="form-control" id="user-input-field"/>
         </div>
+
+        <div class="col-3 form-group">
+            <label for="action-select">Choose your action</label>
+            <select class="form-control" id="action-select">
+                <option>Append</option>
+                <option>Prepend</option>
+                <option>Find and Replace</option>
+                <option>Mathematical Operations</option>
+                <option></option>
+            </select>
+        </div>
+
+        <div class="col-3 form-group">
+            <label for="col-select">Choose your Column</label>
+            <select class="form-control" id="col-select">
+                <option>Append</option>
+                <option>Prepend</option>
+                <option>Find and Replace</option>
+                <option>Mathematical Operations</option>
+                <option></option>
+            </select>
+        </div>
+
+
     </div>
 
     <div class="row">
@@ -239,6 +295,108 @@
 
 </div>
 
-<script src="/scripts/home.js"></script>
-</body>
-</html>
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+    Open modal
+  </button>
+
+
+<!-- The Modal -->
+<div class="modal fade " id="myModal">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Images to select</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-3 modal-img-main-con" onclick="something(event)" oncontextmenu="s1(event)" data-clicked="no" >
+                        <div class="col-img"></div>
+                    </div>
+                    <div class="col-3 modal-img-main-con" onclick="something(event)" oncontextmenu="s1(event)" data-clicked="no">
+                        <div class="col-img"></div>
+                    </div>
+                    <div class="col-3 modal-img-main-con" onclick="something(event)" oncontextmenu="s1(event)" data-clicked="no">
+                        <div class="col-img"></div>
+                    </div>
+                    <div class="col-3 modal-img-main-con" onclick="something(event)" oncontextmenu="s1(event)" data-clicked="no">
+                        <div class="col-img"></div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+  
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+  
+      </div>
+    </div>
+</div>
+
+
+<style>
+
+.modal-body .col-3{
+    position: relative;
+}
+
+.modal-body .col-3 .col-img{
+    height:150px;
+    background-image:url("https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg");
+    background-size:cover;
+    background-position: center;
+    border:1px solid #ddd;
+}
+
+.modal-img-main-con{
+    position: relative;
+}
+
+.checked{
+    position: absolute;
+    width:40px;
+    height:40px;
+    border-radius: 50%;
+    top:-5%;
+    background:teal;;
+    right:0;
+}
+
+.checked i , .featured i{
+    position: absolute;
+    width:auto;
+    height:auto;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    color:#fff;
+}
+
+.featured{
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    top: -5%;
+    background: yellow;
+    left: 0;
+}
+
+
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="/scripts/home.js"></script>
+    </body>
+    </html>
