@@ -240,7 +240,7 @@
 
     <!--- Viewing && Editiog Scraped Products -->
 
-    <div class="row">
+    <div class="row" id="viewing-n-editing">
         <div class="col-3">
             <label for="user-input-field">Enter your data</label>
             <input type="text" placeholder="" class="form-control" id="user-input-field"/>
@@ -260,12 +260,16 @@
         <div class="col-3 form-group">
             <label for="col-select">Choose your Column</label>
             <select class="form-control" id="col-select">
-                <option>Append</option>
-                <option>Prepend</option>
-                <option>Find and Replace</option>
-                <option>Mathematical Operations</option>
+                <option>col1</option>
+                <option>col2</option>
+                <option>col3</option>
+                <option>col4</option>
                 <option></option>
             </select>
+        </div>
+
+        <div class="col-3">
+            <button type="button" class="btn btn-dark btn-lg" onclick="applyAction()">Apply Action</button>
         </div>
 
 
@@ -380,6 +384,11 @@
     top: -5%;
     background: #3fc3ee;
     left: 0;
+}
+
+#viewing-n-editing button{
+    width:100%;
+    margin-top:1em;
 }
 
 

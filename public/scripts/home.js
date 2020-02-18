@@ -531,3 +531,56 @@ const productFeaturedImage = () => {
 
     
 }
+
+
+const applyAction = () => {
+    
+    //finding which action the user selects
+
+    let user_action = document.getElementById("action-select").selectedIndex;
+
+    let user_inputted_data = document.getElementById("user-input-field").value;
+    let col_to_edit = document.getElementById("col-select").selectedIndex;
+
+    let table_container = document.getElementById("product-data");
+    let data_rows = table_container.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+
+    for(let i=0 ; i<data_rows.length ; i++){
+
+        let data_cols = data_rows[i].getElementsByTagName("td");
+        let {innerText} = data_cols[col_to_edit];
+
+        if(user_action == 0){
+            data_cols[col_to_edit].innerText = `${innerText} ${user_inputted_data}`;
+        }
+        else if(user_action == 1){
+            data_cols[col_to_edit].innerText = `${user_inputted_data} ${innerText}`;
+        }
+        else if(user_action == 2){
+
+            let regEx = new RegExp(user_inputted_data,'gi');
+
+            if(innerText.match(regEx)){
+                
+                let replace_text = prompt(`Enter new text you want to replace with\nEnter [null] to just remove the text`);
+                
+                if(replace_text == "null"){
+                    data_cols[col_to_edit].innerText = innerText.replace(regEx,"");
+                }
+                else{
+                    data_cols[col_to_edit].innerText = innerText.replace(regEx,replace_text);
+                }
+                
+            }
+            
+
+        }
+        else if(user_action == 4){
+
+        }
+
+    }
+
+
+}
