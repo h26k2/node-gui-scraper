@@ -393,36 +393,28 @@ const viewScrapedProducts = () => {
 
 }
 
-let some = ``;
 
-let images = ["https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-"https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-"https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-"https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-"https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-"https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg"]
+const fillModal = (imagePaths) => {
 
-
-
-let modal_body = document.getElementById("modal-product-images");
-let temp_images_html = ``;
-
-for(let i=0 ; i<images.length ; i++){
-
-    let temp_html = `
-        <div class="col-3 modal-img-main-con" onclick="productImageSelect(event)" oncontextmenu="featuredImageSelect(event)" data-clicked="no">
-            <div class="col-img"></div>
-        </div>
-    `;
-
-    temp_images_html += temp_html;
-
+    let modal_body = document.getElementById("modal-product-images");
+    modal_body.innerHTML = "";
+    let temp_images_html = ``;
+    
+    for(let i=0 ; i<imagePaths.length ; i++){
+    
+        let temp_html = `
+            <div class="col-3 modal-img-main-con" onclick="productImageSelect(event)" oncontextmenu="featuredImageSelect(event)" data-clicked="no" >
+                <div class="col-img" style="background-image:url('${imagePaths[i]}')"></div>
+            </div>
+        `;
+    
+        temp_images_html += temp_html;
+    
+    }
+    
+    modal_body.innerHTML = temp_images_html;
+    
 }
-
-modal_body.innerHTML = temp_images_html;
-
-
-
 
 
 const productImageSelect = (e) => {
@@ -500,7 +492,6 @@ const productFeaturedImage = () => {
         return;
     }
 
-
     fetch(`/featuredImage`,{
         method : 'POST',
         headers : {
@@ -510,8 +501,7 @@ const productFeaturedImage = () => {
             url : product_link
         })
     }).then((res)=>{
-        console.log(`this is response `);
-        console.log(res);
+        
         res.json().then((data)=>{
             console.log(data);
             some = data;
@@ -528,9 +518,10 @@ const productFeaturedImage = () => {
                     images.push(temp_images[i]);
                 }
             }
-
+            
+            console.log(`These are the images which were fetched from your selected element`);
             console.log(images);
-
+            fillModal(images);
 
         })
     }).catch((err)=>{
