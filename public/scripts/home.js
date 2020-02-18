@@ -521,7 +521,14 @@ const productFeaturedImage = () => {
             console.log(xpath);
 
             let image_paths = data.substr(xpath_index + 2 , data.length);
-            let images = image_paths.split(",");
+            let temp_images = image_paths.split(",");
+            let images = [];
+            for(let i=0 ; i<temp_images.length ; i++){
+                if(temp_images[i].match("https://")){
+                    images.push(temp_images[i]);
+                }
+            }
+
             console.log(images);
 
 
