@@ -576,8 +576,37 @@ const applyAction = () => {
             
 
         }
-        else if(user_action == 4){
+        else if(user_action == 3){
+            
+            let existing_symbol = prompt(`For an ideal mathematical calculation make sure that the field doesn't have any symbol or any other characters\nTo neglect symbol please enter the symbol so that we can neglect that\nEnter cancel if it doesn't have any symbol`);
 
+            if(existing_symbol != null || existing_symbol != "null"){
+                
+                let d_op = ``;
+
+                Array.from(innerText).forEach((it)=>{
+                   if(it != existing_symbol){
+                       d_op += it;
+                   }
+               })
+              
+                let ind = user_inputted_data.indexOf("_");
+               
+                if(ind == 0){
+                    let new_exp = user_inputted_data.substr(1,user_inputted_data.length - 1);
+                    let ans = eval(`${d_op} ${new_exp}`);
+                    data_cols[col_to_edit].innerText = `${existing_symbol}${ans}`;
+                }
+                else if(ind == user_inputted_data.length - 1){
+                    let new_exp = user_inputted_data.substr(0,user_inputted_data.length - 1);
+                    let ans = eval(`${new_exp} ${d_op}`);
+                    data_cols[col_to_edit].innerText = `${existing_symbol}${ans}`;
+                }
+
+
+            
+            }
+            
         }
 
     }
