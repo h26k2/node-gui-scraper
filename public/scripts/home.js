@@ -393,7 +393,6 @@ const viewScrapedProducts = () => {
 
 }
 
-
 const fillModal = (imagePaths) => {
 
     let modal_body = document.getElementById("modal-product-images");
@@ -416,6 +415,11 @@ const fillModal = (imagePaths) => {
     
 }
 
+
+fillModal(["https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
+"https://officialchansneakers.com/image/cache/catalog/d_social_login/44-570x570.jpeg",
+"https://officialchansneakers.com/image/cache/catalog/Adidas/16-570x570.JPG",
+"https://officialchansneakers.com/image/cache/catalog/d_social_login/27-570x570.jpeg"])
 
 const productImageSelect = (e) => {
     
@@ -563,9 +567,9 @@ const applyAction = () => {
 
             if(innerText.match(regEx)){
                 
-                let replace_text = prompt(`Enter new text you want to replace with\nEnter [null] to just remove the text`);
+                let replace_text = prompt(`Enter new text you want to replace with\nEnter [null] to just remove the text or click CANCEL`);
                 
-                if(replace_text == "null"){
+                if(replace_text == "null" || replace_text == null){
                     data_cols[col_to_edit].innerText = innerText.replace(regEx,"");
                 }
                 else{
