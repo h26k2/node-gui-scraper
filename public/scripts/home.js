@@ -617,3 +617,32 @@ const applyAction = () => {
 
 
 }
+
+const something = () => {
+    
+    let s_page = document.getElementById("second-page").value;
+
+    console.log(s_page);
+
+    if(s_page.match(/\?/gi)){
+        
+        if(s_page.match(/page=[0-9]{1,5}/gi)){
+            console.log(`is query with page = `);
+        }
+        else if(s_page.match(/p=[0-9]{1,5}/gi)){
+            console.log(`is query with p = `);
+        }
+
+    }
+    else if(s_page.match(/\/page\//gi)){
+        console.log(`is id based with page`);
+    }
+    else if(s_page.match(/\/p\//gi)){
+        console.log(`is id based with p `)
+    }
+    else{
+        console.log(`We're unable to read the urls of the page`);
+    }
+    
+
+}
