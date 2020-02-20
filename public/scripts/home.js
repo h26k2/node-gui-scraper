@@ -621,28 +621,40 @@ const applyAction = () => {
 const something = () => {
     
     let s_page = document.getElementById("second-page").value;
-
-    console.log(s_page);
+    let url = {};
 
     if(s_page.match(/\?/gi)){
         
+        url.type = "query";
+
         if(s_page.match(/page=[0-9]{1,5}/gi)){
             console.log(`is query with page = `);
+            url.symbol = "page";
         }
         else if(s_page.match(/p=[0-9]{1,5}/gi)){
             console.log(`is query with p = `);
+            url.symbol = "p";            
         }
 
     }
     else if(s_page.match(/\/page\//gi)){
         console.log(`is id based with page`);
+        url = {
+            type : "id",
+            symbol : "page"
+        }
     }
     else if(s_page.match(/\/p\//gi)){
-        console.log(`is id based with p `)
+        console.log(`is id based with p `)=
+        url = {
+            type : "id",
+            symbol : "p"
+        }
     }
     else{
         console.log(`We're unable to read the urls of the page`);
     }
     
+    console.log(url);
 
 }
