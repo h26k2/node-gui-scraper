@@ -177,8 +177,7 @@ const individualProduct = () => {
     }
 
     let websiteURL = inputs[0].value;
-    let brandName = inputs[1].value;
-    console.log(websiteURL);
+    
     fetch(`/individualProduct`,{
         method : 'POST',
         headers : {
@@ -188,10 +187,10 @@ const individualProduct = () => {
             url : websiteURL,
         })
     }).then((data)=>{
-        console.log(data);
+        
         data.json().then((d)=>{
-            console.log(d);
-        })
+            document.getElementById("individual-product").value = d;
+        });
     });
 
 }
