@@ -166,7 +166,7 @@ const delCol = (event) => {
 
 }
 
-const productPageLink = () => {
+const individualProduct = () => {
     
     let inputs = document.getElementsByClassName("main-container-chooser");
     inputs = [inputs[0],inputs[1]];
@@ -178,19 +178,19 @@ const productPageLink = () => {
 
     let websiteURL = inputs[0].value;
     let brandName = inputs[1].value;
-
-    console.log(`website url is : ${websiteURL}`);
-    console.log(`brand name is : ${brandName}`);
-
-    fetch(`/productPageLink`,{
+    console.log(websiteURL);
+    fetch(`/individualProduct`,{
         method : 'POST',
         headers : {
             'Content-Type' : 'application/json;charset=utf-8'
         },
         body : JSON.stringify({
             url : websiteURL,
-            filename : 'productPageLink',
-            brand : brandName
+        })
+    }).then((data)=>{
+        console.log(data);
+        data.json().then((d)=>{
+            console.log(d);
         })
     });
 

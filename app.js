@@ -10,8 +10,8 @@ const htmlparser2 = require("htmlparser2");
 const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
 
-const mainProduct = require("./controller/requests/mainProduct")
-
+const mainProduct = require("./controller/requests/mainProduct");
+const individualProduct = require("./controller/requests/individualProduct");
 
 app.use(express.static("public"));
 app.set("view engine","ejs");
@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
 mainProduct(app,puppeteer);
+individualProduct(app,puppeteer);
 
 let metadata = [];
 let JSON_file;
@@ -379,32 +380,8 @@ app.get("/",async(req,res) => {
     res.render("home");
 });
 
-app.post("/mainProducts",async(req,res)=>{
-
-    req.setTimeout(0);
-    let {url } = req.body;
-
-    let data = selectMainContainer(url ,true);
-    console.log(`here is data : ${data}`);
-
-}); 
 
 
-app.post("/productPageLink",async(req,res)=>{
-
-    let {url , filename ,brand} = req.body;
-
-    selectProduct(url,filename,brand);
-
-});
-
-app.post("/productDetail",(req,res)=>{
-   
-    let {col , sku , url ,brand} = req.body;
-    let filename = `product-detail_${col}`;
-    selectProductDetails(url,filename,brand,true);
-
-});
 
 app.post("/saveMetaData",(req,res)=>{
 
