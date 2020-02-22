@@ -24,10 +24,6 @@ const mainContainerChooser = () => {
     }
 
     let websiteURL = inputs[0].value;
-    let brandName = inputs[1].value;
-
-    console.log(`website url is : ${websiteURL}`);
-    console.log(`brand name is : ${brandName}`);
     
     fetch(`/mainProducts`,{
         method : 'POST',
@@ -36,8 +32,10 @@ const mainContainerChooser = () => {
         },
         body : JSON.stringify({
             url : websiteURL,
-            filename : 'mainContainerChooser',
-            brand : brandName
+        })
+    }).then((data)=>{
+        data.json().then((d)=>{
+            document.getElementById("main-container").value = d;
         })
     });
 

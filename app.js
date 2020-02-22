@@ -10,15 +10,20 @@ const htmlparser2 = require("htmlparser2");
 const jsdom = require("jsdom");
 const {JSDOM} = jsdom;
 
+const mainProduct = require("./controller/requests/mainProduct")
+
+
 app.use(express.static("public"));
 app.set("view engine","ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
+mainProduct(app,puppeteer);
+
 let metadata = [];
 let JSON_file;
-
-const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>{
+/*
+const selectMainContainer = async(url , uniqueCheck ) =>{
 
     let browser = await puppeteer.launch({headless: false});
 
@@ -34,16 +39,19 @@ const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>
         
         if(val.match("h26k2-data:")){
             
-            let data = val.substr(val.indexOf(":")+1,val.length);    
+            let data = val.substr(val.indexOf(":")+1,val.length);  
+            data = `type:mainContainer,val:${val}`;
+            return data;
+            /*
             metadata.push({
                 type : 'mainContainer',
                 val : data
-            })
+            }); 
         }
 
     });
     
-    await page.evaluate((filename , brandName , uniqueCheck )=>{
+    await page.evaluate(( uniqueCheck )=>{
         
         let prev = undefined;
         
@@ -52,6 +60,7 @@ const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>
             let current = e.target;
             
             if(current !== undefined && current.classList.contains("h26k2-color") != true){
+                e.target.setAttribute("title",e.target.getAttribute("class"));
                 current.classList.add("h26k2-color");
                 prev = current;
             }
@@ -109,7 +118,7 @@ const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>
                         catch(err){
                             alert(`error occured while downloading meta file\n Check console for error`);
                             console.log(err);
-                        }*/
+                        }
 
                     }
                     else{
@@ -123,11 +132,11 @@ const selectMainContainer = async(url  , filename , brandName , uniqueCheck ) =>
 
         });
 
-    },filename  , brandName , uniqueCheck  );
+    } , uniqueCheck  );
     
     
 }
-
+*/
 const selectProduct = async (url,filename,brandName ) => {
 
     let browser = await puppeteer.launch({headless: false});
@@ -366,24 +375,17 @@ const selectImages = async (url,filename,isFeatured) => {
 
 }
 
-
-axios("https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg").then((data)=>{
-    //console.log(data);
-    console.log(`ok hai`);
-}).catch((err)=>{
-    //console.log(err);
-    console.log(`error aya`);
-})
-
 app.get("/",async(req,res) => {
     res.render("home");
 });
 
 app.post("/mainProducts",async(req,res)=>{
 
-    let {url , filename ,brand} = req.body;
+    req.setTimeout(0);
+    let {url } = req.body;
 
-    selectMainContainer(url, filename,brand ,true);
+    let data = selectMainContainer(url ,true);
+    console.log(`here is data : ${data}`);
 
 }); 
 
@@ -627,17 +629,6 @@ app.post('/loadMetaData',(req,res)=>{
 
 });
 
-app.get("/check",(req,res)=>{
-    
-    axios.get("http://designer-discreet.ru/product/bottega-vaenta-butter/").then((data)=>{
-    
-        let $$ = cheerio.load(data.data);
-        let text = $$("html").html();
-        const dom = new JSDOM(text);
-        //console.log(dom.window.document.body.children[5].children[2]);
-    })
-   
-})
 
 app.post("/featuredImage",async(req,res)=>{
 
