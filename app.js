@@ -367,7 +367,13 @@ const selectImages = async (url,filename,isFeatured) => {
 }
 
 
-
+axios("https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg").then((data)=>{
+    //console.log(data);
+    console.log(`ok hai`);
+}).catch((err)=>{
+    //console.log(err);
+    console.log(`error aya`);
+})
 
 app.get("/",async(req,res) => {
     res.render("home");
@@ -669,6 +675,7 @@ app.post("/featuredImage",async(req,res)=>{
             let current = e.target;
             
             if(current !== undefined && current.classList.contains("h26k2-color") != true){
+                e.target.setAttribute("title",e.target.getAttribute("class"));
                 current.classList.add("h26k2-color");
                 prev = current;
             }
@@ -698,64 +705,13 @@ app.post("/featuredImage",async(req,res)=>{
 
                     elem.setAttribute("class",elem_classes);
                     
-                    let images = document.getElementsByTagName("img");
+                    let images = elem.getElementsByTagName("img");
                     console.log(images);
 
                     if(images.length < 1){
                         alert(`The container which you've selected doesn't have any image element`);
                     }
                     else{
-
-                        if(confirm(`The container have ${images.length} images, we'll let you choose which element you want, for now if you are okay with this press YES`)){
-                            
-                            let structureDetails = [];
-
-                            while(true){
-                            
-                                if(elem.parentElement.nodeName  == "HTML"){
-                                    break;
-                                }
-    
-                                console.log(`****************`);
-                                console.log(elem.parentElement);
-                                console.log(`index of element is : ${[...elem.parentElement.children].indexOf(elem)}`);
-    
-                                structureDetails.push(
-                                    {
-                                        elem : elem.parentElement.nodeName,
-                                        index : [...elem.parentElement.children].indexOf(elem)
-                                    }
-                                );
-    
-                                elem = elem.parentElement;
-    
-                            }
-
-                            console.log(structureDetails);
-
-                            let structureString = ``;
-                    
-                            for(let i=structureDetails.length  - 1; i>= 0 ; i--){
-                                
-                                let elem = structureDetails[i].elem;
-                                let index = structureDetails[i].index;
-
-                                structureString += `${elem}[${index}]/`
-                            }
-
-                            structureString = structureString.substr(0,structureString.length - 1);
-                            alert(`Done! Xpath is : ${structureString}`);
-                            
-                            let str_imgs = ``;
-
-                            Array.from(images).forEach((image)=>{
-                                str_imgs += `${image.getAttribute("src")},`;
-                            });
-
-                            str_imgs = str_imgs.substr(0,str_imgs.length - 1);
-
-                            console.log(`h26k2-data:${structureString}||${str_imgs}`);
-                        }
 
                     }
                     
