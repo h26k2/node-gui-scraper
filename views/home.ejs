@@ -11,13 +11,71 @@
 </head>
 <body>
 
+<!-- *****************************
+      H E R O  C O N T A I N E R
+    ******************************* -->
+
+
 <div class="container-fluid hero-container">
     <div class="row">
         <div class="col-12">
             <h1>Node data scraper</h1>
         </div>
     </div>
+    <div class="overlay"></div>
 </div>
+
+
+<div class="container card-container">
+    
+    <div class="row">
+        <div class="col-12">
+            <h2>setting metadata</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <p>Enter Products Catalog URL</p>
+        </div>
+        <div class="col-6">
+            <input type="text" class="form-control"/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <p>Enter second page URL</p>
+        </div>
+        <div class="col-6">
+            <input type="text" class="form-control"/>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-6">
+            <p>Enter Individual product URL</p>
+        </div>
+        <div class="col-6">
+            <input type="text" class="form-control"/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <p>Enter brand name</p>
+        </div>
+        <div class="col-6">
+            <input type="text" class="form-control"/>
+        </div>
+    </div>
+
+
+
+</div>
+
+
 
 <div class="container form-container">
     
@@ -41,6 +99,30 @@
         </div>
     </div>
 
+
+    <!-- Individual product Link -->
+
+    <div class="row top-margin">
+        <div class="col-6">
+            <p>Enter Individual product URL </p>
+        </div>
+        <div class="col-6">
+            <input type="text" class="form-control main-container-chooser"  />
+        </div>
+    </div>
+    
+
+    <!-- single product all images -->
+
+    <div class="row">
+        <div class="col-6">
+            <p>Enter second page url</p>
+        </div>
+        <div class="col-6">
+            <input type="text" class="form-control main-container-chooser" id="second-page" ondblclick="something()" />
+        </div> 
+    </div>
+
     <!-- Brand Name -->
 
     <div class="row">
@@ -51,6 +133,9 @@
             <input type="text" class="form-control main-container-chooser"/>
         </div>
     </div>
+
+
+
 
     <!-- Main container which contains all the products -->
 
@@ -85,16 +170,7 @@
     </div>
 
 
-      <!-- Individual product Link -->
-
-      <div class="row top-margin">
-        <div class="col-6">
-            <p>Enter Individual product URL </p>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control main-container-chooser"  />
-        </div>
-    </div>
+    
 
 
     <!-- single product featured image -->
@@ -112,21 +188,6 @@
             </div>
         </div>
     </div>
-
-
-    <!-- single product all images -->
-
-    <div class="row">
-        <div class="col-6">
-            <p>Enter second page url</p>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control main-container-chooser" id="second-page" ondblclick="something()" />
-        </div> 
-    </div>
- 
-
-
 
 
     <!-- add column container -->
