@@ -55,6 +55,12 @@
     position: absolute;
 }
 
+.form-group button.btn-right{
+    top:0;
+    right:0;    
+}
+
 .form-group input[type="text"]{
     padding-left : 2.7em;
+    padding-right: 3em;
 }
