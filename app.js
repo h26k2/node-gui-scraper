@@ -4,14 +4,10 @@ const app = express();
 const bodyParser = require("body-parser");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
-const axios = require("axios");
-const cheerio = require("cheerio");
-const htmlparser2 = require("htmlparser2");
-const jsdom = require("jsdom");
-const {JSDOM} = jsdom;
 
 const mainProduct = require("./controller/requests/mainProduct");
 const individualProduct = require("./controller/requests/individualProduct");
+const proudctDetail = require("./controller/requests/productDetail");
 
 app.use(express.static("public"));
 app.set("view engine","ejs");
@@ -20,6 +16,7 @@ app.use(bodyParser.urlencoded({extended : true}));
 
 mainProduct(app,puppeteer);
 individualProduct(app,puppeteer);
+proudctDetail(app,puppeteer);
 
 let metadata = [];
 let JSON_file;

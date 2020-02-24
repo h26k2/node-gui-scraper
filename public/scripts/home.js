@@ -117,17 +117,19 @@ const addColumn = (event) => {
                 <p>Enter ${value}</p>
             </div>
 
-            <div class="col-3">
-                <button class="btn btn-success w-100" onClick="productDetailLink(event)" data-sku="${sku}" data-val="${value}" >
-                    <i class="fas fa-map-marker-alt"></i> Choose Element
-                </button>
+            <div class="col-6">
+                <div class="form-group">
+                    <button class="btn btn-success" onClick="productDetailLink(event)" data-sku="${sku}" data-val="${value}">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </button>
+                    <input type="text" class="form-control" />
+                    <button class="btn btn-danger btn-right " onClick="delCol(event)" data-sku="${sku}">
+                        <i class="far fa-trash-alt"></i>
+                    </button> 
+                </div>
             </div>
 
-            <div class="col-3">
-                <button class="btn btn-danger w-100" onClick="delCol(event)" data-sku="${sku}">
-                    <i class="far fa-trash-alt"></i> Delete Column
-                </button>
-            </div>
+        
 
         `;
 
@@ -197,7 +199,7 @@ const individualProduct = () => {
 
 const productDetailLink = (e) => {
 
-    let {target} = e;
+    let {target , currentTarget} = e;
     let {nodeName} = target;
     let elem ;
 
@@ -238,9 +240,20 @@ const productDetailLink = (e) => {
         },
         body : JSON.stringify({
             col : col_val,
-            sku : sku,
             url : demoProductURL,
-            brand : brandName,
+        })
+    }).then((data)=>{
+        data.json().then((d)=>{
+            console.log(sku);
+            let elem = document.getElementById("columns").getElementsByClassName("btn-success");
+            
+            Array.from(elem).forEach((e)=>{
+                if(e.getAttribute("data-sku") == sku ){
+                    e.parentElement.getElementsByTagName("input")[0].value = d;
+                }
+            });
+            
+
         })
     })
 

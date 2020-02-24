@@ -39,7 +39,7 @@ const individualProduct = (app,puppeteer) => {
                 if(current !== undefined && current.classList.contains("h26k2-color") != true){
                     current.classList.add("h26k2-color");
                     prev = current;
-                    e.target.setAttribute("title",e.target.getAttribute("class"));
+                    e.target.setAttribute("title",e.target.getAttribute("class").replace("h26k2-color",""));
                 }
                 
             });
