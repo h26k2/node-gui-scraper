@@ -110,7 +110,12 @@
             <p>choose single product container</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control"/>
+            <div class="form-group">
+                <button class="btn btn-success btn-choose" onclick="individualProduct()">
+                    <i class="fas fa-map-marker-alt" ></i>
+                </button>
+                <input type="text" class="form-control"/>
+            </div>
         </div>
     </div>
 
@@ -119,7 +124,12 @@
             <p>choose product images</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control"/>
+            <div class="form-group">
+                <button class="btn btn-success btn-choose" onclick="productImages()">
+                    <i class="fas fa-map-marker-alt" ></i>
+                </button>
+                <input type="text" class="form-control"/>
+            </div>
         </div>
     </div>
 
@@ -128,8 +138,14 @@
             <p>Enter columns name(s)</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control"/>
+            <input type="text" class="form-control" onkeydown="addColumn(event)"/>
             <small>(enter a column name and press enter)</small>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12" id="columns">
+
         </div>
     </div>
 

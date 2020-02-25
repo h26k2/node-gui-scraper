@@ -8,6 +8,7 @@ const fs = require("fs");
 const mainProduct = require("./controller/requests/mainProduct");
 const individualProduct = require("./controller/requests/individualProduct");
 const proudctDetail = require("./controller/requests/productDetail");
+const productImages = require("./controller/requests/productImages");
 
 app.use(express.static("public"));
 app.set("view engine","ejs");
@@ -17,6 +18,7 @@ app.use(bodyParser.urlencoded({extended : true}));
 mainProduct(app,puppeteer);
 individualProduct(app,puppeteer);
 proudctDetail(app,puppeteer);
+productImages(app,puppeteer);
 
 let metadata = [];
 let JSON_file;
@@ -603,7 +605,7 @@ app.post('/loadMetaData',(req,res)=>{
 
 });
 
-
+/*
 app.post("/featuredImage",async(req,res)=>{
 
     let {url} = req.body;
@@ -692,7 +694,7 @@ app.post("/featuredImage",async(req,res)=>{
 
 });
 
-
+*/
 app.listen(port,()=>{
     console.log(`node app is live at port : ${port}`);
 });

@@ -118,11 +118,11 @@ const addColumn = (event) => {
 
             <div class="col-6">
                 <div class="form-group">
-                    <button class="btn btn-success" onClick="productDetailLink(event)" data-sku="${sku}" data-val="${value}">
+                    <button class="btn btn-success btn-choose" onClick="productDetailLink(event)" data-sku="${sku}" data-val="${value}">
                         <i class="fas fa-map-marker-alt"></i>
                     </button>
                     <input type="text" class="form-control" />
-                    <button class="btn btn-danger btn-right " onClick="delCol(event)" data-sku="${sku}">
+                    <button class="btn btn-danger btn-right btn-delete " onClick="delCol(event)" data-sku="${sku}">
                         <i class="far fa-trash-alt"></i>
                     </button> 
                 </div>
@@ -169,8 +169,7 @@ const delCol = (event) => {
 
 const individualProduct = () => {
     
-    let inputs = document.getElementsByClassName("main-container-chooser");
-    inputs = [inputs[0],inputs[1]];
+    let inputs = document.getElementsByClassName("user-input-field");
 
     if(checkForEmpty(inputs)){
         alert(`You can't leave above fields empty...`);
@@ -496,16 +495,16 @@ const featuredImageSelect = (e) => {
 }
 
 
-const productFeaturedImage = () => {
+const productImages = () => {
     
-    let product_link = document.getElementsByClassName("main-container-chooser")[2].value;
+    let product_link = document.getElementsByClassName("user-input-field")[2].value;
 
     if(product_link.length < 2){
         alert("Please enter the individual product link to continue...");
         return;
     }
 
-    fetch(`/featuredImage`,{
+    fetch(`/productImages`,{
         method : 'POST',
         headers : {
             'Content-type' : 'application/json;charset=utf-8'

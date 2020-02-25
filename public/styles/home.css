@@ -132,12 +132,12 @@ button:hover{
     box-shadow:0 0 40px rgba(51,51,51,.1);
 }
 
-.card-container .row:nth-child(1){
+.card-container > .row:nth-child(1){
     position: relative;
     margin-bottom:2em;
 }
 
-.card-container .row:nth-child(1)::after{
+.card-container > .row:nth-child(1)::after{
     content : "";
     position: absolute;
     width:100%;
@@ -147,7 +147,7 @@ button:hover{
     left:0;
 }
 
-.card-container .row:not(:nth-child(1)){
+.card-container > .row:not(:nth-child(1)){
     margin-top:0.5em;
     margin-bottom:0.5em;
 }
