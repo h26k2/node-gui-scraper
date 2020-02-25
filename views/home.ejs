@@ -11,10 +11,10 @@
 </head>
 <body>
 
+
 <!-- *****************************
       H E R O  C O N T A I N E R
-    ******************************* -->
-
+********************************** -->
 
 <div class="container-fluid hero-container">
     <div class="row">
@@ -24,6 +24,11 @@
     </div>
     <div class="overlay"></div>
 </div>
+
+
+<!-- *********************************
+    S E T T I N G  M E T A D A T A
+***************************************-->
 
 
 <div class="container card-container">
@@ -39,7 +44,7 @@
             <p>Enter Products Catalog URL</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control"/>
+            <input type="text" class="form-control user-input-field"/>
         </div>
     </div>
 
@@ -48,7 +53,7 @@
             <p>Enter second page URL</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control"/>
+            <input type="text" class="form-control user-input-field"/>
         </div>
     </div>
 
@@ -58,7 +63,7 @@
             <p>Enter Individual product URL</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control"/>
+            <input type="text" class="form-control user-input-field"/>
         </div>
     </div>
 
@@ -67,10 +72,9 @@
             <p>Enter brand name</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control"/>
+            <input type="text" class="form-control user-input-field"/>
         </div>
     </div>
-
 
 
 </div>
@@ -94,9 +98,9 @@
                     <i class="fas fa-map-marker-alt" ></i>
                 </button>
                 <input type="text" class="form-control" id="main-container"/>
-                <button class="btn btn-danger btn-delete">
+                <!--<button class="btn btn-danger btn-delete">
                     <i class="fas fa-trash-alt"></i>
-                </button>
+                </button>-->
             </div>
         </div>
     </div>
@@ -205,314 +209,17 @@
         </div>
     </div>
     
-
-
 </div>
 
 
-
-<div class="container form-container">
-    
-   <!--  ********************************
-        S E T T I N G  M E T A D A T A
-   ************************************** -->
-
-    <div class="row title-row">
-        <h2>Setting Metadata</h2>
-        <div class="divider"></div>
-    </div>
-
-    <!-- website URL Container -->
-    
-    <div class="row top-margin">
-        <div class="col-6">
-            <p>Enter website URL you want to scrape</p>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control main-container-chooser"/>
-        </div>
-    </div>
-
-
-    <!-- Individual product Link -->
-
-    <div class="row top-margin">
-        <div class="col-6">
-            <p>Enter Individual product URL </p>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control main-container-chooser"  />
-        </div>
-    </div>
-    
-
-    <!-- single product all images -->
-
+<div class="container card-container">
     <div class="row">
-        <div class="col-6">
-            <p>Enter second page url</p>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control main-container-chooser" id="second-page" ondblclick="something()" />
-        </div> 
-    </div>
-
-    <!-- Brand Name -->
-
-    <div class="row">
-        <div class="col-6">
-            <p>Enter brand name</p>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control main-container-chooser"/>
+        <div class="col-12">
+            <h2>CSV stuff</h2>
         </div>
     </div>
-
-
-
-
-    <!-- Main container which contains all the products -->
-
-    <div class="row">
-        <div class="col-6">
-            <p>choose products main container</p>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <button class="btn btn-success" onclick="mainContainerChooser()">
-                    <i class="fas fa-map-marker-alt" ></i>
-                </button>
-                <input type="text" class="form-control" id="main-container"/>
-            </div>
-        </div>
-    </div>
-
-    <!-- single product link -->
-
-    <div class="row">
-        <div class="col-6">
-            <p>choose individual product </p>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <button class="btn btn-success" onclick="individualProduct()">
-                    <i class="fas fa-map-marker-alt"></i>
-                </button>
-                <input type="text" class="form-control" id="individual-product"/>
-            </div>
-        </div>
-    </div>
-
-
-    
-
-
-    <!-- single product featured image -->
-
-    <div class="row">
-        <div class="col-6">
-            <p>choose product images</p>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <button class="btn btn-success" onclick="productFeaturedImage()">
-                    <i class="fas fa-map-marker-alt"></i>
-                </button>
-                <input type="text" class="form-control" id="product-images" />
-            </div>
-        </div>
-    </div>
-
-
-    <!-- add column container -->
-
-    <div class="row">
-        <div class="col-6">
-            <p>Enter columns name(s)</p>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control main-container-chooser" onkeydown="addColumn(event)"/>
-            <small>(enter a column name and press enter)</small>
-        </div>
-    </div>
-
-    <!-- columns created on click -->
-
-    <div class="col-12" id="columns">
-        <div class="row"> <!--            <div class="col-6">
-                <p>enter  something</p>
-            </div>
-            
-            <div class="col-6">
-                <div class="form-group">
-                    <button class="btn btn-success" onclick="mainContainerChooser()">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </button>
-                    <input type="text" class="form-control" />
-                    <button class="btn btn-danger btn-right ">
-                        <i class="far fa-trash-alt"></i>
-                    </button> 
-                </div>
-            </div>
-            -->
-
-            <!--
-            <div class="col-3">
-                <button class="btn btn-success w-100" onclick="mainContainerChooser()">
-                    <i class="fas fa-map-marker-alt"></i> Choose Element
-                </button>
-            </div>
-            <div class="col-3">
-                <button class="btn btn-danger w-100">
-                    <i class="far fa-trash-alt"></i> Delete Column
-                </button>  
-            </div>-->
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-6"></div>
-        <div class="col-6">
-            <button class="btn btn-primary w-100" onclick="saveMetaData()">Save Metadata</button>
-        </div>
-    </div>
-
-
-    <!-- ********************************** 
-        L O A D I N G  M E T A D A T A
-        *********************************** -->
-
-    <div class="row title-row">
-        <h2>Loading Metadata</h2>
-        <div class="divider"></div>
-    </div>
-
-    <!-- Path of the metadata -->
-
-    <div class="row">
-        <div class="col-6">
-            <p>Enter Path of metadata file</p>
-        </div>
-        <div class="col-6">
-            <input type="file" class="form-control" id="metadata-input"/>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-6"></div>
-        <div class="col-6">
-            <button class="btn btn-primary w-100" id="metadata-btn" onclick="loadMetaData()">Load Metadata</button>
-        </div>
-    </div>
-
-    <!-- *********************************
-        S C R A P I N G  P R O D U C T S
-    ************************************** -->
-
-    <div class="row title-row">
-        <h2>Scraping Products</h2>
-        <div class="divider"></div>
-    </div>
-
-    <!-- Start Page -->
-
-    <div class="row">
-        <div class="col-6">
-            <p>Enter Start Page</p>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control" id="start-page"/>
-        </div>
-    </div>
-
-    <!-- End Page -->
-
-    <div class="row">
-        <div class="col-6">
-            <p>Enter End Page</p>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control" id="end-page"/>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-6">
-            <p>scrap products</p>
-        </div>
-        <div class="col-6">
-            <button class="btn btn-primary w-100" id="scrap-products-btn" onclick="handleScrapRequest(event)" data-first="true">Scrap Products</button>
-        </div>
-    </div>
-
-    <!-- ************************************
-        G E N E R A T I N G  C S V S
-    ***************************************** -->
-
-    <div class="row title-row">
-        <h2>Generating CSVs</h2>
-        <div class="divider"></div>
-    </div>
-
-    <!--- Viewing && Editiog Scraped Products -->
-
-    <div class="row" id="viewing-n-editing">
-        <div class="col-3">
-            <label for="user-input-field">Enter your data</label>
-            <input type="text" placeholder="" class="form-control" id="user-input-field"/>
-        </div>
-
-        <div class="col-3 form-group">
-            <label for="action-select">Choose your action</label>
-            <select class="form-control" id="action-select">
-                <option>Append</option>
-                <option>Prepend</option>
-                <option>Find and Replace</option>
-                <option>Mathematical Operations</option>
-                <option></option>
-            </select>
-        </div>
-
-        <div class="col-3 form-group">
-            <label for="col-select">Choose your Column</label>
-            <select class="form-control" id="col-select">
-                <option>col1</option>
-                <option>col2</option>
-                <option>col3</option>
-                <option>col4</option>
-            </select>
-        </div>
-
-        <div class="col-3">
-            <button type="button" class="btn btn-dark btn-lg" onclick="applyAction()">Apply Action</button>
-        </div>
-
-
-    </div>
-
-    <div class="row">
-        <div class="col-6">
-            <p>View Scraped Data</p>
-        </div>
-        <div class="col-6">
-            <button class="btn btn-success w-100" onclick="viewScrapedProducts()">View Scraped Products</button>
-        </div>
-    </div>
-
-
-    <!-- Table which contains the data -->
-
-    <div  class="container">
-        <div class="row">
-            <div class="col-12" id="product-data">
-
-            </div>
-        </div>
-    </div>
-
-
-
 </div>
+
 
 
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">

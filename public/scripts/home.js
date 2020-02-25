@@ -15,8 +15,7 @@ const checkForEmpty = (inputs) => {
 
 const mainContainerChooser = () => {
 
-    let inputs = document.getElementsByClassName("main-container-chooser");
-    inputs = [inputs[0],inputs[1]];
+    let inputs = document.getElementsByClassName("user-input-field");
 
     if(checkForEmpty(inputs)){
         alert(`You can't leave above fields empty...`);
