@@ -107,7 +107,8 @@ button{
     text-transform: capitalize;
     font-size:1em!important;
     font-weight: 500!important;
-    background:#ef0b14!important
+    background:#ef0b14!important;
+    color:#fff!important;
 }
 
 button:hover{
