@@ -118,11 +118,11 @@ const addColumn = (event) => {
 
             <div class="col-6">
                 <div class="form-group">
-                    <button class="btn btn-success btn-choose" onClick="productDetailLink(event)" data-sku="${sku}" data-val="${value}">
+                    <button class="btn btn-sec btn-choose" onClick="productDetailLink(event)" data-sku="${sku}" data-val="${value}">
                         <i class="fas fa-map-marker-alt"></i>
                     </button>
                     <input type="text" class="form-control" />
-                    <button class="btn btn-danger btn-right btn-delete " onClick="delCol(event)" data-sku="${sku}">
+                    <button class="btn btn-red btn-right btn-delete " onClick="delCol(event)" data-sku="${sku}">
                         <i class="far fa-trash-alt"></i>
                     </button> 
                 </div>
