@@ -106,16 +106,39 @@ const saveMetaData = () => {
            dataToSend
         })
     }).then((res)=>{
-        if(res.status == 200){
+        
+        if(res.status == 200){ /*
             res.json().then((data)=>{
                 console.log(data);
                 let btn = document.getElementById("metadata-btn");
                 btn.innerText = "Loaded Data";
                 btn.setAttribute("disabled",true);
                 document.getElementById("metadata-input").value = data.replace(/\"/gi,"");
-            })
+            })*/
         }
-    });
+        else if(res.status == 204){
+            console.log(`204 wale main agaya....`);
+            let custom_path ;
+            custom_path = prompt(`We couldn't detect the url of the website\nenter the custom path`);
+
+            fetch(`/saveMetaData?custom_path=${custom_path}`,{
+                method : 'POST',
+                headers : {
+                    'Content-type' : 'application/json;charset=utf-8'
+                },
+                body : JSON.stringify({
+                    dataToSend
+                })
+            }).then((data)=>{
+                if(data.status == 200){
+                    console.log(`oh yeah`);
+                }
+            })           
+
+        }
+    }).catch((err)=>{
+        console.log(err);
+    })
 
 
 

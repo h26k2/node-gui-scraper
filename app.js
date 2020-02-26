@@ -383,16 +383,33 @@ app.get("/",async(req,res) => {
 
 
 
-app.post("/saveMetaData",(req,res)=>{
+app.post(`/saveMetaData`,(req,res)=>{
     
     let {dataToSend} = req.body;
+    let {custom_path} = req.query;
+    
+    if(custom_path == undefined){
 
-    let {productSecondPageURL} = dataToSend;
+        let {productSecondPageURL} = dataToSend;
 
-    let returned_data = findPageRoute(productSecondPageURL);
-    console.log(returned_data);
+        let returned_data = findPageRoute(productSecondPageURL);
 
+        if(returned_data == -1){
+            console.log(`path failed`);
+            res.status(204).end();
+            return;
+        }
 
+        res.status(200).json(returned_data);
+    }
+    else{
+        console.log(`custom path ye rha `);
+        console.log(custom_path);
+    }
+
+    
+
+    
 
     return;
     let {url,brand,p_url} = req.body;
