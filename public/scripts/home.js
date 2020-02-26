@@ -209,9 +209,8 @@ const productDetailLink = (e) => {
     }
 
 
-    let inputs = document.getElementsByClassName("main-container-chooser");
-    inputs = [inputs[0],inputs[1],inputs[2]];
-    console.log(inputs);
+    let inputs = document.getElementsByClassName("user-input-field");
+    
     if(checkForEmpty(inputs)){
         alert(`You can't leave above fields empty...`);
         return;
@@ -220,10 +219,6 @@ const productDetailLink = (e) => {
     let websiteURL = inputs[0].value;
     let brandName = inputs[1].value;
     let demoProductURL = inputs[2].value;
-
-    console.log(`website url is : ${websiteURL}`);
-    console.log(`brand name is : ${brandName}`);
-    console.log(`demo product url : ${demoProductURL}`);
 
     let col_val , sku;
 
@@ -242,8 +237,8 @@ const productDetailLink = (e) => {
         })
     }).then((data)=>{
         data.json().then((d)=>{
-            console.log(sku);
-            let elem = document.getElementById("columns").getElementsByClassName("btn-success");
+           
+            let elem = document.getElementById("columns").getElementsByClassName("btn-choose");
             
             Array.from(elem).forEach((e)=>{
                 if(e.getAttribute("data-sku") == sku ){

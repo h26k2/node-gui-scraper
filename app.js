@@ -7,7 +7,7 @@ const fs = require("fs");
 
 const mainProduct = require("./controller/requests/mainProduct");
 const individualProduct = require("./controller/requests/individualProduct");
-const proudctDetail = require("./controller/requests/productDetail");
+const productDetail = require("./controller/requests/productDetail");
 const productImages = require("./controller/requests/productImages");
 
 app.use(express.static("public"));
@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({extended : true}));
 
 mainProduct(app,puppeteer);
 individualProduct(app,puppeteer);
-proudctDetail(app,puppeteer);
+productDetail(app,puppeteer);
 productImages(app,puppeteer);
 
 let metadata = [];

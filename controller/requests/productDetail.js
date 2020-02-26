@@ -21,7 +21,6 @@ const productDetail = (app,puppeteer) => {
             if(val.match("h26k2-data:")){
                 
                 let data = val.substr(val.indexOf(":")+1,val.length);    
-                console.log(data);
                 res.json(data);
             }
     
@@ -97,7 +96,7 @@ const productDetail = (app,puppeteer) => {
                         }
     
                         structureString = structureString.substr(0,structureString.length - 1);
-                        alert(`Done! Xpath is : ${structureString}`);
+                        alert(`Successfully chosen!\nXPATH is : ${structureString}\nNow you can close the window`);
                         console.log(`h26k2-data:${structureString}`);
     
                     }
