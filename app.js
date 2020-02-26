@@ -387,7 +387,7 @@ app.post("/saveMetaData",(req,res)=>{
     let {dataToSend} = req.body;
     console.log(dataToSend);
 
-    let {productSecondPageURL:} = dataToSend;
+    let {productSecondPageURL} = dataToSend;
 
     
 
