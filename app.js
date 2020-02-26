@@ -9,6 +9,7 @@ const mainProduct = require("./controller/requests/mainProduct");
 const individualProduct = require("./controller/requests/individualProduct");
 const productDetail = require("./controller/requests/productDetail");
 const productImages = require("./controller/requests/productImages");
+const findPageRoute = require("./controller/methods/findPageRoute");
 
 app.use(express.static("public"));
 app.set("view engine","ejs");
@@ -385,11 +386,11 @@ app.get("/",async(req,res) => {
 app.post("/saveMetaData",(req,res)=>{
     
     let {dataToSend} = req.body;
-    console.log(dataToSend);
 
     let {productSecondPageURL} = dataToSend;
 
-    
+    let returned_data = findPageRoute(productSecondPageURL);
+    console.log(returned_data);
 
 
 
