@@ -75,15 +75,27 @@ const saveMetaData = () => {
         productCatalog : input_mainContainer.value,
         productSingleContainer : input_individualProduct.value,
         productImagesContainer : input_productImages.value,
+        cols : {
+
+        }
     }
 
-
-    console.log(dataToSend);
-    return;
     
-    let websiteURL = inputs[0].value;
-    let brandName = inputs[1].value;
-    let demoProductURL = inputs[2].value;
+    let temp_cols = [];
+    Array.from(input_cols).forEach((i_col)=>{
+        let name  = i_col.parentElement.getElementsByClassName("btn-choose")[0].getAttribute("data-val");
+        let val = i_col.value;
+
+        temp_cols.push(
+            {name,val}
+        )
+
+    }); 
+
+    dataToSend.cols = {
+        ...temp_cols
+    }
+
 
     fetch(`/saveMetaData`,{
         method  : 'POST',
@@ -91,9 +103,7 @@ const saveMetaData = () => {
             'Content-type' : 'application/json;charset=utf-8'
         },
         body : JSON.stringify({
-            url : websiteURL,
-            brand : brandName,
-            p_url : demoProductURL
+           
         })
     }).then((res)=>{
         if(res.status == 200){
