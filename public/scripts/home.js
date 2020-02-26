@@ -53,15 +53,33 @@ const productDetailChooser = () => {
 
 const saveMetaData = () => {
 
-    let inputs = document.getElementsByClassName("main-container-chooser");
+    let user_inputs = document.getElementsByClassName("user-input-field");
+    let input_mainContainer = document.getElementById("main-container");
+    let input_individualProduct = document.getElementById("individual-product");
+    let input_productImages = document.getElementById("input-product-image");
+    let input_cols = document.getElementById("columns").getElementsByTagName("input");
+    
+    let inputFieldsToCheck = [...user_inputs,input_mainContainer,
+        input_individualProduct,input_productImages,...input_cols]
 
-    inputs = [inputs[0],inputs[1],inputs[2]];
-
-    if(checkForEmpty(inputs)){
+    if(checkForEmpty(inputFieldsToCheck)){
         alert(`You can't leave above fields empty...`);
         return;
     }
 
+    let dataToSend = {
+        productCatalogURL : user_inputs[0].value,
+        productSecondPageURL  : user_inputs[1].value,
+        productSingleURL  : user_inputs[2].value,
+        productBrandName  : user_inputs[3].value,
+        productCatalog : input_mainContainer.value,
+        productSingleContainer : input_individualProduct.value,
+        productImagesContainer : input_productImages.value,
+    }
+
+
+    console.log(dataToSend);
+    return;
     
     let websiteURL = inputs[0].value;
     let brandName = inputs[1].value;
