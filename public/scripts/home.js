@@ -515,26 +515,7 @@ const productImages = () => {
     }).then((res)=>{
         
         res.json().then((data)=>{
-            console.log(data);
-            some = data;
-
-            let xpath_index = data.indexOf("||");
-            let xpath = data.substr(0,xpath_index);
-            console.log(xpath);
-
-            let image_paths = data.substr(xpath_index + 2 , data.length);
-            let temp_images = image_paths.split(",");
-            let images = [];
-            for(let i=0 ; i<temp_images.length ; i++){
-                if(temp_images[i].match("https://")){
-                    images.push(temp_images[i]);
-                }
-            }
-            
-            console.log(`These are the images which were fetched from your selected element`);
-            console.log(images);
-            fillModal(images);
-
+            document.getElementById("input-product-image").value = data;
         })
     }).catch((err)=>{
         console.log(`error occured while getting product featured image..`);

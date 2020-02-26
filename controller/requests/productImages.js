@@ -63,20 +63,53 @@ const productImages = (app,puppeteer) => {
                     let status = window.confirm("Select this element ? ");
                     
                     if(status == true){
-                        console.log(elem);
+                        
                         let elem_classes = elem.getAttribute("class");
                         elem_classes = elem_classes.replace("h26k2-color","");
     
                         elem.setAttribute("class",elem_classes);
                         
                         let images = elem.getElementsByTagName("img");
-                        console.log(images);
     
                         if(images.length < 1){
                             alert(`The container which you've selected doesn't have any image element`);
                         }
                         else{
-    
+                            
+                            let structureDetails = [];
+
+                            while(true){
+                                
+                                if(elem.parentElement.nodeName == "HTML"){
+                                    break;
+                                }
+
+                                structureDetails.push(
+                                    {
+                                        elem : elem.parentElement.nodeName,
+                                        index : [...elem.parentElement.children].indexOf(elem)
+                                    }
+                                );
+        
+                                elem = elem.parentElement;
+                            
+                            }
+
+                            let structureString = ``;
+                    
+                            for(let i=structureDetails.length  - 1; i>= 0 ; i--){
+                        
+                                let elem = structureDetails[i].elem;
+                                let index = structureDetails[i].index;
+
+                                structureString += `${elem}[${index}]/`
+                            }
+
+                            structureString = structureString.substr(0,structureString.length - 1);
+                            alert(`Done! Xpath is : ${structureString}`);
+                            console.log(`h26k2-data:${structureString}`);
+
+
                         }
                         
     
