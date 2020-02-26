@@ -103,7 +103,7 @@ const saveMetaData = () => {
             'Content-type' : 'application/json;charset=utf-8'
         },
         body : JSON.stringify({
-           
+           dataToSend
         })
     }).then((res)=>{
         if(res.status == 200){

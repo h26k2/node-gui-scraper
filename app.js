@@ -383,7 +383,17 @@ app.get("/",async(req,res) => {
 
 
 app.post("/saveMetaData",(req,res)=>{
+    
+    let {dataToSend} = req.body;
+    console.log(dataToSend);
 
+    let {productSecondPageURL:} = dataToSend;
+
+    
+
+
+
+    return;
     let {url,brand,p_url} = req.body;
     console.log(`here is all the data : ${metadata}`);
     console.log(metadata);
