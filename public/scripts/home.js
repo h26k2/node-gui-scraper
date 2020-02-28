@@ -768,7 +768,7 @@ const readData = (that) => {
 
 const paginationContainer = () => {
 
-    let catalogURL = document.getElementById("user-input-field").value;
+    let catalogURL = document.getElementsByClassName("user-input-field")[0].value;
 
     fetch(`/catalogPagination`,{
         method : 'POST',
@@ -779,7 +779,9 @@ const paginationContainer = () => {
             url : catalogURL
         })
     }).then((res)=>{
-        
+        res.json().then((data)=>{
+            document.getElementById("input-product-image").value = data;
+        });
     }).catch((err)=>{
         alert(`Error Occured!`);
         console.log(err);
