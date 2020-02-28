@@ -782,7 +782,7 @@ const paginationContainer = () => {
         })
     }).then((res)=>{
         res.json().then((data)=>{
-            document.getElementById("input-product-image").value = data;
+            document.getElementById("input-product-pagination").value = data;
         });
     }).catch((err)=>{
         alert(`Error Occured!`);
