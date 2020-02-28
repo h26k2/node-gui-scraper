@@ -768,7 +768,7 @@ const readData = (that) => {
 
 const paginationContainer = () => {
 
-    let catalogURL = documet.getElementById("user-input-field");
+    let catalogURL = document.getElementById("user-input-field").value;
 
     fetch(`/catalogPagination`,{
         method : 'POST',
@@ -779,7 +779,7 @@ const paginationContainer = () => {
             url : catalogURL
         })
     }).then((res)=>{
-        console.log(`hello`);
+        
     }).catch((err)=>{
         alert(`Error Occured!`);
         console.log(err);
