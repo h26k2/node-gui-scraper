@@ -107,17 +107,21 @@ const saveMetaData = () => {
         })
     }).then((res)=>{
         
-        if(res.status == 200){ /*
-            res.json().then((data)=>{
-                console.log(data);
-                let btn = document.getElementById("metadata-btn");
-                btn.innerText = "Loaded Data";
+        if(res.status == 200){ 
+            
+            res.json().then((d)=>{
+
+                alert(`Successfully Saved and Loaded Metadata!`);
+                document.getElementById("metadata-input").value = d;
+                let btn  = document.getElementById("btn-load-metadata");
+                btn.innerText = `Loaded Data`;
                 btn.setAttribute("disabled",true);
-                document.getElementById("metadata-input").value = data.replace(/\"/gi,"");
-            })*/
+
+            });
+
         }
         else if(res.status == 204){
-            console.log(`204 wale main agaya....`);
+            
             let custom_path ;
             custom_path = prompt(`We couldn't detect the url of the website\nenter the custom path`);
 
@@ -131,16 +135,28 @@ const saveMetaData = () => {
                 })
             }).then((data)=>{
                 if(data.status == 200){
-                    console.log(`oh yeah`);
+
+                    alert(`Successfully Saved and Loaded Metadata!`);
+                    document.getElementById("metadata-input").value = d;
+                    let btn  = document.getElementById("btn-load-metadata");
+                    btn.innerText = `Loaded Data`;
+                    btn.setAttribute("disabled",true);
+
                 }
+                else{
+                    console.log(`error occured`);
+                    alert(`Error occured saving metadata`);
+                }
+            }).catch((err)=>{
+                alert(`Error occured!`);
+                console.log(err);
             })           
 
         }
     }).catch((err)=>{
+        alert(`Error occured!`);
         console.log(err);
     })
-
-
 
 }
 

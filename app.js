@@ -21,7 +21,7 @@ mainProduct(app,puppeteer);
 individualProduct(app,puppeteer);
 productDetail(app,puppeteer);
 productImages(app,puppeteer);
-saveMetaData(app);
+saveMetaData(app,fs);
 
 let metadata = [];
 let JSON_file;
