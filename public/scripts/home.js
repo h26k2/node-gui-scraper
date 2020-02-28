@@ -95,7 +95,7 @@ const saveMetaData = () => {
     dataToSend.cols = {
         ...temp_cols
     }
-
+    console.log(dataToSend);
 
     fetch(`/saveMetaData`,{
         method  : 'POST',

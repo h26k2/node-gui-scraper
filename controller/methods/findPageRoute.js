@@ -22,7 +22,7 @@ const findPageRoute = (web_url) => {
     
     //for routes which include page with id
 
-    else if(web_url.match(/\/page\//gi)){console.log(`second`);
+    else if(web_url.match(/\/page\//gi)){
         
         url = {
             type : "id",

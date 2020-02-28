@@ -387,6 +387,22 @@ app.post(`/saveMetaData`,(req,res)=>{
     
     let {dataToSend} = req.body;
     let {custom_path} = req.query;
+
+    //Saving metadata details to an object
+
+    let {productCatalogURL,productBrandName,productCatalog,productSingleContainer,productImagesContainer,
+        cols} = req.body.dataToSend;
+
+    let dataToSave = {
+        baseURL : productCatalogURL,
+        brandName : productBrandName,
+        catalogMainContainer : productCatalog,
+        catalogSingleProduct : productSingleContainer,
+        productImages : productImagesContainer,
+        productFields : {
+            ...cols
+        }
+    };
     
     if(custom_path == undefined){
 
@@ -399,50 +415,23 @@ app.post(`/saveMetaData`,(req,res)=>{
             return;
         }
 
-        try{
-            
-        }
-        catch(err){
-
-        }
-
-
-        res.status(200).json(returned_data);
+        dataToSave.productPath = {path_type : 'defined',returned_data};
+        
     }
     else{
-        console.log(`custom path ye rha `);
-        console.log(custom_path);
+        dataToSave.productPath = {path_type : 'custom' , val : custom_path}
     }
 
-    
-
-    
-
-    return;
-    let {url,brand,p_url} = req.body;
-    console.log(`here is all the data : ${metadata}`);
-    console.log(metadata);
-    metadata.push(
-        {
-            type : 'websiteURL',
-            val : url
-        },
-        {
-            type : 'brand',
-            val : brand
-        },
-        {
-            type : 'productURL',
-            val : p_url
-        }
-    )
     try{
-        let data = metadata;
-        fs.writeFileSync(`${brand}-metadata.json`,JSON.stringify(data));
-        res.status(200).json(JSON.stringify(`${brand}-metadata.json`));
-    }catch(err){
-        console.log(err);
+        fs.writeFileSync(`${productBrandName}-metadata.json`,JSON.stringify(dataToSave));
+        res.status(200).json(`${productBrandName}-metadata.json`);
     }
+    catch(err){
+        console.log(`==> ERROR OCCURED <==`);
+        console.log(err);
+        res.status(500).end();
+    }
+
 
 });
 
