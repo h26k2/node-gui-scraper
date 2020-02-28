@@ -8,7 +8,7 @@ const loadMetaData = (metaData,app) => {
 
         try{
             let data = JSON.parse(req.body.data);
-            metaData = {...data}
+            metaData.push(data);
             console.log(`==> SUCCESSFULLY LOADED METADATA <==`);
             res.status(200).end();
         }

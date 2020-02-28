@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
 
-let metaData = {};
+let metaData = [];
 
 
 mainProduct(app,puppeteer);
@@ -386,6 +386,7 @@ const selectImages = async (url,filename,isFeatured) => {
 app.get("/",async(req,res) => {
     res.render("home");
 });
+
 
 
 
