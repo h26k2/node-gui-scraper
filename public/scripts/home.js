@@ -328,6 +328,21 @@ let products_scraped = [];
 
 const scrapProducts = () => {
 
+    /*********************************************************************
+        Checking whether the start and end page are populated or not
+        if yes then go on otherwise alert the user that they are empty
+    **********************************************************************/
+
+    let s_page = document.getElementById("start-page").value;
+    let e_page = document.getElementById("end-page").value;
+
+    if(s_page.length == 0 || e_page.length == 0){
+        alert(`Please enter the start and end page you want to scrap`);
+        return;
+    }
+
+
+
     let button = document.getElementById("scrap-products-btn");
 
     let page = parseInt(button.getAttribute("data-page"));
