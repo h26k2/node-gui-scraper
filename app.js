@@ -9,7 +9,7 @@ const mainProduct = require("./controller/requests/mainProduct");
 const individualProduct = require("./controller/requests/individualProduct");
 const productDetail = require("./controller/requests/productDetail");
 const productImages = require("./controller/requests/productImages");
-
+const loadMetaData = require("./controller/requests/loadMetaData");
 const saveMetaData = require("./controller/requests/saveMetaData");
 
 app.use(express.static("public"));
@@ -17,13 +17,18 @@ app.set("view engine","ejs");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
+
+let metaData = {};
+
+
 mainProduct(app,puppeteer);
 individualProduct(app,puppeteer);
 productDetail(app,puppeteer);
 productImages(app,puppeteer);
 saveMetaData(app,fs);
+loadMetaData(metaData,app);
 
-let metadata = [];
+
 let JSON_file;
 /*
 const selectMainContainer = async(url , uniqueCheck ) =>{
@@ -565,36 +570,7 @@ app.post("/scrapProducts",async(req,res)=>{
 
 });
 
-let metaData = {};
 
-app.post('/loadMetaData',(req,res)=>{
-
-    console.log(`==> REQUEST RECIEVED FOR LOADING META DATA <==`)
-
-    try{
-        
-        let data = JSON.parse(req.body.data);
-   
-        metaData = {
-            ...data
-        }
-
-        console.log(`==> SUCCESSFULLY LOADED METADATA <==`);
-        res.status(200).end();
-        
-
-    }
-    catch(err){
-        console.log(`==> ERROR OCCURED WHILE LOADING METADATA <==`);
-        console.log(err);
-        res.status(500).end();
-    }
-
-   
-    
-    
-
-});
 
 /*
 app.post("/featuredImage",async(req,res)=>{
