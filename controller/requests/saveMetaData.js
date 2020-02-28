@@ -11,7 +11,7 @@ const saveMetaData = (app,fs) => {
         //Saving metadata details to an object
 
         let {productCatalogURL,productBrandName,productCatalog,productSingleContainer,productImagesContainer,
-            cols} = req.body.dataToSend;
+            cols , productPagination} = req.body.dataToSend;
 
         let dataToSave = {
             baseURL : productCatalogURL,
@@ -19,6 +19,7 @@ const saveMetaData = (app,fs) => {
             catalogMainContainer : productCatalog,
             catalogSingleProduct : productSingleContainer,
             productImages : productImagesContainer,
+            paginationElem : productPagination, 
             productFields : {
                 ...cols
             }

@@ -76,7 +76,7 @@ const saveMetaData = () => {
         productCatalog : input_mainContainer.value,
         productSingleContainer : input_individualProduct.value,
         productImagesContainer : input_productImages.value,
-        productPagination : input_productPagination,
+        productPagination : input_productPagination.value,
         cols : {
 
         }
@@ -341,9 +341,29 @@ const scrapProducts = () => {
         return;
     }
 
-
-
     let button = document.getElementById("scrap-products-btn");
+
+    /***********************************************************************
+        Checking that either the button has following attributes or not
+        if it have all the attributes the it means that we have to scrape
+        the given pages if it misses any one attributes then first of all 
+        we have to find the pages-count
+    ************************************************************************/
+
+
+    if(button.hasAttribute("data-page") == false || button.hasAttribute("data-start") == false ||
+        button.hasAttribute("data-end") == false ){
+
+        console.log(`finding pages count`);
+
+        fetch(`/findPagesCount`).then((res)=>{
+            console.log(res);
+        }).catch((err)=>{
+            console.log(err);
+        });
+
+
+    }
 
     let page = parseInt(button.getAttribute("data-page"));
     let startPage = parseInt(button.getAttribute("data-start"));

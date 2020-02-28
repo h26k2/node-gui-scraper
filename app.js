@@ -388,7 +388,46 @@ app.get("/",async(req,res) => {
     res.render("home");
 });
 
+app.get("/findPagesCount",async(req,res)=>{
 
+    console.log(`==> Finding Pages Count <==`);
+    
+    let {baseURL , paginationElem} = metaData[0];
+    
+    let browser = await puppeteer.launch({headless: false});
+
+    let page = await browser.newPage();
+
+    await page.goto(baseURL,{waitUntil : 'networkidle2' , timeout : 0 });
+    
+    await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
+    
+    let data = await page.evaluate((paginationElem)=>{
+
+        let elems = paginationElem.split("/");
+        let temp_index = [];
+        
+        Array.from(elems).forEach((elem)=>{
+                            
+            let s = elem.indexOf(`[`) + 1;
+            let e = elem.length - 1;
+
+            temp_index.push(parseInt(elem.substr(s,e)));
+
+        });
+
+        return{
+            temp_index
+        }
+
+    },paginationElem);
+
+    console.log(data);
+
+    //await page.close();
+
+
+});
 
 
 
