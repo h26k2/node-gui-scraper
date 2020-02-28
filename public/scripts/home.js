@@ -764,3 +764,28 @@ const readData = (that) => {
 
 
 }
+
+
+const paginationContainer = () => {
+
+    let catalogURL = documet.getElementById("user-input-field");
+
+    fetch(`/catalogPagination`,{
+        method : 'POST',
+        headers : {
+            'Content-Type' : 'application/json;charset=utf-8'
+        },
+        body : JSON.stringify({
+            url : catalogURL
+        })
+    }).then((res)=>{
+
+    }).catch((err)=>{
+        alert(`Error Occured!`);
+        console.log(err);
+    })
+
+
+
+
+}
