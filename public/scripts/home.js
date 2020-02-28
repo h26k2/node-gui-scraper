@@ -57,6 +57,7 @@ const saveMetaData = () => {
     let input_mainContainer = document.getElementById("main-container");
     let input_individualProduct = document.getElementById("individual-product");
     let input_productImages = document.getElementById("input-product-image");
+    let input_productPagination = document.getElementById("input-product-pagination");
     let input_cols = document.getElementById("columns").getElementsByTagName("input");
     
     let inputFieldsToCheck = [...user_inputs,input_mainContainer,
@@ -75,6 +76,7 @@ const saveMetaData = () => {
         productCatalog : input_mainContainer.value,
         productSingleContainer : input_individualProduct.value,
         productImagesContainer : input_productImages.value,
+        productPagination : input_productPagination,
         cols : {
 
         }
