@@ -406,25 +406,30 @@ app.get("/findPagesCount",async(req,res)=>{
 
         let elems = paginationElem.split("/");
         let temp_index = [];
-        
+        let temp = document.body;
+
         Array.from(elems).forEach((elem)=>{
-                            
             let s = elem.indexOf(`[`) + 1;
             let e = elem.length - 1;
-
             temp_index.push(parseInt(elem.substr(s,e)));
-
         });
+        let ind;
+        for(let i=0 ; i<temp_index.length ; i++){
+            ind = temp_index[i];
+            temp = temp.children[ind];
+        }
+        
+        let val = temp.innerText ;
 
         return{
-            temp_index
+            val
         }
 
     },paginationElem);
 
-    console.log(data);
+    await browser.close();
 
-    //await page.close();
+    res.end(200).json(data);
 
 
 });
