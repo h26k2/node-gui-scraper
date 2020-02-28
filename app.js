@@ -28,7 +28,7 @@ productDetail(app,puppeteer);
 productImages(app,puppeteer);
 saveMetaData(app,fs);
 loadMetaData(metaData,app);
-productPagination(app);
+productPagination(app,puppeteer);
 
 let JSON_file;
 /*

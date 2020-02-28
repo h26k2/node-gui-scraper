@@ -1,6 +1,6 @@
 
 
-const productPagination = (app) => {
+const productPagination = (app,puppeteer) => {
 
     app.post(`/catalogPagination`,async(req,res) =>{
 
