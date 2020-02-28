@@ -395,10 +395,17 @@ app.post(`/saveMetaData`,(req,res)=>{
         let returned_data = findPageRoute(productSecondPageURL);
 
         if(returned_data == -1){
-            console.log(`path failed`);
             res.status(204).end();
             return;
         }
+
+        try{
+            
+        }
+        catch(err){
+
+        }
+
 
         res.status(200).json(returned_data);
     }
