@@ -1,4 +1,6 @@
 
+const findPageRoute = require("../methods/findPageRoute");
+
 const saveMetaData = (app) => {
     
     app.post(`/saveMetaData`,(req,res)=>{
