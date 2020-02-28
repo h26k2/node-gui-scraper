@@ -11,7 +11,7 @@ const productDetail = require("./controller/requests/productDetail");
 const productImages = require("./controller/requests/productImages");
 const loadMetaData = require("./controller/requests/loadMetaData");
 const saveMetaData = require("./controller/requests/saveMetaData");
-
+const productPagination = require("./controller/requests/productPagination");
 
 app.use(express.static("public"));
 app.set("view engine","ejs");
@@ -28,7 +28,7 @@ productDetail(app,puppeteer);
 productImages(app,puppeteer);
 saveMetaData(app,fs);
 loadMetaData(metaData,app);
-
+productPagination(app);
 
 let JSON_file;
 /*
