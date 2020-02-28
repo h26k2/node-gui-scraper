@@ -429,7 +429,7 @@ app.get("/findPagesCount",async(req,res)=>{
 
     await browser.close();
 
-    res.status(200).json(JSON.stringify(data));
+    res.status(200).json(data);
 
 
 });

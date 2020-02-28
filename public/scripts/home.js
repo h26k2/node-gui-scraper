@@ -358,6 +358,11 @@ const scrapProducts = () => {
 
         fetch(`/findPagesCount`).then((res)=>{
             console.log(res);
+            res.json().then((d)=>{
+                button.setAttribute("data-page",d.val);
+                button.setAttribute("data-start",s_page);
+                button.setAttribute("data-end",e_page);
+            });
         }).catch((err)=>{
             console.log(err);
         });
