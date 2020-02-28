@@ -391,7 +391,7 @@ app.get("/",async(req,res) => {
 app.get("/findPagesCount",async(req,res)=>{
 
     console.log(`==> Finding Pages Count <==`);
-    
+    req.setTimeout(0);
     let {baseURL , paginationElem} = metaData[0];
     
     let browser = await puppeteer.launch({headless: false});
@@ -429,7 +429,7 @@ app.get("/findPagesCount",async(req,res)=>{
 
     await browser.close();
 
-    res.end(200).json(data);
+    res.status(200).json(JSON.stringify(data));
 
 
 });
