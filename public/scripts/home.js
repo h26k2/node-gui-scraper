@@ -716,3 +716,51 @@ const something = () => {
     console.log(url);
 
 }
+
+const readData = (that) => {
+    
+    let {value} = that;
+    let index = value.lastIndexOf(`\\`) +1;
+    let val = value.substring(index,value.length);
+
+
+    let reader = new FileReader();
+
+    reader.onload = (e) => {
+
+        fetch(`/loadMetaData`,{
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify({
+                data : e.target.result
+            })
+        }).then((res)=>{
+
+            if(res.status === 200){
+
+                alert(`Successfully Loaded MetaData`);
+                document.getElementsByClassName("custom-file-label")[0].innerText = val;
+                document.getElementById("metadata-input").setAttribute("disabled",true);
+                let btn = document.getElementById("btn-load-metadata");
+                btn.setAttribute("disabled",true);
+                btn.innerText = `Loaded Data`;
+
+            }
+            else{
+                alert(`ERROR OCCURED!`);
+            }
+
+        }).catch((err)=>{
+            console.log(`error occured`);
+            console.log(err);
+            alert(`ERROR OCCURED`);
+        })
+
+    }
+    
+    reader.readAsText(that.files[0]);
+
+
+}

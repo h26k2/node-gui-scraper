@@ -565,15 +565,33 @@ app.post("/scrapProducts",async(req,res)=>{
 
 });
 
+let metaData = {};
+
 app.post('/loadMetaData',(req,res)=>{
 
-    let {path} = req.body;
-    let start_index = path.lastIndexOf(`\\`) + 1;
-    let end_index = path.length;
-    path = path.substr(start_index,end_index);
-    console.log(`Here is path : ${path}`);
-    JSON_file = path;
-    res.status(200).end();
+    console.log(`==> REQUEST RECIEVED FOR LOADING META DATA <==`)
+
+    try{
+        
+        let data = JSON.parse(req.body.data);
+   
+        metaData = {
+            ...data
+        }
+
+        console.log(`==> SUCCESSFULLY LOADED METADATA <==`);
+        res.status(200).end();
+        
+
+    }
+    catch(err){
+        console.log(`==> ERROR OCCURED WHILE LOADING METADATA <==`);
+        console.log(err);
+        res.status(500).end();
+    }
+
+   
+    
     
 
 });
