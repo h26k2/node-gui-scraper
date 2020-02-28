@@ -779,7 +779,7 @@ const paginationContainer = () => {
             url : catalogURL
         })
     }).then((res)=>{
-
+        console.log(`hello`);
     }).catch((err)=>{
         alert(`Error Occured!`);
         console.log(err);
