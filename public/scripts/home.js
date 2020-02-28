@@ -95,7 +95,7 @@ const saveMetaData = () => {
     dataToSend.cols = {
         ...temp_cols
     }
-    console.log(dataToSend);
+    
 
     fetch(`/saveMetaData`,{
         method  : 'POST',
@@ -112,7 +112,8 @@ const saveMetaData = () => {
             res.json().then((d)=>{
 
                 alert(`Successfully Saved and Loaded Metadata!`);
-                document.getElementById("metadata-input").value = d;
+                document.getElementById("metadata-input").setAttribute("disabled",true);
+                document.getElementsByClassName("custom-file-label")[0].innerText = d;
                 let btn  = document.getElementById("btn-load-metadata");
                 btn.innerText = `Loaded Data`;
                 btn.setAttribute("disabled",true);
@@ -137,7 +138,8 @@ const saveMetaData = () => {
                 if(data.status == 200){
 
                     alert(`Successfully Saved and Loaded Metadata!`);
-                    document.getElementById("metadata-input").value = d;
+                    document.getElementById("metadata-input").setAttribute("disabled",true);
+                    document.getElementsByClassName("custom-file-label")[0].innerText = d;
                     let btn  = document.getElementById("btn-load-metadata");
                     btn.innerText = `Loaded Data`;
                     btn.setAttribute("disabled",true);
