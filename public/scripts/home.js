@@ -360,7 +360,7 @@ const scrapProducts = () => {
 
 
     if(button.hasAttribute("data-page") == false || button.hasAttribute("data-start") == false ||
-        button.hasAttribute("data-end") == false ){
+        button.hasAttribute("data-end") == false || button.hasAttribute("data-count") == false){
 
         console.log(`finding pages count`);
         status.innerText = `Finding Pages Count`;
@@ -371,9 +371,12 @@ const scrapProducts = () => {
                 res.json().then((d)=>{
                     console.log(`Total Pages are : ${d.val}`);
                     status.innerText = `Total Pages are : ${d.val}`;
-                    button.setAttribute("data-page",d.val);
+                    button.setAttribute("data-page",s_page);
                     button.setAttribute("data-start",s_page);
                     button.setAttribute("data-end",e_page);
+                    button.setAttribute("data-count",d.val);
+                    scrapProducts();
+
                 });
             }
             
@@ -389,27 +392,37 @@ const scrapProducts = () => {
     let page = parseInt(button.getAttribute("data-page"));
     let startPage = parseInt(button.getAttribute("data-start"));
     let endPage = parseInt(button.getAttribute("data-end"));
+    let count = parseInt(button.getAttribute("data-count"));
 
-    if(page >= startPage && page <= endPage){
+    if(page >= startPage && page <= endPage && page <= count){
         
         console.log(`sending request for page : ${page}`);
-        
+        status.innerText = `scraping page(${page}) of ${endPage}`;
+
         fetch(`/scrapProducts?page=${page}`,
         {
             method : 'POST',
             
         }).then((res)=>{
-            res.json().then((data)=>{
-                console.log(`successfully scraped ${data.length} products`);
-                console.log(`timing out for 10sec`);
-                products_scraped.push(...data);
-                setTimeout(()=>{
-                    page++;
-                    button.setAttribute("data-page",page);
-                    scrapProducts();
-                },10000)
 
-            });
+            if(res.status == 200){
+                res.json().then((data)=>{
+                    console.log(`successfully scraped ${data.length} products`);
+                    status.innerText = `Successfully scraped ${data.length} products of page (${page})\nTiming Out for 10secs`;
+                    console.log(`timing out for 10sec`);
+                    products_scraped.push(...data);
+                    setTimeout(()=>{
+                        page++;
+                        button.setAttribute("data-page",page);
+                        scrapProducts();
+                    },10000)
+    
+                });
+            }
+            else if(res.status == 500){
+                status.innerText = `Error occured while finding pages count, Please check server console or try again`;
+            }
+            
         }).catch((err)=>{
             console.log(`error : ${err}`);
         })

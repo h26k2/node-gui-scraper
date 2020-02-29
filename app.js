@@ -396,42 +396,50 @@ app.get("/findPagesCount",async(req,res)=>{
 
     let {baseURL , paginationElem} = metaData[0];
     
-    let browser = await puppeteer.launch({headless: false});
+    try{
 
-    let page = await browser.newPage();
+        let browser = await puppeteer.launch({headless: false});
 
-    await page.goto(baseURL,{waitUntil : 'networkidle2' , timeout : 0 });
-    
-    await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
-    
-    let data = await page.evaluate((paginationElem)=>{
+        let page = await browser.newPage();
 
-        let elems = paginationElem.split("/");
-        let temp_index = [];
-        let temp = document.body;
-
-        Array.from(elems).forEach((elem)=>{
-            let s = elem.indexOf(`[`) + 1;
-            let e = elem.length - 1;
-            temp_index.push(parseInt(elem.substr(s,e)));
-        });
-        let ind;
-        for(let i=0 ; i<temp_index.length ; i++){
-            ind = temp_index[i];
-            temp = temp.children[ind];
-        }
+        await page.goto(baseURL,{waitUntil : 'networkidle2' , timeout : 0 });
         
-        let val = temp.innerText ;
+        await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
+        
+        let data = await page.evaluate((paginationElem)=>{
 
-        return{
-            val
-        }
+            let elems = paginationElem.split("/");
+            let temp_index = [];
+            let temp = document.body;
 
-    },paginationElem);
+            Array.from(elems).forEach((elem)=>{
+                let s = elem.indexOf(`[`) + 1;
+                let e = elem.length - 1;
+                temp_index.push(parseInt(elem.substr(s,e)));
+            });
+            let ind;
+            for(let i=0 ; i<temp_index.length ; i++){
+                ind = temp_index[i];
+                temp = temp.children[ind];
+            }
+            
+            let val = temp.innerText ;
 
-    await browser.close();
+            return{
+                val
+            }
 
-    res.status(200).json(data);
+        },paginationElem);
+
+        await browser.close();
+        console.log(`==> TOTAL PAGES ARE : ${data.val}`);
+        res.status(200).json(data);
+    }
+    catch(err){
+        console.log(`Error Occured while finding pages count`);
+        console.log(err);
+        res.status(500).end();
+    }
 
 
 });
@@ -448,12 +456,11 @@ app.post("/scrapProducts",async(req,res)=>{
 
         requested = true;
     
-        console.log(`request recieved`);
-
-        let metadata = fs.readFileSync("replica-bags-metadata.json");
-        metadata = JSON.parse(metadata);
+        console.log(`==> REQUEST RECIEVED FOR SCRAPING PRODUCTS <==`);
         
         let {page} = req.query;
+        console.log(`Scraping page : ${page}`);
+        return;
         let mainContainerClass  , productCatalog , url , brand , productCatalog_a;
         let productDetails = [];
         
