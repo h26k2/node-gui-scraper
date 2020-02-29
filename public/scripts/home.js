@@ -328,6 +328,8 @@ let products_scraped = [];
 
 const scrapProducts = () => {
 
+    let status = document.getElementById("scraping-status");
+
     /*********************************************************************
         Checking whether the start and end page are populated or not
         if yes then go on otherwise alert the user that they are empty
@@ -355,15 +357,28 @@ const scrapProducts = () => {
         button.hasAttribute("data-end") == false ){
 
         console.log(`finding pages count`);
-
+        status.innerText = `Finding Pages Count`;
         fetch(`/findPagesCount`).then((res)=>{
+            
+            if(res.status == 200){
+
+            }
+            else if(res.status == 406){
+                
+            }
+            
             console.log(res);
+
+
             res.json().then((d)=>{
+                console.log(`Total Pages are : ${d.val}`);
+                status.innerText = `Total Pages are : ${d.val}`;
                 button.setAttribute("data-page",d.val);
                 button.setAttribute("data-start",s_page);
                 button.setAttribute("data-end",e_page);
             });
         }).catch((err)=>{
+            status.innerText = `Error occured, finding pages count. Please check console or try again`;
             console.log(err);
         });
 
