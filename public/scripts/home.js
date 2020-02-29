@@ -329,6 +329,12 @@ let products_scraped = [];
 const scrapProducts = () => {
 
     let status = document.getElementById("scraping-status");
+    let metadata_loaded = document.getElementById("metadata-input").hasAttribute("disabled");
+
+    if(metadata_loaded != true){
+        alert(`Please Load the metadata first, then scrap the products`);
+        return;
+    }
 
     /*********************************************************************
         Checking whether the start and end page are populated or not
@@ -361,22 +367,17 @@ const scrapProducts = () => {
         fetch(`/findPagesCount`).then((res)=>{
             
             if(res.status == 200){
-
-            }
-            else if(res.status == 406){
-                
+                console.log(res);
+                res.json().then((d)=>{
+                    console.log(`Total Pages are : ${d.val}`);
+                    status.innerText = `Total Pages are : ${d.val}`;
+                    button.setAttribute("data-page",d.val);
+                    button.setAttribute("data-start",s_page);
+                    button.setAttribute("data-end",e_page);
+                });
             }
             
-            console.log(res);
-
-
-            res.json().then((d)=>{
-                console.log(`Total Pages are : ${d.val}`);
-                status.innerText = `Total Pages are : ${d.val}`;
-                button.setAttribute("data-page",d.val);
-                button.setAttribute("data-start",s_page);
-                button.setAttribute("data-end",e_page);
-            });
+            
         }).catch((err)=>{
             status.innerText = `Error occured, finding pages count. Please check console or try again`;
             console.log(err);
