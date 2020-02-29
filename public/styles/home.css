@@ -38,68 +38,6 @@
 .hero-container h1{
     font-size:5em;
 }
-/*
-
-.form-container{
-    padding-top:1em;
-    padding-bottom:2em;
-}
-
-.form-container p{
-    font-size  : 1.2em!important;
-    text-align: left;
-}
-
-.form-container p::first-letter{
-    text-transform: capitalize;
-}
-
-.divider{
-    background : #e0e0e0;
-    height: 1.5px;
-    width:100%;
-    margin-top:0.5em;
-    margin-bottom:0.5em;
-}
-
-.top-margin{
-    margin-top:1em;
-}
-
-.w-100{
-    width:100%;
-}
-
-.title-row{
-    padding-top:1em;
-    padding-bottom:0.5em;
-}
-
-.title-row h2{
-    font-family:"roboto",Arial, Helvetica, sans-serif;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-
-.form-group{
-    position: relative
-}
-
-.form-group button{
-    position: absolute;
-}
-
-.form-group button.btn-right{
-    top:0;
-    right:0;    
-}
-
-.form-group input[type="text"]{
-    padding-left : 3em;
-    padding-right: 3em;
-}
-*/
 /*new styles*/
 
 
