@@ -461,13 +461,73 @@ app.post("/scrapProducts",async(req,res)=>{
         requested = true;
     
         let {page} = req.query;
-        let {productPath , baseURL} = metaData[0];
+        let {productPath , baseURL , productFields} = metaData[0];
 
-        findProductURLs(productPath,baseURL,metaData,page , puppeteer).then((data)=>{
+        //console.log(productFields);
+
+        Object.entries(productFields).forEach((field)=>{
+            
+            let {name , val} = field[1];
+            
+            
+        });
+
+        findProductURLs(productPath,baseURL,metaData,page , puppeteer).then(async(data)=>{
            
             console.log(`==> Successfully found product URLs <==`);
             
-            
+            let {links} = data;
+
+            for(let i=0 ; i<1 ; i++){
+
+                let br = await puppeteer.launch({headless: true});
+
+                let p = await br.newPage();
+                await p.goto(links[i],{waitUntil : 'networkidle2' , timeout : 0 });
+
+                await p.evaluate((productDetails)=>{
+
+                    console.log(productFields);
+                    let indexes = [];
+                    Array.from(productFields).forEach((fields)=>{
+                        
+                        let val = p_detail.val;
+                        let elems = val.split("/");
+                        let temp_index = [];
+                        Array.from(elems).forEach((elem)=>{
+                            
+                            let s = elem.indexOf(`[`) + 1;
+                            let e = elem.length - 1;
+
+                            temp_index.push(parseInt(elem.substr(s,e)));
+
+                        });
+                        indexes.push([...temp_index]);
+                    });
+
+                    console.log("h26k2");
+                    console.log(indexes);
+                    
+                    for(let j=0 ; j<indexes.length ; j++ ){
+                        let temp = document.body;
+                        for(let k=0 ; k<indexes[j].length; k++){
+                            let index = indexes[j][k];
+                            temp = temp.children[index];
+                        }
+                        if(j == indexes.length - 1){
+                            console.log(`h26k2-last-data|${temp.innerText}`);
+                        }
+                        else{
+                            console.log(`h26k2-data|${temp.innerText}`);
+                        }
+                    }
+                    
+                    
+                },productDetails)
+
+
+            }
+
 
         }).catch((err)=>{
             console.log(err);
