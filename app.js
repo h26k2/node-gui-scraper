@@ -509,11 +509,15 @@ app.post("/scrapProducts",async(req,res)=>{
                 
                 if(st_in < 0 || st_en < 0){
                     console.log(`unvalid`);
-                    return `h26k2-unvalid`;
+                    return `h26k2-unvalid|can't find main container`;
                 }
 
                 let productClass = catalogSingleProduct.substring(st_in +1 , st_en );
                 let products = mainContainer.getElementsByClassName(productClass);
+
+                if(products.length < 0 == true){
+                    return `h26k2-unvalid|can't find products`
+                }
 
                 //checking how to get the anchor elements from the single product container
                 let product_anchor = {};
@@ -563,6 +567,10 @@ app.post("/scrapProducts",async(req,res)=>{
 
                 }
                 
+                return {
+                    links : product_links
+                }
+
 
             },catalogMainContainer,catalogSingleProduct);
 
