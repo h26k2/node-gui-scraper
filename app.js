@@ -450,6 +450,8 @@ let requested = false;
 app.post("/scrapProducts",async(req,res)=>{
     
     if(requested == false){
+        
+        console.log(`==> REQUEST RECIEVED FOR SCRAPING <==`);
 
         req.setTimeout(0);
         let allProducts = [];
@@ -489,6 +491,86 @@ app.post("/scrapProducts",async(req,res)=>{
 
         console.log(catalogMainContainer , catalogSingleProduct);
 
+        try{
+            
+            let browser = await puppeteer.launch({headless : false});
+            let page = await browser.newPage();
+
+            await page.goto(url , {waitUntil : 'networkidle2'});
+
+            let productURLs = await page.evaluate((catalogMainContainer , catalogSingleProduct)=>{
+                
+                let product_links = [];
+                
+                let mainContainer = document.getElementsByClassName(catalogMainContainer)[0];
+                
+                let st_in = catalogSingleProduct.indexOf("\[");
+                let st_en = catalogSingleProduct.indexOf("\]");
+                
+                if(st_in < 0 || st_en < 0){
+                    console.log(`unvalid`);
+                    return `h26k2-unvalid`;
+                }
+
+                let productClass = catalogSingleProduct.substring(st_in +1 , st_en );
+                let products = mainContainer.getElementsByClassName(productClass);
+
+                //checking how to get the anchor elements from the single product container
+                let product_anchor = {};
+                
+                if(catalogSingleProduct.includes("xpath")){
+                    console.log(`hello world`);
+
+                    let val = catalogSingleProduct.substr(catalogSingleProduct.indexOf("|") + 1,catalogSingleProduct.length - 1);
+
+                    product_anchor = {
+                        type : 'xpath',
+                        value : val
+                    }
+
+                }
+                else{
+
+                }
+
+                //performing actions when the element has xpath
+
+                if(product_anchor.type == "xpath" ){
+                        
+                    let xpath_elem = product_anchor.value;
+                    xpath_elem.substr(product_anchor.value.indexOf("|"+1),product_anchor.value.length - 1);
+
+                    let xpath_elems = xpath_elem.split("/");
+                    let xpath_elem_index = [];
+
+                    Array.from(xpath_elems).forEach((elem)=>{
+                        
+                        let s = elem.indexOf(`[`) + 1;
+                        let e = elem.length - 1;
+
+                        xpath_elem_index.push(parseInt(elem.substr(s,e)))
+
+                    });
+                    console.log(`ye rha`);
+                    console.log(xpath_elem_index);
+                    
+                    Array.from(products).forEach((p)=>{
+                        product_links.push(p.children[0].getAttribute("href"));
+                    });
+
+                }
+                else{
+
+                }
+                
+
+            },catalogMainContainer,catalogSingleProduct);
+
+
+        }
+        catch(err){
+
+        }
 
         
 
