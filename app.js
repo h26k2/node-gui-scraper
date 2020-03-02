@@ -464,16 +464,12 @@ app.post("/scrapProducts",async(req,res)=>{
         let {page} = req.query;
         let {productPath , baseURL , productFields} = metaData[0];
 
-        console.log(productFields);
         let indexes = [];
         Object.entries(productFields).forEach((field)=>{
             let {val} = field[1];
             indexes.push([...xpathToIndex(val)]);
         });
 
-        console.log(indexes);
-
-        return;
         findProductURLs(productPath,baseURL,metaData,page , puppeteer).then(async(data)=>{
            
             console.log(`==> Successfully found product URLs <==`);
@@ -487,26 +483,22 @@ app.post("/scrapProducts",async(req,res)=>{
                 let p = await br.newPage();
                 await p.goto(links[i],{waitUntil : 'networkidle2' , timeout : 0 });
 
-                await p.evaluate((productFields)=>{
+                await p.evaluate((productFields, indexes)=>{
+                    
+                    let temp_product_details = [];
 
-                    
-                    /*
-                    for(let j=0 ; j<indexes.length ; j++ ){
+                    for(let i=0 ; i<indexes.length ; i++){
                         let temp = document.body;
-                        for(let k=0 ; k<indexes[j].length; k++){
-                            let index = indexes[j][k];
-                            temp = temp.children[index];
+                        for(let j=0 ; j<indexes[i].length ; j++){
+                            let temp_index = indexes[i][j];
+                            temp = temp.children[temp_index];
                         }
-                        if(j == indexes.length - 1){
-                            console.log(`h26k2-last-data|${temp.innerText}`);
-                        }
-                        else{
-                            console.log(`h26k2-data|${temp.innerText}`);
-                        }
-                    }*/
+                        temp_product_details.push(temp.innerText);
+                    }
                     
+                    console.log(temp_product_details);
                     
-                },productFields)
+                },productFields , indexes)
 
 
             }
