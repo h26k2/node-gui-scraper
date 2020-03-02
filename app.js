@@ -14,6 +14,7 @@ const saveMetaData = require("./controller/requests/saveMetaData");
 const productPagination = require("./controller/requests/productPagination");
 
 const findProductURLs = require("./controller/requests/findProductURLs");
+const xpathToIndex = require("./controller/methods/xpathToIndex");
 
 app.use(express.static("public"));
 app.set("view engine","ejs");
@@ -463,15 +464,16 @@ app.post("/scrapProducts",async(req,res)=>{
         let {page} = req.query;
         let {productPath , baseURL , productFields} = metaData[0];
 
-        //console.log(productFields);
-
+        console.log(productFields);
+        let indexes = [];
         Object.entries(productFields).forEach((field)=>{
-            
-            let {name , val} = field[1];
-            
-            
+            let {val} = field[1];
+            indexes.push([...xpathToIndex(val)]);
         });
 
+        console.log(indexes);
+
+        return;
         findProductURLs(productPath,baseURL,metaData,page , puppeteer).then(async(data)=>{
            
             console.log(`==> Successfully found product URLs <==`);
@@ -480,34 +482,15 @@ app.post("/scrapProducts",async(req,res)=>{
 
             for(let i=0 ; i<1 ; i++){
 
-                let br = await puppeteer.launch({headless: true});
+                let br = await puppeteer.launch({headless: false});
 
                 let p = await br.newPage();
                 await p.goto(links[i],{waitUntil : 'networkidle2' , timeout : 0 });
 
-                await p.evaluate((productDetails)=>{
+                await p.evaluate((productFields)=>{
 
-                    console.log(productFields);
-                    let indexes = [];
-                    Array.from(productFields).forEach((fields)=>{
-                        
-                        let val = p_detail.val;
-                        let elems = val.split("/");
-                        let temp_index = [];
-                        Array.from(elems).forEach((elem)=>{
-                            
-                            let s = elem.indexOf(`[`) + 1;
-                            let e = elem.length - 1;
-
-                            temp_index.push(parseInt(elem.substr(s,e)));
-
-                        });
-                        indexes.push([...temp_index]);
-                    });
-
-                    console.log("h26k2");
-                    console.log(indexes);
                     
+                    /*
                     for(let j=0 ; j<indexes.length ; j++ ){
                         let temp = document.body;
                         for(let k=0 ; k<indexes[j].length; k++){
@@ -520,10 +503,10 @@ app.post("/scrapProducts",async(req,res)=>{
                         else{
                             console.log(`h26k2-data|${temp.innerText}`);
                         }
-                    }
+                    }*/
                     
                     
-                },productDetails)
+                },productFields)
 
 
             }

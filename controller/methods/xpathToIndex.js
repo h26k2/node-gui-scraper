@@ -2,7 +2,7 @@
 const xpathToIndex = (xpath) => {
 
     let index = [];
-    let elems = val.split("/");
+    let elems = xpath.split("/");
 
     Array.from(elems).forEach((elem)=>{
         let s = elem.indexOf(`[`) + 1;
@@ -10,7 +10,7 @@ const xpathToIndex = (xpath) => {
         index.push(parseInt(elem.substr(s,e)));
     });
 
-    return xpathToIndex;
+    return index;
 
 }
 
