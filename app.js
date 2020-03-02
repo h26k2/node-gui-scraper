@@ -458,8 +458,6 @@ app.post("/scrapProducts",async(req,res)=>{
 
         requested = true;
     
-        console.log(`==> REQUEST RECIEVED FOR SCRAPING PRODUCTS <==`);
-        
         let {page} = req.query;
         let {productPath , baseURL} = metaData[0];
 
@@ -574,10 +572,24 @@ app.post("/scrapProducts",async(req,res)=>{
 
             },catalogMainContainer,catalogSingleProduct);
 
+            await browser.close();
+            
+            //It happened when an error occured while finding the product URLs
+
+            if(productURLs.links == undefined){
+                if(productURLs.includes(`h26k2-unvalid`)){
+                    let s_in = productURLs.indexOf("|");
+                    console.log(`ERROR OCCURED!`);
+                    console.log(productURLs.substr(s_in + 1 , productURLs.length  - 1));
+                }
+            }
+
+            console.log(productURLs);
 
         }
         catch(err){
-
+            console.log(`ERROR OCCURED!`);
+            console.log(err);
         }
 
         

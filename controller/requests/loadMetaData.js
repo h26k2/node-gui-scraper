@@ -4,7 +4,7 @@ const loadMetaData = (metaData,app) => {
 
     app.post(`/loadMetaData`,(req,res)=>{
 
-        console.log(`==> REQUEST RECIEVED FOR LOADING META DATA <==`)
+        console.log(`==> Request recieved for loading metadata <==`)
 
         try{
             let data = JSON.parse(req.body.data);
