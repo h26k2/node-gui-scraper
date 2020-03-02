@@ -357,7 +357,7 @@ const scrapProducts = () => {
         the given pages if it misses any one attributes then first of all 
         we have to find the pages-count
     ************************************************************************/
-
+/*
 
     if(button.hasAttribute("data-page") == false || button.hasAttribute("data-start") == false ||
         button.hasAttribute("data-end") == false || button.hasAttribute("data-count") == false){
@@ -388,7 +388,7 @@ const scrapProducts = () => {
 
 
     }
-
+*/
     let page = parseInt(button.getAttribute("data-page"));
     let startPage = parseInt(button.getAttribute("data-start"));
     let endPage = parseInt(button.getAttribute("data-end"));
