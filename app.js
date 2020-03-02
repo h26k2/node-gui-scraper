@@ -463,11 +463,12 @@ app.post("/scrapProducts",async(req,res)=>{
         let {page} = req.query;
         let {productPath , baseURL} = metaData[0];
 
-        let url = baseURL;
-        
         findProductURLs(productPath,baseURL,metaData,page , puppeteer).then((data)=>{
-            console.log(`this is data`);
-            console.log(data);
+           
+            console.log(`==> Successfully found product URLs <==`);
+            
+            
+
         }).catch((err)=>{
             console.log(err);
         })
