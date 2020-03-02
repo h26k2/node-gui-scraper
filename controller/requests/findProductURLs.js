@@ -3,11 +3,11 @@
 const findRoutePath = require("./findRoutePath");
 
 
-const findProductURLs = (productPath , baseURL , metaData) => {
+const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) => {
 
-    return new Promise((resolve,reject)=>{
+    return new Promise(async(resolve,reject)=>{
 
-        let url = findRoutePath(baseURL,productPath);
+        let url = findRoutePath(baseURL,productPath,page);
         console.log(`Scraping started for this page : ${url} `);
 
         let {catalogMainContainer , catalogSingleProduct , productFields} = metaData[0];
@@ -108,7 +108,6 @@ const findProductURLs = (productPath , baseURL , metaData) => {
                 }
             }
             resolve(productURLs);
-            console.log(productURLs);
 
         }
         catch(err){

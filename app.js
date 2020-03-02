@@ -13,6 +13,8 @@ const loadMetaData = require("./controller/requests/loadMetaData");
 const saveMetaData = require("./controller/requests/saveMetaData");
 const productPagination = require("./controller/requests/productPagination");
 
+const findProductURLs = require("./controller/requests/findProductURLs");
+
 app.use(express.static("public"));
 app.set("view engine","ejs");
 app.use(bodyParser.json());
@@ -463,6 +465,12 @@ app.post("/scrapProducts",async(req,res)=>{
 
         let url = baseURL;
         
+        findProductURLs(productPath,baseURL,metaData,page , puppeteer).then((data)=>{
+            console.log(`this is data`);
+            console.log(data);
+        }).catch((err)=>{
+            console.log(err);
+        })
 
 
     } //requested delimeter

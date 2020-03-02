@@ -1,6 +1,6 @@
 
 
-const findRoutePath = (baseURL,productPath) => {
+const findRoutePath = (baseURL,productPath,page) => {
 
     let url = baseURL;
 
