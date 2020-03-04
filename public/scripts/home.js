@@ -442,13 +442,13 @@ const scrapProducts = () => {
         console.log(urlsToScrap);console.log(productSeq);
         if(urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 ){
             console.log(urlsToScrap[productSeq] , 'ye rha');
-            fetch(`/scrapProduct`,{
+            fetch(`/scrapProductDetails`,{
                 method : 'POST',
                 headers : {
                     'Content-Type' : 'application/json;charset=utf-8'
                 },
                 body : JSON.stringify({link : urlsToScrap[productSeq]})
-            }).then((res)=>{
+            }).then((res)=>{console.log(`detail wala response`);
                 console.log(res);
             }).catch((err)=>{
                 

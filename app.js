@@ -33,122 +33,7 @@ saveMetaData(app,fs);
 loadMetaData(metaData,app);
 productPagination(app,puppeteer);
 
-let JSON_file;
-/*
-const selectMainContainer = async(url , uniqueCheck ) =>{
 
-    let browser = await puppeteer.launch({headless: false});
-
-    let page = await browser.newPage();
-
-    await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
-    
-    await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
-
-    page.on('console',(msg)=>{
-        
-        let val = msg.text();
-        
-        if(val.match("h26k2-data:")){
-            
-            let data = val.substr(val.indexOf(":")+1,val.length);  
-            data = `type:mainContainer,val:${val}`;
-            return data;
-            /*
-            metadata.push({
-                type : 'mainContainer',
-                val : data
-            }); 
-        }
-
-    });
-    
-    await page.evaluate(( uniqueCheck )=>{
-        
-        let prev = undefined;
-        
-        window.addEventListener("mouseover",(e)=>{
-
-            let current = e.target;
-            
-            if(current !== undefined && current.classList.contains("h26k2-color") != true){
-                e.target.setAttribute("title",e.target.getAttribute("class"));
-                current.classList.add("h26k2-color");
-                prev = current;
-            }
-            
-        });
-
-        window.addEventListener("mouseout",(e)=>{
-    
-            if(prev !== undefined && prev.classList.contains("h26k2-color") == true){
-                prev.classList.remove("h26k2-color");
-            }
-        
-        });
-        
-        window.addEventListener("click",async(e)=>{
-            
-            let elem = e.target;
-            
-            if(elem !== undefined && elem.getAttribute("data-name") == undefined){
-
-                let status = window.confirm("Select this element ? ");
-                
-                if(status == true){
-                   
-                    elem = elem.getAttribute("class");
-                    elem = elem.replace("h26k2-color","")
-
-                    let dom_elem = document.getElementsByClassName(elem);
-                    
-                    if(dom_elem.length == 1 || uniqueCheck == false){
-                        
-                        data = elem;
-                        console.log(`h26k2-data:${data}`);
-                        alert(`DONE! Now you can close the window\nData : ${data}`);
-                        /*
-
-                        try{
-                            const blob = new Blob([`${filename}\n${data}`],{type : 'text/csv'});
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.setAttribute("data-name","csv");
-                            a.setAttribute('hidden','');
-                            a.setAttribute('href',url);
-                            a.setAttribute('download',`${brandName}_${filename}.csv`);
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-
-                            alert(`successfully saved metafile as : ${brandName}_${filename}.csv\n You can now close this window`);
-                            
-//                            window.open("localhost:3000/fuck?qterimaki");
-                            
-                            
-                        }
-                        catch(err){
-                            alert(`error occured while downloading meta file\n Check console for error`);
-                            console.log(err);
-                        }
-
-                    }
-                    else{
-                        alert(`This element can't be select as there are some conflicts in XPATH`)
-                    }
-
-
-                }
-
-            }
-
-        });
-
-    } , uniqueCheck  );
-    
-    
-}
-*/
 const selectProduct = async (url,filename,brandName ) => {
 
     let browser = await puppeteer.launch({headless: false});
@@ -374,9 +259,7 @@ const selectProductDetails = async (url , filename , brandName, uniqueCheck) => 
 
 }
 
-const selectImages = async (url,filename,isFeatured) => {
-  
-}
+
 
 app.get("/",async(req,res) => {
     res.render("home");
@@ -461,13 +344,14 @@ app.post("/scrapURLs",(req,res)=>{
             console.log("*************************************************");
             console.log(`==> Successfully Sent Response to the client <==`)
             console.log("**************************************************");
-
+            urlScrapRequest = true;
             res.status(200).json(links);
 
         }).catch((err)=>{
             console.log(`==> Error Occured while scraping URLs <==`);
             console.log(err);
             res.status(500).end();
+            urlScrapRequest = true;
         })
 
 
@@ -475,48 +359,74 @@ app.post("/scrapURLs",(req,res)=>{
 
 });
 
+app.post(`/scrapProductDetails`,async(req,res)=>{
 
-app.post("/scrapProduct",async(req,res)=>{
-
-    req.setTimeout(0);
-    console.log(`==> Request recieved for scraping product details <===`);
-
+    console.log(`==> Request recieved for scraping product details <==`);
     let {link} = req.body;
-    console.log(`this is link : ${link}`);
+    let productDetails = [];
+
+    //finding indexes (xpath) of the elements which is needed to scrap
+    let {productFields} = metaData[0];
+
+    let indexes = [];
+    Object.entries(productFields).forEach((field)=>{
+        let {val} = field[1];
+        indexes.push([...xpathToIndex(val)]);
+    });
+
+
+    /*****************
+     * Scraping Stuff
+    ******************/
 
     try{
 
-        let br = await puppeteer.launch({headless: false});
-        let p = await br.newPage();
-        await p.goto(link,{waitUntil : 'networkidle2' , timeout : 0 });
+        let browser = await puppeteer.launch({headless: false  });
 
-        let indexes = [];
-        Object.entries(productFields).forEach((field)=>{
-            let {val} = field[1];
-            indexes.push([...xpathToIndex(val)]);
-        });
-        console.log(indexes);
-        await p.evaluate((indexes)=>{
-                    
-            alert("hello world"); 
+        let page = await browser.newPage();
+        await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
+        
+        page.on('console',(msg)=>{
+            
+            let data = msg.text();
+
+            if(data.match("h26k2-data")){
+
+                data = data.replace("h26k2-data:","")
+                data = data.split("[--]");
+                productDetails.push([...data])
+                console.log(`==> Successfully scraped product details <==`);
+                page.close();
+                browser.close();
+                res.status(200).json(productDetails);
+            }
+
+        }) 
+        
+        await page.evaluate((indexes)=>{
+            
             let temp_product_details = [];
 
-            //Saving data into a temporary element
-
+            //Saving data into temporary variable
             for(let i=0 ; i<indexes.length ; i++){
-                let temp = document.body;
+                console.log(`i` , i);
+                temp = document.body;
+                console.log(temp);
                 for(let j=0 ; j<indexes[i].length ; j++){
                     let temp_index = indexes[i][j];
+                    console.log('j',j); console.log(temp_index);
+                    console.log(temp.children[temp_index]);
                     temp = temp.children[temp_index];
-                }
+                    console.log(temp);
+                }console.log(temp);
                 temp_product_details.push(temp.innerText);
-            }
+
+            } 
             
             //chaning the aray into string so that data can easily be retrieved
             let temp_str = ``;
-
             for(let i=0 ; i<temp_product_details.length ; i++){
-                
+                    
                 if(i == temp_product_details.length - 1){
                     temp_str += `${temp_product_details[i]}`;
                 }
@@ -527,18 +437,18 @@ app.post("/scrapProduct",async(req,res)=>{
             }
 
             console.log(`h26k2-data:${temp_str}`);
-            
-        } , indexes)
 
+        },indexes);
 
     }
     catch(err){
-
+        res.status(500).end();
+        console.log(`==> Error occured while scraping product details <==`);
+        console.log(err);
     }
 
 
 });
-
 
 
 let requested = false;
