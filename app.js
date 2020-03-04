@@ -452,11 +452,15 @@ app.post("/scrapURLs",(req,res)=>{
         let {productPath , baseURL } = metaData[0];
         let {page} = req.query;
 
-        findProductURLs(productPath,baseURL,metaData[0],page,puppeteer).then((data)=>{
+        findProductURLs(productPath,baseURL,metaData,page,puppeteer).then((data)=>{
             
             console.log(`==> Successfully scraped product URLs <==`);
             let {links} = data; 
             console.log(links);
+            
+            console.log("*************************************************");
+            console.log(`==> Successfully Sent Response to the client <==`)
+            console.log("**************************************************");
 
             res.status(200).json(links);
 
@@ -475,7 +479,8 @@ app.post("/scrapURLs",(req,res)=>{
 app.post("/scrapProduct",async(req,res)=>{
 
     req.setTimeout(0);
-
+    console.log(`==> Request recieved for scraping product details <===`);
+    
     let {link} = req.body;
 
     try{
@@ -483,7 +488,7 @@ app.post("/scrapProduct",async(req,res)=>{
         let browser = await puppeteer.launch({headless : false , timeout : 0});
         let page = await browser.newPage();
 
-        await page.goto(url , {waitUntil : 'networkidle2'});
+        await page.goto(link , {waitUntil : 'networkidle2'});
 
         let indexes = [];
         Object.entries(productFields).forEach((field)=>{
@@ -498,13 +503,20 @@ app.post("/scrapProduct",async(req,res)=>{
             let data = msg.text();
 
             if(data.match(`h26k2-data`)){
+                
                 data = data.replace("h26k2-data:","")
                 data = data.split("[--]");
-                productDetails.push([...data])
-                console.log(`==> Product Scraped <==`);
+                productDetails.push([...data]);
+
+                console.log("**************************************");
+                console.log(`==> Successfully Product Scraped <==`);
+                console.log("**************************************");
+                console.log(productDetails);
+
                 page.close();
                 browser.close();
                 res.status(200).json(productDetails);
+
             }
 
         });

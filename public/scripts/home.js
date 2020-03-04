@@ -331,7 +331,7 @@ const scrapProducts = () => {
 
     let status = document.getElementById("scraping-status");
     let metadata_loaded = document.getElementById("metadata-input").hasAttribute("disabled");
-
+    console.log('called again');
     if(metadata_loaded != true){
         alert(`Please Load the metadata first, then scrap the products`);
         return;
@@ -397,41 +397,69 @@ const scrapProducts = () => {
     let count = parseInt(button.getAttribute("data-count"));
     let action = button.getAttribute("data-action");
 
+    if(action == "scrapURLs"){
 
-    if(page >= startPage && page <= endPage && page <= count && action == "scrapURLs"){
+        if(page >= startPage && page <= endPage && page <= count){
         
-        console.log(`sending request for page : ${page}`);
-        status.innerText = `scraping page(${page}) of ${endPage}`;
-
-        fetch(`/scrapProducts?page=${page}`,
-        {
-            method : 'POST',
-            
-        }).then((res)=>{
-            console.log(res);
-            if(res.status == 200){
-                res.json().then((data)=>{
-                    console.log(`successfully scraped ${data.length} products `);
-                    status.innerText = `Successfully scraped ${data.length} products of page (${page})\nTiming Out for 10secs`;
-                    console.log(`timing out for 10sec`);
-                    products_scraped.push(...data);
-                    setTimeout(()=>{
-                        page++;
-                        button.setAttribute("data-page",page);
-                        scrapProducts();
-                    },30000);
+            console.log(`sending request for page : ${page}`);
+            status.innerText = `scraping page(${page}) of ${endPage}`;
     
-                });
-            }
-            else if(res.status == 500){
-                status.innerText = `Error occured while finding pages count, Please check server console or try again`;
-            }
-            
-        }).catch((err)=>{
-            console.log(`error : ${err}`);
-        })
+            fetch(`/scrapURLs?page=${page}`,
+            {
+                method : 'POST',
+                
+            }).then((res)=>{
+                console.log(res);
+                if(res.status == 200){
+                    res.json().then((data)=>{
+                        console.log(`successfully scraped ${data.length} URLS from page : ${page} `);
+                        status.innerText = `successfully scraped ${data.length} URLS from page : (${page}) \nTiming Out for 10secs`;
+                        console.log(`timing out for 10sec`);
+                        //products_scraped.push(...data);
+                        setTimeout(()=>{
+                            button.setAttribute("data-action","scrapProduct");
+                            button.setAttribute("data-product-scraped","0");
+                            scrapProducts();
+                        },10000);
+        
+                    });
+                }
+                else if(res.status == 500){
+                    status.innerText = `Error occured while finding pages count, Please check server console or try again`;
+                }
+                
+            }).catch((err)=>{
+                console.log(`error : ${err}`);
+            })
+    
+        }
 
     }
+    else if(action == "scrapProduct"){
+        console.log(`Scraping Product Details`);
+        let productSeq = parseInt(button.getAttribute("data-product-scraped"));
+
+        if(urlsToScrap.length > 1 && productSeq <= urlsToScrap.length-1 ){
+
+            fetch(`/scrapProduct`,{
+                method : 'POST',
+                headers : {
+                    'Content-Type' : 'application/json;charset=utf-8'
+                },
+                body : JSON.stringify(urlsToScrap[productSeq])
+            }).then((res)=>{
+                console.log(res);
+            }).catch((err)=>{
+                
+            });
+
+        }
+
+    }
+
+    
+
+    
 
 }
 
