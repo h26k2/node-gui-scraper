@@ -10,11 +10,11 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
         let url = findRoutePath(baseURL,productPath,page);
         console.log(`Scraping started for this page : ${url} `);
 
-        let {catalogMainContainer , catalogSingleProduct , productFields} = metaData[0];
+        let {catalogMainContainer , catalogSingleProduct } = metaData[0];
 
         try{
             
-            let browser = await puppeteer.launch({headless : false});
+            let browser = await puppeteer.launch({headless : false , timeout : 0});
             let page = await browser.newPage();
 
             await page.goto(url , {waitUntil : 'networkidle2'});
@@ -44,7 +44,6 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
                 let product_anchor = {};
                 
                 if(catalogSingleProduct.includes("xpath")){
-                    console.log(`hello world`);
 
                     let val = catalogSingleProduct.substr(catalogSingleProduct.indexOf("|") + 1,catalogSingleProduct.length - 1);
 
@@ -80,7 +79,9 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
                     console.log(xpath_elem_index);
                     
                     Array.from(products).forEach((p)=>{
-                        product_links.push(p.children[0].getAttribute("href"));
+                        if(p !== undefined ){
+                            product_links.push(p.children[0].getAttribute("href"));
+                        }
                     });
 
                 }

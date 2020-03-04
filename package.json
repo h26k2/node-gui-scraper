@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "gitAdd" : "git add .",
-    "gitCommit" : "git commit -m [--com]"
+    "gitAdd": "git add .",
+    "gitCommit": "git commit -m [--com]"
   },
   "repository": {
     "type": "git",
@@ -26,10 +26,13 @@
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "cheerio": "^1.0.0-rc.3",
+    "dom-parser": "^0.1.6",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
     "htmlparser2": "^4.0.0",
+    "jquery": "^3.4.1",
     "jsdom": "^16.1.0",
-    "puppeteer": "^2.0.0"
+    "puppeteer": "^2.0.0",
+    "string-to-dom": "^0.1.5"
   }
 }

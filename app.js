@@ -375,16 +375,7 @@ const selectProductDetails = async (url , filename , brandName, uniqueCheck) => 
 }
 
 const selectImages = async (url,filename,isFeatured) => {
-   
   
-
-    
-    
-
-
-    
-
-
 }
 
 app.get("/",async(req,res) => {
@@ -447,11 +438,44 @@ app.get("/findPagesCount",async(req,res)=>{
 
 });
 
+urlScrapRequest = false;
+
+app.post("/scrapURLs",(req,res)=>{
+    
+    if(urlScrapRequest == false){
+
+        req.setTimeout(0);
+
+        console.log(`==> Request Recieved for scraping product URLs`);
+        urlScrapRequest = true;
+        
+        let {productPath , baseURL } = metaData[0];
+        let {page} = req.query;
+
+        findProductURLs(productPath,baseURL,metaData[0],page,puppeteer).then((data)=>{
+            
+            console.log(`==> Successfully scraped product URLs <==`);
+            let {links} = data; 
+            console.log(links);
+
+            res.status(200).json(links);
+
+        }).catch((err)=>{
+            console.log(`==> Error Occured while scraping URLs <==`);
+            console.log(err);
+            res.status(500).end();
+        })
+
+
+    }
+
+});
+
 
 
 let requested = false;
 app.post("/scrapProducts",async(req,res)=>{
-    
+
     if(requested == false){
         
         console.log(`==> REQUEST RECIEVED FOR SCRAPING <==`);
@@ -473,19 +497,46 @@ app.post("/scrapProducts",async(req,res)=>{
         findProductURLs(productPath,baseURL,metaData,page , puppeteer).then(async(data)=>{
            
             console.log(`==> Successfully found product URLs <==`);
-            
             let {links} = data;
+            console.log(links);
+            let productDetails = [];
 
-            for(let i=0 ; i<1 ; i++){
+            for(let i=0 ; i<links.length ; i++){
 
                 let br = await puppeteer.launch({headless: false});
-
                 let p = await br.newPage();
                 await p.goto(links[i],{waitUntil : 'networkidle2' , timeout : 0 });
 
-                await p.evaluate((productFields, indexes)=>{
+                p.on('console',(msg)=>{
+
+                    let data = msg.text();
+
+                    if(data.match(`h26k2-data`)){
+                        data = data.replace("h26k2-data:","")
+                        data = data.split("[--]");
+                        productDetails.push([...data])
+                        console.log(`==> Product Scraped ${i+1} <==`);
+                        p.close();
+                        br.close();
+                        setTimeout(()=>{
+
+                        },10000)
+                    }
+
+                    if(i == links.length - 1){
+                        requested = false;
+                        res.status(200).json(productDetails);
+                    }
+
+            
+                });
+
+                await p.evaluate((indexes)=>{
                     
+                
                     let temp_product_details = [];
+
+                    //Saving data into a temporary element
 
                     for(let i=0 ; i<indexes.length ; i++){
                         let temp = document.body;
@@ -496,16 +547,37 @@ app.post("/scrapProducts",async(req,res)=>{
                         temp_product_details.push(temp.innerText);
                     }
                     
-                    console.log(temp_product_details);
-                    
-                },productFields , indexes)
+                    //chaning the aray into string so that data can easily be retrieved
+                    let temp_str = ``;
 
+                    for(let i=0 ; i<temp_product_details.length ; i++){
+                        
+                        if(i == temp_product_details.length - 1){
+                            temp_str += `${temp_product_details[i]}`;
+                        }
+                        else{
+                            temp_str += `${temp_product_details[i]}[--]`;
+                        }
+
+                    }
+
+                    console.log(`h26k2-data:${temp_str}`);
+                    
+                } , indexes)
+
+               // productDetails.push(temp_product_details.details);
+                
+               // console.log(`==> Product Scraped : ${i+1} <==`);
 
             }
-
-
+           // console.log(`THIS IS PRODUCT DETAILS...`);
+           // console.log(productDetails);
+            //requested = false;
+            //res.status(200).json(productDetails);
         }).catch((err)=>{
+            requested = false;
             console.log(err);
+            res.status(500).end();
         })
 
 
@@ -515,97 +587,6 @@ app.post("/scrapProducts",async(req,res)=>{
 });
 
 
-
-/*
-app.post("/featuredImage",async(req,res)=>{
-
-    let {url} = req.body;
-
-    req.setTimeout(0);
-    
-    let browser = await puppeteer.launch({headless: false});
-
-    let page = await browser.newPage();
-    
-    await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
-    
-    await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
-    
-    page.on('console',(msg)=>{
-
-        let data = msg.text();
-
-        if(data.match("h26k2-data")){
-
-            data = data.replace("h26k2-data:","");
-            res.json(data);
-
-        }
-
-    });
-
-    await page.evaluate(()=>{
-
-        let prev = undefined;
-       
-        window.addEventListener("mouseover",(e)=>{
-
-            let current = e.target;
-            
-            if(current !== undefined && current.classList.contains("h26k2-color") != true){
-                e.target.setAttribute("title",e.target.getAttribute("class"));
-                current.classList.add("h26k2-color");
-                prev = current;
-            }
-            
-        });
-
-        window.addEventListener("mouseout",(e)=>{
-    
-            if(prev !== undefined && prev.classList.contains("h26k2-color") == true){
-                prev.classList.remove("h26k2-color");
-            }
-        
-        });
-
-        window.addEventListener("click",async(e)=>{
-           
-            let elem = e.target;
-            
-            if(elem !== undefined && elem.getAttribute("data-name") == undefined){
-
-                let status = window.confirm("Select this element ? ");
-                
-                if(status == true){
-                    console.log(elem);
-                    let elem_classes = elem.getAttribute("class");
-                    elem_classes = elem_classes.replace("h26k2-color","");
-
-                    elem.setAttribute("class",elem_classes);
-                    
-                    let images = elem.getElementsByTagName("img");
-                    console.log(images);
-
-                    if(images.length < 1){
-                        alert(`The container which you've selected doesn't have any image element`);
-                    }
-                    else{
-
-                    }
-                    
-
-                }
-
-            }
-
-        });
-
-    })
-
-
-});
-
-*/
 app.listen(port,()=>{
     console.log(`node app is live at port : ${port}`);
 });

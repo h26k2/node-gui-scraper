@@ -325,6 +325,7 @@ const productDetailLink = (e) => {
 }
 
 let products_scraped = [];
+let urlsToScrap = [];
 
 const scrapProducts = () => {
 
@@ -360,7 +361,8 @@ const scrapProducts = () => {
 /*
 
     if(button.hasAttribute("data-page") == false || button.hasAttribute("data-start") == false ||
-        button.hasAttribute("data-end") == false || button.hasAttribute("data-count") == false){
+        button.hasAttribute("data-end") == false || button.hasAttribute("data-count") == false ||
+        button.hasAttribute("data-action") == false){
 
         console.log(`finding pages count`);
         status.innerText = `Finding Pages Count`;
@@ -393,8 +395,10 @@ const scrapProducts = () => {
     let startPage = parseInt(button.getAttribute("data-start"));
     let endPage = parseInt(button.getAttribute("data-end"));
     let count = parseInt(button.getAttribute("data-count"));
+    let action = button.getAttribute("data-action");
 
-    if(page >= startPage && page <= endPage && page <= count){
+
+    if(page >= startPage && page <= endPage && page <= count && action == "scrapURLs"){
         
         console.log(`sending request for page : ${page}`);
         status.innerText = `scraping page(${page}) of ${endPage}`;
@@ -404,10 +408,10 @@ const scrapProducts = () => {
             method : 'POST',
             
         }).then((res)=>{
-
+            console.log(res);
             if(res.status == 200){
                 res.json().then((data)=>{
-                    console.log(`successfully scraped ${data.length} products`);
+                    console.log(`successfully scraped ${data.length} products `);
                     status.innerText = `Successfully scraped ${data.length} products of page (${page})\nTiming Out for 10secs`;
                     console.log(`timing out for 10sec`);
                     products_scraped.push(...data);
@@ -415,7 +419,7 @@ const scrapProducts = () => {
                         page++;
                         button.setAttribute("data-page",page);
                         scrapProducts();
-                    },10000)
+                    },30000);
     
                 });
             }
