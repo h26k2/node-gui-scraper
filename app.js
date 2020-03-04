@@ -446,7 +446,7 @@ app.post("/scrapURLs",(req,res)=>{
 
         req.setTimeout(0);
 
-        console.log(`==> Request Recieved for scraping product URLs`);
+        console.log(`==> Request Recieved for scraping product URLs <==`);
         urlScrapRequest = true;
         
         let {productPath , baseURL } = metaData[0];
@@ -468,6 +468,88 @@ app.post("/scrapURLs",(req,res)=>{
 
 
     }
+
+});
+
+
+app.post("/scrapProduct",async(req,res)=>{
+
+    req.setTimeout(0);
+
+    let {link} = req.body;
+
+    try{
+        
+        let browser = await puppeteer.launch({headless : false , timeout : 0});
+        let page = await browser.newPage();
+
+        await page.goto(url , {waitUntil : 'networkidle2'});
+
+        let indexes = [];
+        Object.entries(productFields).forEach((field)=>{
+            let {val} = field[1];
+            indexes.push([...xpathToIndex(val)]);
+        });
+
+        let productDetails = [];
+
+        page.on('console',(msg)=>{
+
+            let data = msg.text();
+
+            if(data.match(`h26k2-data`)){
+                data = data.replace("h26k2-data:","")
+                data = data.split("[--]");
+                productDetails.push([...data])
+                console.log(`==> Product Scraped <==`);
+                page.close();
+                browser.close();
+                res.status(200).json(productDetails);
+            }
+
+        });
+
+
+        await page.evaluate((indexes)=>{
+
+            let temp_product_details = [];
+
+            //Saving data into a temporary element
+
+            for(let i=0 ; i<indexes.length ; i++){
+                let temp = document.body;
+                for(let j=0 ; j<indexes[i].length ; j++){
+                    let temp_index = indexes[i][j];
+                    temp = temp.children[temp_index];
+                }
+                temp_product_details.push(temp.innerText);
+            }
+                    
+            //chaning the aray into string so that data can easily be retrieved
+            let temp_str = ``;
+
+            for(let i=0 ; i<temp_product_details.length ; i++){
+                
+                if(i == temp_product_details.length - 1){
+                    temp_str += `${temp_product_details[i]}`;
+                }
+                else{
+                    temp_str += `${temp_product_details[i]}[--]`;
+                }
+
+            }
+
+            console.log(`h26k2-data:${temp_str}`);
+
+
+        },indexes);
+
+
+    }
+    catch(err){
+
+    }
+
 
 });
 
