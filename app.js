@@ -423,18 +423,12 @@ app.post(`/scrapProductDetails`,async(req,res)=>{
 
                 //Saving data into temporary variable
                 for(let i=0 ; i<indexes.length ; i++){
-                    console.log(`i` , i);
                     temp = document.body;
-                    console.log(temp);
                     for(let j=0 ; j<indexes[i].length ; j++){
                         let temp_index = indexes[i][j];
-                        console.log('j',j); console.log(temp_index);
                         console.log(temp.children[temp_index]);
-                        temp = temp.children[temp_index];
-                        console.log(temp);
-                    }console.log(temp);
+                    }
                     temp_product_details.push(temp.innerText);
-
                 } 
                 
                 //chaning the aray into string so that data can easily be retrieved
@@ -465,6 +459,100 @@ app.post(`/scrapProductDetails`,async(req,res)=>{
     }
 
 });
+
+let di_request = false;
+app.post('/downloadImage',async(req,res)=>{
+
+    req.setTimeout(0);
+   
+    let {link} = req.body;
+    
+    let {productImages} = metaData[0];
+
+    let index = xpathToIndex(productImages);
+    console.log(index);
+    
+    try{
+
+        let browser = await puppeteer.launch({headless: false  });
+
+        let page = await browser.newPage();
+        await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
+        
+        page.on('console',(msg)=>{
+            
+            let data = msg.text();
+
+            if(data.match("h26k2-data")){
+
+                data = data.replace("h26k2-data:","")
+                data = data.split("[--]");
+
+                console.log("**************************************************");
+                console.log(`==> Successfully scraped product images <==`);
+                console.log("**************************************************");
+
+                console.log(data);
+                page.close();
+                browser.close();
+                //res.status(200).json(productDetails);
+
+            }
+
+        }) 
+        
+        await page.evaluate((index)=>{
+            
+            let temp_image_element = null ;
+            let temp = document.body;
+
+            for(let i=0 ; i<index.length ; i++){
+                temp = temp.children[index[i]];    
+            }
+            
+            temp_image_element= temp.getElementsByTagName("img");
+
+            if(temp_image_element == null){
+                //log error
+                console.log(`it is null`);
+            }
+
+             //extracting urls from images
+             let img_src = [];
+
+             Array.from(temp_image_element).forEach((elem)=>{
+                 img_src.push(elem.getAttribute("src"));
+             })
+
+
+            //chaning the array into string so that data can easily be retrieved
+            let temp_str = ``;
+            for(let i=0 ; i<img_src.length ; i++){
+                    
+                if(i == img_src.length - 1){
+                    temp_str += `${img_src[i]}`;
+                }
+                else{
+                    temp_str += `${img_src[i]}[--]`;
+                }
+
+            }
+
+            console.log(`h26k2-data:${temp_str}`);
+
+        },index);
+
+    }
+    catch(err){
+        res.status(500).end();
+        console.log(`==> Error occured while scraping product details <==`);
+        console.log(err);
+        spd_request = false;
+    }
+
+
+});
+
 
 
 let requested = false;

@@ -326,6 +326,7 @@ const productDetailLink = (e) => {
 
 let products_scraped = [];
 let urlsToScrap = ["http://designer-discreet.ru/product/bottega-vaenta-clutch/"];
+let imagesToDownload = null;
 
 const scrapProducts = () => {
 
@@ -437,22 +438,59 @@ const scrapProducts = () => {
 
     }
     else if(action == "scrapProduct"){
+        
         console.log(`Scraping Product Details`);
+
         let productSeq = parseInt(button.getAttribute("data-product-scraped"));
-        console.log(urlsToScrap);console.log(productSeq);
+        
         if(urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 ){
-            console.log(urlsToScrap[productSeq] , 'ye rha');
+            
+            console.log(`==> product being scraped : ${urlsToScrap[productSeq]}`);
+
             fetch(`/scrapProductDetails`,{
                 method : 'POST',
                 headers : {
                     'Content-Type' : 'application/json;charset=utf-8'
                 },
                 body : JSON.stringify({link : urlsToScrap[productSeq]})
-            }).then((res)=>{console.log(`detail wala response`);
-                console.log(res);
+            }).then((res)=>{
+                
+                console.log(`product successfully scraped`);
+                res.json().then((data)=>{
+                    products_scraped.push([...data]);
+                    console.log(`timing out for 10secs`);
+                    setTimeout(()=>{
+                        button.setAttribute("data-action","scrapImages");
+                        imagesToDownload = urlsToScrap[productSeq];
+                        console.log(imagesToDownload);
+                        console.log(productSeq);
+                        scrapProducts();
+                    },10000);             
+                });
+
             }).catch((err)=>{
                 
             });
+
+        }
+
+    }
+    else if(action == "scrapImages"){
+        
+        if(imagesToDownload !== null){
+            console.log(imagesToDownload);
+            fetch(`/downloadImage`,{
+                method  : 'POST',
+                headers : {
+                    'Content-type' : 'application/json;charset=utf-8' 
+                },
+                body : JSON.stringify({link : imagesToDownload})
+            }).then((res)=>{
+                console.log(`image response ye rha`);
+                console.log(res);
+            }).catch((err)=>{
+
+            })
 
         }
 
