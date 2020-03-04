@@ -325,7 +325,7 @@ const productDetailLink = (e) => {
 }
 
 let products_scraped = [];
-let urlsToScrap = [];
+let urlsToScrap = ["http://designer-discreet.ru/product/bottega-vaenta-clutch/"];
 
 const scrapProducts = () => {
 
@@ -416,6 +416,7 @@ const scrapProducts = () => {
                         status.innerText = `successfully scraped ${data.length} URLS from page : (${page}) \nTiming Out for 10secs`;
                         console.log(`timing out for 10sec`);
                         //products_scraped.push(...data);
+                        urlsToScrap.push(...data);
                         setTimeout(()=>{
                             button.setAttribute("data-action","scrapProduct");
                             button.setAttribute("data-product-scraped","0");
@@ -438,15 +439,15 @@ const scrapProducts = () => {
     else if(action == "scrapProduct"){
         console.log(`Scraping Product Details`);
         let productSeq = parseInt(button.getAttribute("data-product-scraped"));
-
-        if(urlsToScrap.length > 1 && productSeq <= urlsToScrap.length-1 ){
-
+        console.log(urlsToScrap);console.log(productSeq);
+        if(urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 ){
+            console.log(urlsToScrap[productSeq] , 'ye rha');
             fetch(`/scrapProduct`,{
                 method : 'POST',
                 headers : {
                     'Content-Type' : 'application/json;charset=utf-8'
                 },
-                body : JSON.stringify(urlsToScrap[productSeq])
+                body : JSON.stringify({link : urlsToScrap[productSeq]})
             }).then((res)=>{
                 console.log(res);
             }).catch((err)=>{

@@ -480,50 +480,25 @@ app.post("/scrapProduct",async(req,res)=>{
 
     req.setTimeout(0);
     console.log(`==> Request recieved for scraping product details <===`);
-    
+
     let {link} = req.body;
+    console.log(`this is link : ${link}`);
 
     try{
-        
-        let browser = await puppeteer.launch({headless : false , timeout : 0});
-        let page = await browser.newPage();
 
-        await page.goto(link , {waitUntil : 'networkidle2'});
+        let br = await puppeteer.launch({headless: false});
+        let p = await br.newPage();
+        await p.goto(link,{waitUntil : 'networkidle2' , timeout : 0 });
 
         let indexes = [];
         Object.entries(productFields).forEach((field)=>{
             let {val} = field[1];
             indexes.push([...xpathToIndex(val)]);
         });
-
-        let productDetails = [];
-
-        page.on('console',(msg)=>{
-
-            let data = msg.text();
-
-            if(data.match(`h26k2-data`)){
-                
-                data = data.replace("h26k2-data:","")
-                data = data.split("[--]");
-                productDetails.push([...data]);
-
-                console.log("**************************************");
-                console.log(`==> Successfully Product Scraped <==`);
-                console.log("**************************************");
-                console.log(productDetails);
-
-                page.close();
-                browser.close();
-                res.status(200).json(productDetails);
-
-            }
-
-        });
-
-
-        await page.evaluate((indexes)=>{
-
+        console.log(indexes);
+        await p.evaluate((indexes)=>{
+                    
+            alert("hello world"); 
             let temp_product_details = [];
 
             //Saving data into a temporary element
@@ -536,7 +511,7 @@ app.post("/scrapProduct",async(req,res)=>{
                 }
                 temp_product_details.push(temp.innerText);
             }
-                    
+            
             //chaning the aray into string so that data can easily be retrieved
             let temp_str = ``;
 
@@ -552,9 +527,8 @@ app.post("/scrapProduct",async(req,res)=>{
             }
 
             console.log(`h26k2-data:${temp_str}`);
-
-
-        },indexes);
+            
+        } , indexes)
 
 
     }
@@ -568,7 +542,7 @@ app.post("/scrapProduct",async(req,res)=>{
 
 
 let requested = false;
-app.post("/scrapProducts",async(req,res)=>{
+app.post("/scrapProducts[prev]",async(req,res)=>{
 
     if(requested == false){
         
