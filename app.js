@@ -359,94 +359,110 @@ app.post("/scrapURLs",(req,res)=>{
 
 });
 
+
+//creating a global variable so that the client don't send multiple request
+let spd_request = false;
+
 app.post(`/scrapProductDetails`,async(req,res)=>{
 
-    console.log(`==> Request recieved for scraping product details <==`);
-    let {link} = req.body;
-    let productDetails = [];
+    if(spd_request == false){
 
-    //finding indexes (xpath) of the elements which is needed to scrap
-    let {productFields} = metaData[0];
+        spd_request = true; //toggling value so that server doesn't respond to its other request
 
-    let indexes = [];
-    Object.entries(productFields).forEach((field)=>{
-        let {val} = field[1];
-        indexes.push([...xpathToIndex(val)]);
-    });
+        console.log(`==> Request recieved for scraping product details <==`);
+        let {link} = req.body;
+        let productDetails = [];
+
+        //finding indexes (xpath) of the elements which is needed to scrap
+        let {productFields} = metaData[0];
+
+        let indexes = [];
+        Object.entries(productFields).forEach((field)=>{
+            let {val} = field[1];
+            indexes.push([...xpathToIndex(val)]);
+        });
 
 
-    /*****************
-     * Scraping Stuff
-    ******************/
+        /*****************
+         * Scraping Stuff
+        ******************/
 
-    try{
+        try{
 
-        let browser = await puppeteer.launch({headless: false  });
+            let browser = await puppeteer.launch({headless: false  });
 
-        let page = await browser.newPage();
-        await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
-        
-        page.on('console',(msg)=>{
+            let page = await browser.newPage();
+            await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
             
-            let data = msg.text();
+            page.on('console',(msg)=>{
+                
+                let data = msg.text();
 
-            if(data.match("h26k2-data")){
+                if(data.match("h26k2-data")){
 
-                data = data.replace("h26k2-data:","")
-                data = data.split("[--]");
-                productDetails.push([...data])
-                console.log(`==> Successfully scraped product details <==`);
-                page.close();
-                browser.close();
-                res.status(200).json(productDetails);
-            }
+                    data = data.replace("h26k2-data:","")
+                    data = data.split("[--]");
+                    productDetails.push([...data]);
 
-        }) 
-        
-        await page.evaluate((indexes)=>{
+                    console.log("**************************************************");
+                    console.log(`==> Successfully scraped product details <==`);
+                    console.log("**************************************************");
+
+                    spd_request = false;
+                    page.close();
+                    browser.close();
+                    res.status(200).json(productDetails);
+
+                }
+
+            }) 
             
-            let temp_product_details = [];
+            await page.evaluate((indexes)=>{
+                
+                let temp_product_details = [];
 
-            //Saving data into temporary variable
-            for(let i=0 ; i<indexes.length ; i++){
-                console.log(`i` , i);
-                temp = document.body;
-                console.log(temp);
-                for(let j=0 ; j<indexes[i].length ; j++){
-                    let temp_index = indexes[i][j];
-                    console.log('j',j); console.log(temp_index);
-                    console.log(temp.children[temp_index]);
-                    temp = temp.children[temp_index];
+                //Saving data into temporary variable
+                for(let i=0 ; i<indexes.length ; i++){
+                    console.log(`i` , i);
+                    temp = document.body;
                     console.log(temp);
-                }console.log(temp);
-                temp_product_details.push(temp.innerText);
+                    for(let j=0 ; j<indexes[i].length ; j++){
+                        let temp_index = indexes[i][j];
+                        console.log('j',j); console.log(temp_index);
+                        console.log(temp.children[temp_index]);
+                        temp = temp.children[temp_index];
+                        console.log(temp);
+                    }console.log(temp);
+                    temp_product_details.push(temp.innerText);
 
-            } 
-            
-            //chaning the aray into string so that data can easily be retrieved
-            let temp_str = ``;
-            for(let i=0 ; i<temp_product_details.length ; i++){
-                    
-                if(i == temp_product_details.length - 1){
-                    temp_str += `${temp_product_details[i]}`;
+                } 
+                
+                //chaning the aray into string so that data can easily be retrieved
+                let temp_str = ``;
+                for(let i=0 ; i<temp_product_details.length ; i++){
+                        
+                    if(i == temp_product_details.length - 1){
+                        temp_str += `${temp_product_details[i]}`;
+                    }
+                    else{
+                        temp_str += `${temp_product_details[i]}[--]`;
+                    }
+
                 }
-                else{
-                    temp_str += `${temp_product_details[i]}[--]`;
-                }
 
-            }
+                console.log(`h26k2-data:${temp_str}`);
 
-            console.log(`h26k2-data:${temp_str}`);
+            },indexes);
 
-        },indexes);
+        }
+        catch(err){
+            res.status(500).end();
+            console.log(`==> Error occured while scraping product details <==`);
+            console.log(err);
+            spd_request = false;
+        }
 
     }
-    catch(err){
-        res.status(500).end();
-        console.log(`==> Error occured while scraping product details <==`);
-        console.log(err);
-    }
-
 
 });
 
