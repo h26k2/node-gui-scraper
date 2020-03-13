@@ -367,33 +367,38 @@ app.post(`/scrapProductDetails`,async(req,res)=>{
 
     if(spd_request == false){
 
-        spd_request = true; //toggling value so that server doesn't respond to its other request
+        req.setTimeout(0);
 
-        console.log(`==> Request recieved for scraping product details <==`);
         let {link} = req.body;
-        let productDetails = [];
+        console.log(`===> Request recieved for scraping details : [${link}] <===`);
 
-        //finding indexes (xpath) of the elements which is needed to scrap
-        let {productFields} = metaData[0];
+        //finding indexes of the product details
 
         let indexes = [];
+        let {productFields} = metaData[0];
+        let objCount = 0;
+        
         Object.entries(productFields).forEach((field)=>{
             let {val} = field[1];
-            indexes.push([...xpathToIndex(val)]);
+            indexes[objCount] = xpathToIndex(val);
+            objCount++;
         });
-
-
+       
+        
         /*****************
          * Scraping Stuff
         ******************/
 
-        try{
+        let productDetails = [];
 
+        try{
+            
             let browser = await puppeteer.launch({headless: false  });
 
             let page = await browser.newPage();
             await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
-            
+
+            //page console
             page.on('console',(msg)=>{
                 
                 let data = msg.text();
@@ -403,20 +408,19 @@ app.post(`/scrapProductDetails`,async(req,res)=>{
                     data = data.replace("h26k2-data:","")
                     data = data.split("[--]");
                     productDetails.push([...data]);
-
                     console.log("**************************************************");
                     console.log(`==> Successfully scraped product details <==`);
                     console.log("**************************************************");
-
-                    spd_request = false;
+                    //spd_request = false;
                     page.close();
                     browser.close();
                     res.status(200).json(productDetails);
 
                 }
 
-            }) 
-            
+            }) ;
+
+            //page evaluation method pupeeteer
             await page.evaluate((indexes)=>{
                 
                 let temp_product_details = [];
@@ -426,9 +430,10 @@ app.post(`/scrapProductDetails`,async(req,res)=>{
                     temp = document.body;
                     for(let j=0 ; j<indexes[i].length ; j++){
                         let temp_index = indexes[i][j];
-                        console.log(temp.children[temp_index]);
+                        temp = temp.children[temp_index];
                     }
                     temp_product_details.push(temp.innerText);
+                    console.log(temp_product_details);
                 } 
                 
                 //chaning the aray into string so that data can easily be retrieved
@@ -448,108 +453,135 @@ app.post(`/scrapProductDetails`,async(req,res)=>{
 
             },indexes);
 
+
         }
         catch(err){
             res.status(500).end();
             console.log(`==> Error occured while scraping product details <==`);
             console.log(err);
-            spd_request = false;
+            //spd_request = false;
         }
+
 
     }
 
 });
 
-let di_request = false;
-app.post('/downloadImage',async(req,res)=>{
 
-    req.setTimeout(0);
-   
-    let {link} = req.body;
-    
-    let {productImages} = metaData[0];
+let si_request = false;
 
-    let index = xpathToIndex(productImages);
-    console.log(index);
-    
-    try{
+app.post('/scrapImages',async(req,res)=>{
 
-        let browser = await puppeteer.launch({headless: false  });
-
-        let page = await browser.newPage();
-        await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
+    if(si_request == false){
         
-        page.on('console',(msg)=>{
-            
-            let data = msg.text();
-
-            if(data.match("h26k2-data")){
-
-                data = data.replace("h26k2-data:","")
-                data = data.split("[--]");
-
-                console.log("**************************************************");
-                console.log(`==> Successfully scraped product images <==`);
-                console.log("**************************************************");
-
-                console.log(data);
-                page.close();
-                browser.close();
-                //res.status(200).json(productDetails);
-
-            }
-
-        }) 
+        req.setTimeout(0);
         
-        await page.evaluate((index)=>{
+        let {link} = req.body;
+        console.log(`==> Request recieved for scraping images , [${link}] <===`);
+        
+        let {productImages} = metaData[0];
+    
+        let index = xpathToIndex(productImages);
+        
+        try{
+    
+            let browser = await puppeteer.launch({headless: false  });
+    
+            let page = await browser.newPage();
+            await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
             
-            let temp_image_element = null ;
-            let temp = document.body;
-
-            for(let i=0 ; i<index.length ; i++){
-                temp = temp.children[index[i]];    
-            }
-            
-            temp_image_element= temp.getElementsByTagName("img");
-
-            if(temp_image_element == null){
-                //log error
-                console.log(`it is null`);
-            }
-
-             //extracting urls from images
-             let img_src = [];
-
-             Array.from(temp_image_element).forEach((elem)=>{
-                 img_src.push(elem.getAttribute("src"));
-             })
-
-
-            //chaning the array into string so that data can easily be retrieved
-            let temp_str = ``;
-            for(let i=0 ; i<img_src.length ; i++){
+            page.on('console',(msg)=>{
+                
+                let data = msg.text();
+    
+                if(data.match("h26k2-data")){
+    
+                    data = data.replace("h26k2-data:","")
+                    data = data.split("[--]");
+    
+                    console.log("**************************************************");
+                    console.log(`==> Successfully scraped product images <==`);
+                    console.log("**************************************************");
                     
-                if(i == img_src.length - 1){
-                    temp_str += `${img_src[i]}`;
+                    page.close();
+                    browser.close();
+                    res.status(200).json(data);
                 }
-                else{
-                    temp_str += `${img_src[i]}[--]`;
+    
+            }) 
+            
+            await page.evaluate((index)=>{
+                
+                let temp_image_element = null ;
+                let temp = document.body;
+    
+                for(let i=0 ; i<index.length ; i++){
+                    temp = temp.children[index[i]];    
                 }
+                
+                temp_image_element= temp.getElementsByTagName("img");
+    
+                if(temp_image_element == null){
+                    //log error
+                    console.log(`it is null`);
+                }
+    
+                 //extracting urls from images
+                 let img_src = [];
+    
+                 Array.from(temp_image_element).forEach((elem)=>{
+                     img_src.push(elem.getAttribute("src"));
+                 })
+    
+    
+                //chaning the array into string so that data can easily be retrieved
+                let temp_str = ``;
+                for(let i=0 ; i<img_src.length ; i++){
+                        
+                    if(i == img_src.length - 1){
+                        temp_str += `${img_src[i]}`;
+                    }
+                    else{
+                        temp_str += `${img_src[i]}[--]`;
+                    }
+    
+                }
+    
+                console.log(`h26k2-data:${temp_str}`);
+    
+            },index);
+    
+        }
+        catch(err){
+            res.status(500).end();
+            console.log(`==> Error occured while scraping product details <==`);
+            console.log(err);
+        }
+    }
 
-            }
 
-            console.log(`h26k2-data:${temp_str}`);
+});
 
-        },index);
+let di_request = false;
+
+app.post('/downloadImages',async(req,res)=>{
+
+    if(di_request == false){
+        
+        req.setTimeout(0);
+        console.log(`request recieved for downloading images...`);
+
+        let {links} = req.body;
+        console.log(links);
+
+        try{
+
+        }
+        catch(err){
+            console.log(err);
+        }
 
     }
-    catch(err){
-        res.status(500).end();
-        console.log(`==> Error occured while scraping product details <==`);
-        console.log(err);
-        spd_request = false;
-    }
-
 
 });
 

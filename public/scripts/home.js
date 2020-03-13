@@ -326,7 +326,7 @@ const productDetailLink = (e) => {
 
 let products_scraped = [];
 let urlsToScrap = ["http://designer-discreet.ru/product/bottega-vaenta-clutch/"];
-let imagesToDownload = null;
+let currentImagesToDownload = undefined;
 
 const scrapProducts = () => {
 
@@ -458,12 +458,9 @@ const scrapProducts = () => {
                 console.log(`product successfully scraped`);
                 res.json().then((data)=>{
                     products_scraped.push([...data]);
-                    console.log(`timing out for 10secs`);
+                    console.log(`timing out for 10secs, iimage scraping will start automatically`);
                     setTimeout(()=>{
                         button.setAttribute("data-action","scrapImages");
-                        imagesToDownload = urlsToScrap[productSeq];
-                        console.log(imagesToDownload);
-                        console.log(productSeq);
                         scrapProducts();
                     },10000);             
                 });
@@ -477,25 +474,60 @@ const scrapProducts = () => {
     }
     else if(action == "scrapImages"){
         
-        if(imagesToDownload !== null){
-            console.log(imagesToDownload);
-            fetch(`/downloadImage`,{
+        console.log(`scraping product images`);
+        let productSeq = parseInt(button.getAttribute("data-product-scraped"));
+        
+        if(urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 ){
+            fetch(`/scrapImages`,{
                 method  : 'POST',
                 headers : {
                     'Content-type' : 'application/json;charset=utf-8' 
                 },
-                body : JSON.stringify({link : imagesToDownload})
+                body : JSON.stringify({link : urlsToScrap[productSeq] })
             }).then((res)=>{
-                console.log(`image response ye rha`);
-                console.log(res);
+                
+                res.json().then((imageRes)=>{
+                    console.log(`successfully scraped product images, it will be downloaded automatically after 10secs`);
+                    currentImagesToDownload = [...imageRes]
+                    setTimeout(()=>{
+                        button.setAttribute("data-action","downloadImages");
+                        scrapProducts();
+                    },10000)
+
+                });
+                
             }).catch((err)=>{
-
+    
             })
-
         }
+        
 
     }
+    else if(action == "downloadImages"){
+        
+        if(currentImagesToDownload != undefined){
+            
+            console.log(`sending request for downloading images....`);
 
+            fetch(`/downloadImages`,{
+                method : 'POST',
+                headers : {
+                    'Content-Type' : 'application/json;charset=utf-8'
+                },
+                body : JSON.stringify({link : currentImagesToDownload})
+            }).then((res)=>{
+                console.log(`download response ye rha`);
+                console.log(res);
+            }).catch((err)=>{
+                
+            })
+
+
+        }
+        
+        
+
+    }
     
 
     
