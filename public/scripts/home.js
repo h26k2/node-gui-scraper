@@ -514,7 +514,7 @@ const scrapProducts = () => {
                 headers : {
                     'Content-Type' : 'application/json;charset=utf-8'
                 },
-                body : JSON.stringify({link : currentImagesToDownload})
+                body : JSON.stringify({links : currentImagesToDownload ,})
             }).then((res)=>{
                 console.log(`download response ye rha`);
                 console.log(res);

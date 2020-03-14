@@ -1,9 +1,10 @@
-const port = 3000;
+const port = 8080;
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
+const axios = require("axios");
 
 const mainProduct = require("./controller/requests/mainProduct");
 const individualProduct = require("./controller/requests/individualProduct");
@@ -573,13 +574,76 @@ app.post('/downloadImages',async(req,res)=>{
 
         let {links} = req.body;
         console.log(links);
+        let folder = "test";
+        //for creating folder
+
+        try{
+            fs.readdirSync(folder);
+        }
+        catch(err){
+            fs.mkdirSync(folder);
+        }
+
+        let savedCount = 0;
 
         try{
 
+            for(let i=0 ; i<links.length ; i++){
+            
+                if(links[i] == null || links[i].length < 1){
+                    savedCount++;
+                    continue;
+                }
+    
+                let imageName = links[i];
+                imageName = imageName.toLowerCase();
+    
+                let startIndex = imageName.lastIndexOf("/") + 1;
+                let endIndex = imageName.length;
+    
+                imageName = imageName.toLowerCase().substr(startIndex,endIndex);
+    
+                const writer = fs.createWriteStream(`${folder}/${imageName}`);
+    
+                let img_url = links[i];
+    
+                const response = await axios({
+                    url : encodeURI(img_url),
+                    method: 'GET',
+                    responseType: 'stream'
+                });
+    
+                response.data.pipe(writer);
+    
+                writer.on('finish',()=>{
+    
+                    savedCount++;
+                    console.log(`saved image : ${savedCount} / ${links.length}`);
+                    
+    
+                    if(savedCount == links.length){
+                        console.log(`Successfully saved images...`)
+                        res.end();
+                    }
+        
+                });
+    
+                writer.on('error',()=>{
+                    reject('IDK-ERROR');
+                })
+    
+    
+            }
+
         }
         catch(err){
+            console.log(`==> ERROR OCCURED WHILE DOWNLOADING IMAGES <==`)
             console.log(err);
         }
+        
+
+
+       
 
     }
 
