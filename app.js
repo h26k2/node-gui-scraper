@@ -359,7 +359,7 @@ app.post("/scrapURLs",(req,res)=>{
             console.log(err);
             res.status(500).end();
             urlScrapRequest = true;
-        })
+        });
 
 
     }

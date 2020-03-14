@@ -325,7 +325,7 @@ const productDetailLink = (e) => {
 }
 
 let products_scraped = [];
-let urlsToScrap = ["http://designer-discreet.ru/product/bottega-vaenta-clutch/"];
+let productUrlsToScrap = [];
 let currentImagesToDownload = undefined;
 
 const scrapProducts = () => {
@@ -359,11 +359,20 @@ const scrapProducts = () => {
         the given pages if it misses any one attributes then first of all 
         we have to find the pages-count
     ************************************************************************/
-/*
+    
+    let action = button.getAttribute("data-action");
 
-    if(button.hasAttribute("data-page") == false || button.hasAttribute("data-start") == false ||
+    let has_page_start = button.hasAttribute("data-page-start");
+    let has_page_end = button.hasAttribute("data-page-end");
+    let has_page_count = button.hasAttribute("data-page-count");
+    let has_page_current = button.hasAttribute("data-page-current"); 
+
+
+    /*if(button.hasAttribute("data-page") == false || button.hasAttribute("data-start") == false ||
         button.hasAttribute("data-end") == false || button.hasAttribute("data-count") == false ||
-        button.hasAttribute("data-action") == false){
+        button.hasAttribute("data-action") == false)*/
+    if( (has_page_start == false || has_page_end == false || has_page_count == false || 
+        has_page_current == false) && action == "findPageCount" ){
 
         console.log(`finding pages count`);
         status.innerText = `Finding Pages Count`;
@@ -374,10 +383,17 @@ const scrapProducts = () => {
                 res.json().then((d)=>{
                     console.log(`Total Pages are : ${d.val}`);
                     status.innerText = `Total Pages are : ${d.val}`;
+                    /*
                     button.setAttribute("data-page",s_page);
                     button.setAttribute("data-start",s_page);
                     button.setAttribute("data-end",e_page);
-                    button.setAttribute("data-count",d.val);
+                    button.setAttribute("data-count",d.val);*/
+                    
+                    button.setAttribute("data-page-start",s_page);
+                    button.setAttribute("data-page-end",e_page);
+                    button.setAttribute("data-page-current",s_page);
+                    button.setAttribute("data-page-count",d.val);
+                    button.setAttribute("data-action","scrapURLs");
                     scrapProducts();
 
                 });
@@ -391,40 +407,45 @@ const scrapProducts = () => {
 
 
     }
-*/
-    let page = parseInt(button.getAttribute("data-page"));
-    let startPage = parseInt(button.getAttribute("data-start"));
-    let endPage = parseInt(button.getAttribute("data-end"));
-    let count = parseInt(button.getAttribute("data-count"));
-    let action = button.getAttribute("data-action");
+
+    let page_current = parseInt(button.getAttribute("data-page-current"));
+    let page_start = parseInt(button.getAttribute("data-page-start"));
+    let page_end = parseInt(button.getAttribute("data-page-end"));
+    let page_count = parseInt(button.getAttribute("data-page-count"));
 
     if(action == "scrapURLs"){
 
-        if(page >= startPage && page <= endPage && page <= count){
+        if(page_current >= page_start && page_current <= page_end && page_current <= page_count){
         
-            console.log(`sending request for page : ${page}`);
-            status.innerText = `scraping page(${page}) of ${endPage}`;
+            console.log(`sending request for page : ${page_current}`);
+            status.innerText = `scraping page(${page_current}) of ${page_end}`;
     
-            fetch(`/scrapURLs?page=${page}`,
-            {
-                method : 'POST',
+            fetch(`/scrapURLs?page=${page_current}`,{method : 'POST',}).then((res)=>{
                 
-            }).then((res)=>{
-                console.log(res);
                 if(res.status == 200){
+
                     res.json().then((data)=>{
-                        console.log(`successfully scraped ${data.length} URLS from page : ${page} `);
-                        status.innerText = `successfully scraped ${data.length} URLS from page : (${page}) \nTiming Out for 10secs`;
+                        console.log(`successfully scraped ${data.length} URLS from page : ${page_current} `);
+                        status.innerText = `successfully scraped ${data.length} URLS from page : (${page_current}) \nTiming Out for 10secs`;
                         console.log(`timing out for 10sec`);
                         //products_scraped.push(...data);
-                        urlsToScrap.push(...data);
+                        productUrlsToScrap.push(...data);
                         setTimeout(()=>{
+                            /*
                             button.setAttribute("data-action","scrapProduct");
                             button.setAttribute("data-product-scraped","0");
+                            */
+
+                            button.setAttribute("data-action","scrapProduct");
+                            button.setAttribute("data-scraped-product-start","0");
+                            button.setAttribute("data-scraped-product-current","0");
+                            button.setAttribute("data-scraped-product-end",data.length - 1);
                             scrapProducts();
+
                         },10000);
         
                     });
+
                 }
                 else if(res.status == 500){
                     status.innerText = `Error occured while finding pages count, Please check server console or try again`;

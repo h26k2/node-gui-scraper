@@ -240,7 +240,7 @@
     <div class="row">
         <div class="col-6"></div>
         <div class="col-6">
-            <button class="btn btn-lg btn-danger w-100" onclick="scrapProducts()" id="scrap-products-btn" data-page="1" data-start="1" data-end="2" data-count="2" data-action="scrapProduct" data-product-scraped="0">scrap products</button>
+            <button class="btn btn-lg btn-danger w-100" onclick="scrapProducts()" id="scrap-products-btn" data-action="findPageCount">scrap products</button>
         </div>
     </div>
     
@@ -254,8 +254,11 @@
 
 <div class="container card-container">
     <div class="row">
-        <div class="col-12">
+        <div class="col-10">
             <h2>CSV stuff</h2>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-primary btn-sec w-100" onclick="viewScrapedData()">view data</button>
         </div>
     </div>
 </div>
@@ -264,7 +267,7 @@
 
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
     Open modal
-  </button>
+</button>
 
 
 <!-- The Modal -->
@@ -354,12 +357,13 @@
 }
 
 
-    </style>
+</style>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
-    <script src="/scripts/home.js"></script>
-    </body>
-    </html>
+<script src="/scripts/home.js"></script>
+<script src="/scripts/new.js"></script>
+</body>
+</html>
