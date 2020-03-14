@@ -1,9 +1,9 @@
 
-const downloadImages = (app) => {
+const downloadImages = (app , axios) => {
 
     let di_request = false;
 
-    app.post("/downloadImages",(req,res)=>{
+    app.post("/downloadImages",async(req,res)=>{
 
         if(di_request == false){
             

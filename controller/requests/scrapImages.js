@@ -4,7 +4,7 @@ const scrapImages = (app , metaData , xpathToIndex , puppeteer) => {
     
     let si_request = false;
 
-    app.post("/scrapImags",(req,res)=>{
+    app.post("/scrapImags",async(req,res)=>{
 
         if(si_request == false){
 
@@ -39,6 +39,7 @@ const scrapImages = (app , metaData , xpathToIndex , puppeteer) => {
                         
                         page.close();
                         browser.close();
+                        si_request = false;
                         res.status(200).json(data);
                     }
         
@@ -88,6 +89,7 @@ const scrapImages = (app , metaData , xpathToIndex , puppeteer) => {
             }
             catch(err){
                 res.status(500).end();
+                si_request = false;
                 console.log(`==> Error occured while scraping product details <==`);
                 console.log(err);
             }
