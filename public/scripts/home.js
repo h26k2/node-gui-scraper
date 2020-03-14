@@ -516,8 +516,11 @@ const scrapProducts = () => {
                 },
                 body : JSON.stringify({links : currentImagesToDownload ,})
             }).then((res)=>{
-                console.log(`download response ye rha`);
-                console.log(res);
+                console.log(`Images Downloaded Successfully`);
+
+                setTimeout(()=>{
+
+                },10000)
             }).catch((err)=>{
                 
             })

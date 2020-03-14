@@ -563,8 +563,7 @@ app.post('/scrapImages',async(req,res)=>{
 
 });
 
-let di_request = false;
-
+    
 app.post('/downloadImages',async(req,res)=>{
 
     if(di_request == false){
