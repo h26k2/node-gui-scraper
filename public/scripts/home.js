@@ -460,26 +460,33 @@ const scrapProducts = () => {
     }
     else if(action == "scrapProduct"){
         
-        console.log(`Scraping Product Details`);
+        console.log(`==> Scraping Product Details <==`);
 
-        let productSeq = parseInt(button.getAttribute("data-product-scraped"));
+        //let productSeq = parseInt(button.getAttribute("data-product-scraped"));
+        let scraped_product_start = button.getAttribute("data-scraped-product-start");
+        let scraped_product_end = button.getAttribute("data-scraped-product-end");
+        let scraped_product_current = button.getAttribute("data-scraped-product-current");
         
-        if(urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 ){
+        if( /*urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1*/
+            (scraped_product_current >= scraped_product_start) && (scraped_product_current <= scraped_product_end) ){
             
-            console.log(`==> product being scraped : ${urlsToScrap[productSeq]}`);
+            console.log(`==> product being scraped : ${productUrlsToScrap[scraped_product_current]} of page ${page_current}`);
 
             fetch(`/scrapProductDetails`,{
                 method : 'POST',
                 headers : {
                     'Content-Type' : 'application/json;charset=utf-8'
                 },
-                body : JSON.stringify({link : urlsToScrap[productSeq]})
+                body : JSON.stringify({link : productUrlsToScrap[scraped_product_current]})
             }).then((res)=>{
                 
-                console.log(`product successfully scraped`);
+                console.log(`==> product ${scraped_product_current} successfully scraped of page : ${page_current} <==`);
+
                 res.json().then((data)=>{
+
                     products_scraped.push([...data]);
-                    console.log(`timing out for 10secs, iimage scraping will start automatically`);
+                    console.log(`Timing out for 10secs, image scraping will start automatically`);
+
                     setTimeout(()=>{
                         button.setAttribute("data-action","scrapImages");
                         scrapProducts();
@@ -487,7 +494,8 @@ const scrapProducts = () => {
                 });
 
             }).catch((err)=>{
-                
+                console.log(`Error occured while scraping product details`);
+                console.log(err);
             });
 
         }
@@ -495,20 +503,26 @@ const scrapProducts = () => {
     }
     else if(action == "scrapImages"){
         
-        console.log(`scraping product images`);
-        let productSeq = parseInt(button.getAttribute("data-product-scraped"));
-        
-        if(urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 ){
+        console.log(` ==> Scraping Product Images <==`);
+
+        //let productSeq = parseInt(button.getAttribute("data-product-scraped"));
+        let scraped_product_current = button.getAttribute("data-scraped-product-current");
+        let scraped_product_start = button.getAttribute("data-scraped-product-start");
+        let scraped_product_end = button.getAttribute("data-scraped-product-end");
+
+        if(/*urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 */
+            (scraped_product_current >= scraped_product_start) && (scraped_product_current <= scraped_product_end)){
             fetch(`/scrapImages`,{
                 method  : 'POST',
                 headers : {
                     'Content-type' : 'application/json;charset=utf-8' 
                 },
-                body : JSON.stringify({link : urlsToScrap[productSeq] })
+                body : JSON.stringify({link : productUrlsToScrap[scraped_product_current] })
             }).then((res)=>{
                 
                 res.json().then((imageRes)=>{
                     console.log(`successfully scraped product images, it will be downloaded automatically after 10secs`);
+                    products_scraped[scraped_product_current].push([...imageRes]);
                     currentImagesToDownload = [...imageRes]
                     setTimeout(()=>{
                         button.setAttribute("data-action","downloadImages");
@@ -518,7 +532,8 @@ const scrapProducts = () => {
                 });
                 
             }).catch((err)=>{
-    
+                console.log(`Error occured in downloading images`);
+                console.log(err);
             })
         }
         
@@ -538,12 +553,13 @@ const scrapProducts = () => {
                 body : JSON.stringify({links : currentImagesToDownload ,})
             }).then((res)=>{
                 console.log(`Images Downloaded Successfully`);
-
+                console.log(res);
                 setTimeout(()=>{
 
                 },10000)
             }).catch((err)=>{
-                
+                console.log(`Error occured while downloading current images`);
+                console.log(err);
             })
 
 

@@ -286,7 +286,7 @@ app.get("/findPagesCount",async(req,res)=>{
 
         let page = await browser.newPage();
 
-        await page.goto(baseURL,{waitUntil : 'networkidle2' , timeout : 0 });
+        await page.goto(baseURL,{waitUntil : 'networkidle0' , timeout : 0 });
         
         await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
         
