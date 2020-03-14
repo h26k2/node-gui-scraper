@@ -366,7 +366,7 @@ app.post("/scrapURLs",(req,res)=>{
 });
 
 
-//creating a global variable so that the client don't send multiple request
+/*creating a global variable so that the client don't send multiple request
 let spd_request = false;
 
 app.post(`/scrapProductDetails`,async(req,res)=>{
@@ -393,7 +393,7 @@ app.post(`/scrapProductDetails`,async(req,res)=>{
         
         /*****************
          * Scraping Stuff
-        ******************/
+        ******************
 
         let productDetails = [];
 
