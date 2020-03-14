@@ -1,5 +1,5 @@
 
-const downloadImages = (app , axios) => {
+const downloadImages = (app , axios , fs) => {
 
     let di_request = false;
 

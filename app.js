@@ -15,7 +15,7 @@ const saveMetaData = require("./controller/requests/saveMetaData");
 const productPagination = require("./controller/requests/productPagination");
 const scrapImages = require("./controller/requests/scrapImages");
 const downloadImages = require("./controller/requests/downloadImages");
-
+const scrapProductDetails = require("./controller/requests/scrapProductDetails")
 const findProductURLs = require("./controller/requests/findProductURLs");
 const xpathToIndex = require("./controller/methods/xpathToIndex");
 
@@ -37,7 +37,8 @@ loadMetaData(metaData,app);
 productPagination(app,puppeteer);
 
 scrapImages(app,metaData,xpathToIndex,puppeteer);
-downloadImages(app,axios);
+downloadImages(app,axios,fs);
+scrapProductDetails(app,metaData,puppeteer,xpathToIndex)
 
 
 const selectProduct = async (url,filename,brandName ) => {

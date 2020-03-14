@@ -4,7 +4,7 @@ const scrapImages = (app , metaData , xpathToIndex , puppeteer) => {
     
     let si_request = false;
 
-    app.post("/scrapImags",async(req,res)=>{
+    app.post("/scrapImages",async(req,res)=>{
 
         if(si_request == false){
 

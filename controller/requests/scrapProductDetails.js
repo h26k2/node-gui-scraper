@@ -1,6 +1,6 @@
 
 
-const scrapProductDetails = (metaData,puppeteer) => {
+const scrapProductDetails = (app,metaData,puppeteer,xpathToIndex) => {
     
     let spd_request = false;
 
