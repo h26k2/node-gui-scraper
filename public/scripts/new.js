@@ -108,10 +108,25 @@ const viewScrapedData = () => {
 
     heading_html += `</tr></thead>`;
     
-    
+
+    let body_html = `<tbody>`;
 
 
-    table_elem.innerHTML = heading_html;
+    for(let i=0 ;i<demo.length ; i++){
+        
+        body_html += `<tr>`;
+
+        for(let j=0 ; j<demo[i].length  ; j++){
+            body_html += `<td> ${demo[i][j]} </td>`;
+        }
+
+        body_html += `</tr>`;
+
+    }
+
+    let all_temp_html = `${heading_html}${body_html}`;
+
+    table_elem.innerHTML = all_temp_html;
     
 
 
