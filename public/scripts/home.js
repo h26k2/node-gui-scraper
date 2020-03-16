@@ -972,17 +972,18 @@ const something = () => {
 
 }
 
+let userProductFields = [];
+
 const readData = (that) => {
     
     let {value} = that;
     let index = value.lastIndexOf(`\\`) +1;
     let val = value.substring(index,value.length);
 
-
     let reader = new FileReader();
 
     reader.onload = (e) => {
-
+       
         fetch(`/loadMetaData`,{
             method : 'POST',
             headers : {
@@ -994,6 +995,21 @@ const readData = (that) => {
         }).then((res)=>{
 
             if(res.status === 200){
+               
+                res.json().then((d)=>{
+                    
+                    let temp_obj = d["productFields"];
+
+                    Object.entries(temp_obj).forEach((ob)=>{
+                        let {name} = ob[1];
+                        userProductFields.push(name);
+                    });
+                    
+                    userProductFields.push("productImages");
+
+                }).catch((err)=>{
+                    console.log(err);
+                });
 
                 alert(`Successfully Loaded MetaData`);
                 document.getElementsByClassName("custom-file-label")[0].innerText = val;

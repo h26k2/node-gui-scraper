@@ -10,7 +10,7 @@ const loadMetaData = (metaData,app) => {
             let data = JSON.parse(req.body.data);
             metaData.push(data);
             console.log(`==> SUCCESSFULLY LOADED METADATA <==`);
-            res.status(200).end();
+            res.status(200).json(data);
         }
         catch(err){
             console.log(`==> ERROR OCCURED WHILE LOADING METADATA <==`);
