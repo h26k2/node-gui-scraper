@@ -125,7 +125,7 @@ const viewScrapedData = () => {
 
         body_html += `<td>`;
         for(let k=0 ; k<demo2[i].length ; k++){
-            body_html += `<img src="${demo2[i][k]}"/>`;
+            body_html += `<img src="${demo2[i][k]}" style="width:50px;margin:1px;"  />`;
         }
 
         body_html += `</td>`;

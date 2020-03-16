@@ -180,3 +180,7 @@ button.btn-sec:focus{
 .capitalize{
     text-transform: capitalize;
 }
+
+.centered{
+    text-align: center;
+}
