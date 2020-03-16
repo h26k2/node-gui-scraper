@@ -77,8 +77,9 @@ let demo = [
 
 const viewScrapedData = () => {
 
-    console.log(demo)
-
+    console.log(demo);
+    console.log(`==> ye rha <==`);
+    console.log(userProductFields);
     
 
     for(let i=0 ; i<demo.length ; i++){
@@ -88,7 +89,7 @@ const viewScrapedData = () => {
         for(let j=0 ; j<fields_len ; j++ ){
             
             if(Array.isArray(demo[i][j])){
-                console.log(j);
+                //console.log(j);
             }
 
         }

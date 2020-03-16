@@ -1005,6 +1005,8 @@ const readData = (that) => {
                         userProductFields.push(name);
                     });
                     
+                    userProductFields.push("productImages");
+
 
                 }).catch((err)=>{
                     console.log(err);
