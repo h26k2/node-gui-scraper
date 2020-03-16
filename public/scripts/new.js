@@ -100,18 +100,22 @@ const viewScrapedData = () => {
     
     let table_elem = document.getElementById("scraped-product-table");
 
-    let heading_html = `<thead><tr>`
-
-    let headings_data = [];
+    let heading_html = `<thead><tr>`;
 
     for(let i=0 ; i<userProductFields.length ; i++){
         heading_html += `<th> ${userProductFields[i]} </th>`
     }
 
-    heading_html += `</tr></thead>`
+    heading_html += `</tr></thead>`;
     
+    
+
+
     table_elem.innerHTML = heading_html;
-    console.log(heading_html);
+    
+
+
+
 
 
 
