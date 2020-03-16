@@ -253,6 +253,7 @@
 
 
 <div class="container card-container">
+    
     <div class="row">
         <div class="col-10">
             <h2>CSV stuff</h2>
@@ -261,6 +262,32 @@
             <button class="btn btn-primary btn-sec w-100" onclick="viewScrapedData()">view data</button>
         </div>
     </div>
+
+    <div class="rows actions">
+        
+        <div class="col-8">
+            <div class="input-group">
+                <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Input data to perform action">
+                <div class="input-group-append">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Perform Action</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:void(0)">Search</a>
+                        <a class="dropdown-item" href="javascript:void(0)">Replace</a>
+                        <a class="dropdown-item" href="javascript:void(0)">Append</a>
+                        <a class="dropdown-item" href="javascript:void(0)">Prepend</a>
+                        <a class="dropdown-item" href="javascript:void(0)">Maths Operations</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <button class="btn btn-primary">generate csv</button>
+        </div>
+       
+    </div>
+
+
     <div class="row">
         <div class="col-12">
             <table id="scraped-product-table" class="table table-striped table-hover capitalize centered table-responsive">
