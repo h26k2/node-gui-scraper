@@ -325,6 +325,7 @@ const productDetailLink = (e) => {
 }
 
 let products_scraped = [];
+let all_products_url_images = [];
 let productUrlsToScrap = [];
 let currentImagesToDownload = undefined;
 
@@ -463,9 +464,9 @@ const scrapProducts = () => {
         console.log(`==> Scraping Product Details <==`);
 
         //let productSeq = parseInt(button.getAttribute("data-product-scraped"));
-        let scraped_product_start = button.getAttribute("data-scraped-product-start");
-        let scraped_product_end = button.getAttribute("data-scraped-product-end");
-        let scraped_product_current = button.getAttribute("data-scraped-product-current");
+        let scraped_product_start = parseInt(button.getAttribute("data-scraped-product-start"));
+        let scraped_product_end = parseInt(button.getAttribute("data-scraped-product-end"));
+        let scraped_product_current = parseInt(button.getAttribute("data-scraped-product-current"));
         
         if( /*urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1*/
             (scraped_product_current >= scraped_product_start) && (scraped_product_current <= scraped_product_end) ){
@@ -506,9 +507,9 @@ const scrapProducts = () => {
         console.log(` ==> Scraping Product Images <==`);
 
         //let productSeq = parseInt(button.getAttribute("data-product-scraped"));
-        let scraped_product_current = button.getAttribute("data-scraped-product-current");
-        let scraped_product_start = button.getAttribute("data-scraped-product-start");
-        let scraped_product_end = button.getAttribute("data-scraped-product-end");
+        let scraped_product_current = parseInt(button.getAttribute("data-scraped-product-current"));
+        let scraped_product_start = parseInt(button.getAttribute("data-scraped-product-start"));
+        let scraped_product_end = parseInt(button.getAttribute("data-scraped-product-end"));
 
         if(/*urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 */
             (scraped_product_current >= scraped_product_start) && (scraped_product_current <= scraped_product_end)){
@@ -522,8 +523,10 @@ const scrapProducts = () => {
                 
                 res.json().then((imageRes)=>{
                     console.log(`successfully scraped product images, it will be downloaded automatically after 10secs`);
-                    products_scraped[scraped_product_current].push([...imageRes]);
+                    all_products_url_images.push([...imageRes]);
                     currentImagesToDownload = [...imageRes]
+                    //products_scraped[scraped_product_current] = [...products_scraped[scraped_product_current],[...imageRes]];
+                    
                     setTimeout(()=>{
                         button.setAttribute("data-action","downloadImages");
                         scrapProducts();
@@ -554,7 +557,43 @@ const scrapProducts = () => {
             }).then((res)=>{
                 console.log(`Images Downloaded Successfully`);
                 console.log(res);
+                console.log(`timing out for 10 secs`);
                 setTimeout(()=>{
+
+                    currentImagesToDownload = undefined;
+                    
+                    let current_product = parseInt(button.getAttribute("data-scraped-product-current"));
+                    let last_product = parseInt(button.getAttribute("data-scraped-product-end"));
+
+                    let user_page_current = parseInt(button.getAttribute("data-page-current"));
+                    let user_page_end = parseInt(button.getAttribute("data-page-end"));
+                    let page_count = parseInt(button.getAttribute("data-page-count"));
+
+                    //checking that the current scraped product is less than or equal to last product
+                    //if in range then scrap otherwise go to else condition
+                    if(current_product <= last_product ){
+                        current_product++;
+                        button.setAttribute("data-scraped-product-current",current_product);
+                        console.log(`app will scrap next product`)
+                        scrapProducts();
+                    }
+                    else{
+                        
+                        //if page is in range then then scrap increment next page and then start other page
+                        //else go to another condition
+                        if(user_page_current <= user_page_end && user_page_current <= page_count){
+                            console.log(`next page scraping is going to be started...`);
+                            user_page_current++;
+                            button.setAttribute("data-page-current",user_page_current);
+                            scrapProducts();
+                        }
+                        else{
+                            console.log(`all done`);
+                        }
+                        
+                    }
+                    
+
 
                 },10000)
             }).catch((err)=>{
