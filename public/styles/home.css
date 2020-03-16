@@ -175,3 +175,8 @@ button.btn-sec:focus{
     text-align: center;
     margin-bottom:0.4em;
 }
+
+
+.capitalize{
+    text-transform: capitalize;
+}
