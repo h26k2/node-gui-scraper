@@ -574,6 +574,7 @@ const scrapProducts = () => {
                     if(current_product <= last_product ){
                         current_product++;
                         button.setAttribute("data-scraped-product-current",current_product);
+                        button.setAttribute("data-action","scrapProduct");
                         console.log(`app will scrap next product`)
                         scrapProducts();
                     }
@@ -582,6 +583,7 @@ const scrapProducts = () => {
                         //if page is in range then then scrap increment next page and then start other page
                         //else go to another condition
                         if(user_page_current <= user_page_end && user_page_current <= page_count){
+                            button.setAttribute("data-action","scrapURLs");
                             console.log(`next page scraping is going to be started...`);
                             user_page_current++;
                             button.setAttribute("data-page-current",user_page_current);
