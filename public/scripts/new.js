@@ -57,17 +57,17 @@ let demo = [
 
 
 let demo2 = [
-    ["https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-    "https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg"],
+    ["http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg",
+    "http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg"],
     
-    ["https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-    "https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg"],
+    ["http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg",
+    "http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg"],
 
-    ["https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-    "https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg"],
+    ["http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg",
+    "http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg"],
 
-    ["https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-    "https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg"]
+    ["http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg",
+    "http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg"],
 
 ]
 
@@ -116,9 +116,19 @@ const viewScrapedData = () => {
         
         body_html += `<tr>`;
 
+        //for details
         for(let j=0 ; j<demo[i].length  ; j++){
             body_html += `<td> ${demo[i][j]} </td>`;
         }
+
+        //for images
+
+        body_html += `<td>`;
+        for(let k=0 ; k<demo2[i].length ; k++){
+            body_html += `<img src="${demo2[i][k]}"/>`;
+        }
+
+        body_html += `</td>`;
 
         body_html += `</tr>`;
 
