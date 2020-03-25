@@ -1004,7 +1004,19 @@ const readData = (that) => {
                         let {name} = ob[1];
                         userProductFields.push(name);
                     });
-                    
+
+
+                    //Populating the [select dropdown] of heading {CVS STUFF}
+
+                    let colDropdownElem = document.getElementById("action-perform-col");
+                    let temp_colDropdownElem = `<option selected disabled>Select Column</option>`;
+
+                    for(let i=0 ; i<userProductFields.length ; i++){
+                        temp_colDropdownElem += `<option>${userProductFields[i]}</option>`
+                    }
+
+                    colDropdownElem.innerHTML = temp_colDropdownElem;
+
                     userProductFields.push("productImages");
 
 
