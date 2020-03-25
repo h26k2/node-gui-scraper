@@ -282,18 +282,18 @@
                 <div class="input-group-append">
                     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Perform Action</button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="javascript:void(0)">Search</a>
-                        <a class="dropdown-item" href="javascript:void(0)">Replace</a>
-                        <a class="dropdown-item" href="javascript:void(0)">Append</a>
-                        <a class="dropdown-item" href="javascript:void(0)">Prepend</a>
-                        <a class="dropdown-item" href="javascript:void(0)">Maths Operations</a>
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="performAction('search')">Search</a>
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="performAction('replace')">Replace</a>
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="performAction('append')">Append</a>
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="performAction('prepend')">Prepend</a>
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="performAction('maths')">Maths Operations</a>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-2">
-            <button class="btn btn-primary btn-lg">generate csv</button>
+            <button class="btn btn-primary" style="padding-top:0.45em;padding-bottom:0.45em;margin-top:-2px;width:100%;">generate csv</button>
         </div>
        
     </div>
@@ -410,5 +410,6 @@
 
 <script src="/scripts/home.js"></script>
 <script src="/scripts/new.js"></script>
+<script src="/scripts/actions.js"></script>
 </body>
 </html>
