@@ -485,7 +485,7 @@ const scrapProducts = () => {
 
                 res.json().then((data)=>{
 
-                    products_scraped.push([...data]);
+                    products_scraped.push(...data);
                     console.log(`Timing out for 10secs, image scraping will start automatically`);
 
                     setTimeout(()=>{

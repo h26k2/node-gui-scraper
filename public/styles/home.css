@@ -184,3 +184,7 @@ button.btn-sec:focus{
 .centered{
     text-align: center;
 }
+
+.action button:nth-child(2){
+   background:teal!important
+}

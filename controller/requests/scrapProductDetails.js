@@ -36,7 +36,7 @@ const scrapProductDetails = (app,metaData,puppeteer,xpathToIndex) => {
                 let browser = await puppeteer.launch({headless: false  });
     
                 let page = await browser.newPage();
-                await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
+                await page.goto(link,{waitUntil : 'networkidle2' , timeout : 0 });
     
                 //page console
                 page.on('console',(msg)=>{
