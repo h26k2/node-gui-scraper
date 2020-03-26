@@ -8,7 +8,7 @@ const performAction = (action) => {
     let tableElem = document.getElementById("scraped-product-table");
 
     let action_col = actionCol.options[actionCol.options.selectedIndex].value;
-    let inputtedData = document.getElementById("user-input-action").value;
+    let inputtedData = document.getElementById("user-input-action").value.toLowerCase();
     
     if(inputtedData.length < 1){
         alert(`Please Enter data to perform action...`);
@@ -35,6 +35,7 @@ const performAction = (action) => {
 
     if(action == "replace"){
         let search = prompt("Input data you want to replace with ? ");
+        replaceAction(requrired_index,inputtedData,search.toLowerCase() , tableElem);
     }
     else if(action == "append"){
         
@@ -48,7 +49,23 @@ const performAction = (action) => {
 
 }
 
-const replaceAction = () => {
+const replaceAction = (col, inputtedData , existingData , table) => {
+    
+    let rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+    for(let i=0 ; i<rows.length  ; i++){
+
+        let tab_data  = rows[i].getElementsByTagName("td")[col].innerText.toLowerCase();
+
+        if(tab_data.match(existingData)){
+    
+            let replaced_data = tab_data.replace(existingData,inputtedData)
+            rows[i].getElementsByTagName("td")[col].innerHTML = replaced_data;
+
+
+        }
+
+    }
 
 }
 
