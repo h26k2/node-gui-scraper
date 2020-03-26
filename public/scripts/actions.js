@@ -38,7 +38,7 @@ const performAction = (action) => {
         replaceAction(requrired_index,inputtedData,search.toLowerCase() , tableElem);
     }
     else if(action == "append"){
-        
+        appendAction(requrired_index,inputtedData,tableElem);
     }
     else if(action == "prepend"){
         
@@ -58,14 +58,24 @@ const replaceAction = (col, inputtedData , existingData , table) => {
         let tab_data  = rows[i].getElementsByTagName("td")[col].innerText.toLowerCase();
 
         if(tab_data.match(existingData)){
-    
             let replaced_data = tab_data.replace(existingData,inputtedData)
             rows[i].getElementsByTagName("td")[col].innerHTML = replaced_data;
-
-
         }
 
     }
 
 }
 
+const appendAction = (col , data , table) => {
+
+    let rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+    for(let i=0 ; i<rows.length  ; i++){
+
+        let tab_data  = rows[i].getElementsByTagName("td")[col].innerText.toLowerCase();
+        let new_data = `${tab_data} ${data}`;
+        rows[i].getElementsByTagName("td")[col].innerHTML = new_data;
+        
+    }
+
+}
