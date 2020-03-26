@@ -44,7 +44,7 @@ const performAction = (action) => {
         prependAction(requrired_index,inputtedData,tableElem);
     }
     else if(action == "maths"){
-        
+        mathsAction(requrired_index,inputtedData,tableElem);
     }
 
 }
@@ -95,17 +95,44 @@ const prependAction = (col , data , table) => {
 }
 
 const mathsAction = (col,expression,table) => {
-
+    
+    let position = undefined;
 
     if(expression[0].match("_")){
-
+        position = "start";
+        expression = expression.substr(2,expression.length - 3);
     }
     else if(expression[expression.length - 1].match("_")){
-
+        position = "end";
+        expression = expression.substr(1,expression.length - 3);
     }
     else{
         alert(`Please enter the underScore either at the start of the expression or end of the expression`)
         return;
     }
+
+
+    let rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+    for(let i=0 ; i<rows.length  ; i++){
+
+        let tab_data  = rows[i].getElementsByTagName("td")[col].innerText;
+        
+        if(tab_data.match("$")){
+            tab_data = tab_data.replace(/\$/gi,"");
+        }
+
+        let ans ;
+        if(position == "start"){
+            ans = eval(`${tab_data} ${expression}`)
+        }
+        else if(position == "end"){
+            ans = eval(`${expression} ${tab_data}`)
+        }
+
+        rows[i].getElementsByTagName("td")[col].innerHTML = ans;
+        
+    }
+
 
 }
