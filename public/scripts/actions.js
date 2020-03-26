@@ -41,7 +41,7 @@ const performAction = (action) => {
         appendAction(requrired_index,inputtedData,tableElem);
     }
     else if(action == "prepend"){
-        
+        prependAction(requrired_index,inputtedData,tableElem);
     }
     else if(action == "maths"){
         
@@ -74,6 +74,21 @@ const appendAction = (col , data , table) => {
 
         let tab_data  = rows[i].getElementsByTagName("td")[col].innerText.toLowerCase();
         let new_data = `${tab_data} ${data}`;
+        rows[i].getElementsByTagName("td")[col].innerHTML = new_data;
+        
+    }
+
+}
+
+
+const prependAction = (col , data , table) => {
+
+    let rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+    for(let i=0 ; i<rows.length  ; i++){
+
+        let tab_data  = rows[i].getElementsByTagName("td")[col].innerText.toLowerCase();
+        let new_data = `${data} ${tab_data}`;
         rows[i].getElementsByTagName("td")[col].innerHTML = new_data;
         
     }
