@@ -80,7 +80,6 @@ const appendAction = (col , data , table) => {
 
 }
 
-
 const prependAction = (col , data , table) => {
 
     let rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
@@ -91,6 +90,22 @@ const prependAction = (col , data , table) => {
         let new_data = `${data} ${tab_data}`;
         rows[i].getElementsByTagName("td")[col].innerHTML = new_data;
         
+    }
+
+}
+
+const mathsAction = (col,expression,table) => {
+
+
+    if(expression[0].match("_")){
+
+    }
+    else if(expression[expression.length - 1].match("_")){
+
+    }
+    else{
+        alert(`Please enter the underScore either at the start of the expression or end of the expression`)
+        return;
     }
 
 }
