@@ -29,6 +29,7 @@ products_scraped = [
 
 all_products_url_images = [
     ["http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5266-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5267-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5273-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5272-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5271-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5270-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5269-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5268-1-100x100.jpg"],
+    ["http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5266-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5267-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5273-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5272-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5271-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5270-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5269-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5268-1-100x100.jpg"],
 ]
 
 

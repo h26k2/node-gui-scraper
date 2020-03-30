@@ -41,11 +41,75 @@ const getDataFromTable = () => {
 
 }
 
-
-
 const generateCSV = () => {
 
     let data = getDataFromTable();
-    console.log(data);
-    
+    let {headings , records} = data;
+
+    let rows = [] , i;
+
+    for(i=0 ; i<headings.length ; i++){
+
+        if(i == headings.length - 1){
+            rows.push(`${headings[i]}\n`)
+        }
+        else{
+            rows.push(`${headings[i]},`)
+        }
+
+    }
+
+    for(i=0 ; i<records.length ; i++){
+
+        for(let j=0 ; j<records[i].length ; j++){
+            
+            let lastchar = (j == records[i].length - 1) ? `\n` : `,`;            
+            
+            if(typeof records[i][j] == "string"){
+
+                if(records[i][j].match(/\,/gi)){
+                    rows.push(`\"${records[i][j]}\"${lastchar}`);
+                }
+                else{
+                    rows.push(`${records[i][j]}${lastchar}`);
+                }
+                
+            }
+            else if(typeof records[i][j] == "object" && Array.isArray(records[i][j])){
+                
+                let temp = `\"`;
+                Array.from(records[i][j]).forEach((record)=>{
+                    temp += `${record},`
+                });
+                temp = temp.substr(0,temp.length - 1);
+                temp += `\"`;
+                rows.push(`${temp}${lastchar}`);
+
+            }
+            else{
+                rows.push(lastchar);
+            }
+            
+        }
+
+    }
+
+    let csvString = ``;
+    console.log(rows);
+    for(let row of rows){
+        csvString += row;
+    }
+
+    const blob = new Blob([csvString] , {type : 'text/csv'});
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.setAttribute('hidden','');
+    a.setAttribute('href',url);
+    a.setAttribute('download','products_csv.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+
 }
