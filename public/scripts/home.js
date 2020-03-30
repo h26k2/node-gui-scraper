@@ -1046,7 +1046,6 @@ const readData = (that) => {
     
     reader.readAsText(that.files[0]);
 
-
 }
 
 
@@ -1070,8 +1069,6 @@ const paginationContainer = () => {
         alert(`Error Occured!`);
         console.log(err);
     })
-
-
 
 
 }
