@@ -7,6 +7,7 @@ const findPageRoute = (web_url) => {
     //for routes like [query parameters]
 
     if(web_url.match(/\?/gi)){        
+        
         url.type = "query";
 
         if(web_url.match(/page=[0-9]{1,5}/gi)){
@@ -16,6 +17,9 @@ const findPageRoute = (web_url) => {
         else if(web_url.match(/p=[0-9]{1,5}/gi)){
             
             url.symbol = "p";            
+        }
+        else{
+            return -1;
         }
 
     }
@@ -32,7 +36,7 @@ const findPageRoute = (web_url) => {
 
     //for routes which include [p] with id
 
-    else if(web_url.match(/\/p\//gi)){ console.log(`third`);
+    else if(web_url.match(/\/p\//gi)){ 
         
         url = {
             type : "id",

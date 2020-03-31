@@ -67,8 +67,16 @@ const individualProduct = (app,puppeteer) => {
                     
                         let a_href = anchors[i].getAttribute("href");
                         let a_class = anchors[i].getAttribute("class");
-        
-                        let confirm_string = `URL : ${a_href}\nElement : ${a_class}\nIs this the product URL ?  `;
+                        
+                        let confirm_string;
+
+                        if(a_class != null && a_class != undefined){
+                            confirm_string = `URL : ${a_href}\nElement with class : [a].${a_class}\nIs this the product URL ?  `;
+                        }
+                        else{
+                            confirm_string = `URL : ${a_href}\nElement : [a]\nIs this the product URL ?  `;
+                        }
+                        
                         
                         
                         if(confirm(confirm_string) ){
