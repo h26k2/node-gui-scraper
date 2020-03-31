@@ -57,7 +57,6 @@ const saveMetaData = () => {
     let input_mainContainer = document.getElementById("main-container");
     let input_individualProduct = document.getElementById("individual-product");
     let input_productImages = document.getElementById("input-product-image");
-    let input_productPagination = document.getElementById("input-product-pagination");
     let input_cols = document.getElementById("columns").getElementsByTagName("input");
     
     let inputFieldsToCheck = [...user_inputs,input_mainContainer,
@@ -76,7 +75,6 @@ const saveMetaData = () => {
         productCatalog : input_mainContainer.value,
         productSingleContainer : input_individualProduct.value,
         productImagesContainer : input_productImages.value,
-        productPagination : input_productPagination.value,
         cols : {
 
         }
@@ -110,23 +108,20 @@ const saveMetaData = () => {
     }).then((res)=>{
         
         if(res.status == 200){ 
-            
-            res.json().then((d)=>{
-
-                alert(`Successfully Saved and Loaded Metadata!`);
-                document.getElementById("metadata-input").setAttribute("disabled",true);
-                document.getElementsByClassName("custom-file-label")[0].innerText = d;
-                let btn  = document.getElementById("btn-load-metadata");
-                btn.innerText = `Loaded Data`;
-                btn.setAttribute("disabled",true);
-
-            });
-
+            alert(`Successfully Saved Metadata!`);
         }
         else if(res.status == 204){
             
-            let custom_path ;
-            custom_path = prompt(`We couldn't detect the url of the website\nenter the custom path`);
+            let custom_path = null;
+
+            while(custom_path == null){
+                
+                custom_path = prompt(`We couldn't detect the url of the website\nenter the custom path`);
+                if(custom_path.length < 2){
+                    custom_path = null;
+                }
+
+            }
 
             fetch(`/saveMetaData?custom_path=${custom_path}`,{
                 method : 'POST',
@@ -137,22 +132,16 @@ const saveMetaData = () => {
                     dataToSend
                 })
             }).then((data)=>{
+
                 if(data.status == 200){
-
-                    alert(`Successfully Saved and Loaded Metadata!`);
-                    document.getElementById("metadata-input").setAttribute("disabled",true);
-                    document.getElementsByClassName("custom-file-label")[0].innerText = d;
-                    let btn  = document.getElementById("btn-load-metadata");
-                    btn.innerText = `Loaded Data`;
-                    btn.setAttribute("disabled",true);
-
+                    alert(`Successfully Saved Metadata!`);
                 }
                 else{
                     console.log(`error occured`);
                     alert(`Error occured saving metadata`);
                 }
             }).catch((err)=>{
-                alert(`Error occured!`);
+                alert(`Error occured, we couldn't save the metadata`);
                 console.log(err);
             })           
 
