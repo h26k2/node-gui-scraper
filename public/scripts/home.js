@@ -331,9 +331,15 @@ let currentImagesToDownload = undefined;
 
 const scrapProducts = () => {
 
-    let status = document.getElementById("scraping-status");
+    let statusElem = document.getElementById("scraping-status").getElementsByTagName("td")
+    let status = statusElem[0];
+    let pageScrapedStatus = statusElem[1];
+    let totalPageStatus = statusElem[2];
+    let totalProductStatus = statusElem[3];
+
+
     let metadata_loaded = document.getElementById("metadata-input").hasAttribute("disabled");
-    console.log('called again');
+   
     if(metadata_loaded != true){
         alert(`Please Load the metadata first, then scrap the products`);
         return;
@@ -369,9 +375,6 @@ const scrapProducts = () => {
     let has_page_current = button.hasAttribute("data-page-current"); 
 
 
-    /*if(button.hasAttribute("data-page") == false || button.hasAttribute("data-start") == false ||
-        button.hasAttribute("data-end") == false || button.hasAttribute("data-count") == false ||
-        button.hasAttribute("data-action") == false)*/
     if( (has_page_start == false || has_page_end == false || has_page_count == false || 
         has_page_current == false) && action == "findPageCount" ){
 
@@ -383,7 +386,8 @@ const scrapProducts = () => {
                 console.log(res);
                 res.json().then((d)=>{
                     console.log(`Total Pages are : ${d.val}`);
-                    status.innerText = `Total Pages are : ${d.val}`;
+                    status.innerText = `Successfully found total pages, next action will be started automatically after 10s`;
+                    totalPageStatus.innerText = d.val;
                     /*
                     button.setAttribute("data-page",s_page);
                     button.setAttribute("data-start",s_page);
@@ -395,7 +399,9 @@ const scrapProducts = () => {
                     button.setAttribute("data-page-current",s_page);
                     button.setAttribute("data-page-count",d.val);
                     button.setAttribute("data-action","scrapURLs");
-                    scrapProducts();
+                    setTimeout(()=>{
+                        scrapProducts();
+                    },10000)
 
                 });
             }
@@ -419,7 +425,7 @@ const scrapProducts = () => {
         if(page_current >= page_start && page_current <= page_end && page_current <= page_count){
         
             console.log(`sending request for page : ${page_current}`);
-            status.innerText = `scraping page(${page_current}) of ${page_end}`;
+            status.innerText = `Scraping page(${page_current})`;
     
             fetch(`/scrapURLs?page=${page_current}`,{method : 'POST',}).then((res)=>{
                 
