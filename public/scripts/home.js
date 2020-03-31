@@ -1,4 +1,4 @@
-"hello world"
+
 const checkForEmpty = (inputs) => {
 
     let check = false;
