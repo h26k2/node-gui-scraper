@@ -5,6 +5,8 @@ const saveMetaData = (app,fs) => {
     
     app.post(`/saveMetaData`,(req,res)=>{
         
+        console.log(`==> Request recieved for saving metadata <==`);
+
         let {dataToSend} = req.body;
         let {custom_path} = req.query;
 

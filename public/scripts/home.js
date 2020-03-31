@@ -53,7 +53,7 @@ const productDetailChooser = () => {
 
 const saveMetaData = () => {
 
-    let user_inputs = document.getElementsByClassName("user-input-field");
+    /*let user_inputs = document.getElementsByClassName("user-input-field");
     let input_mainContainer = document.getElementById("main-container");
     let input_individualProduct = document.getElementById("individual-product");
     let input_productImages = document.getElementById("input-product-image");
@@ -96,6 +96,15 @@ const saveMetaData = () => {
         ...temp_cols
     }
     
+    */
+
+    let dataToSend = fetchMarkupElements(true);
+
+    if(dataToSend == undefined){
+        return;
+    }
+
+    console.log(`Sending request to the server for saving metadata`);
 
     fetch(`/saveMetaData`,{
         method  : 'POST',
@@ -715,33 +724,6 @@ const viewScrapedProducts = () => {
 
 }
 
-const fillModal = (imagePaths) => {
-
-    let modal_body = document.getElementById("modal-product-images");
-    modal_body.innerHTML = "";
-    let temp_images_html = ``;
-    
-    for(let i=0 ; i<imagePaths.length ; i++){
-    
-        let temp_html = `
-            <div class="col-3 modal-img-main-con" onclick="productImageSelect(event)" oncontextmenu="featuredImageSelect(event)" data-clicked="no" >
-                <div class="col-img" style="background-image:url('${imagePaths[i]}')"></div>
-            </div>
-        `;
-    
-        temp_images_html += temp_html;
-    
-    }
-    
-    modal_body.innerHTML = temp_images_html;
-    
-}
-
-
-fillModal(["https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-"https://officialchansneakers.com/image/cache/catalog/d_social_login/44-570x570.jpeg",
-"https://officialchansneakers.com/image/cache/catalog/Adidas/16-570x570.JPG",
-"https://officialchansneakers.com/image/cache/catalog/d_social_login/27-570x570.jpeg"])
 
 const productImageSelect = (e) => {
     
@@ -1042,3 +1024,66 @@ const readData = (that) => {
     reader.readAsText(that.files[0]);
 
 }
+
+
+const checkMetadata = () => {
+    
+    
+
+    console.log(dataToSend);
+
+
+}
+
+const fetchMarkupElements = (validation) => {
+     
+    let user_inputs = document.getElementsByClassName("user-input-field");
+    let input_mainContainer = document.getElementById("main-container");
+    let input_individualProduct = document.getElementById("individual-product");
+    let input_productImages = document.getElementById("input-product-image");
+    let input_cols = document.getElementById("columns").getElementsByTagName("input");
+    
+    let inputFieldsToCheck = [...user_inputs,input_mainContainer,
+        input_individualProduct,input_productImages,...input_cols]
+
+    if(validation == true){
+        if(checkForEmpty(inputFieldsToCheck)){
+            alert(`You can't leave above fields empty...`);
+            return;
+        }
+    }
+    
+
+    let dataToSend = {
+        productCatalogURL : user_inputs[0].value,
+        productSecondPageURL  : user_inputs[1].value,
+        productSingleURL  : user_inputs[2].value,
+        productBrandName  : user_inputs[3].value,
+        productCatalog : input_mainContainer.value,
+        productSingleContainer : input_individualProduct.value,
+        productImagesContainer : input_productImages.value,
+        cols : {
+
+        }
+    }
+
+    
+    let temp_cols = [];
+    Array.from(input_cols).forEach((i_col)=>{
+        let name  = i_col.parentElement.getElementsByClassName("btn-choose")[0].getAttribute("data-val");
+        let val = i_col.value;
+
+        temp_cols.push(
+            {name,val}
+        )
+
+    }); 
+
+    dataToSend.cols = {
+        ...temp_cols
+    }
+
+    return dataToSend;
+
+}
+

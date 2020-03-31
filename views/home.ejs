@@ -155,7 +155,9 @@
     </div>
 
     <div class="row">
-        <div class="col-6"></div>
+        <div class="col-6">
+            <button class="btn btn-lg w-100 btn-primary" data-toggle="modal" data-target="#myModal" onclick="checkMetadata()">check metadata</button>
+        </div>
         <div class="col-6">
             <button class="btn btn-lg btn-danger w-100" onclick="saveMetaData()">save metadata</button>
         </div>
@@ -310,27 +312,34 @@
 
 
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+<button type="button" class="btn btn-primary" >
     Open modal
 </button>
 
 
 <!-- The Modal -->
 <div class="modal fade " id="myModal">
+
     <div class="modal-dialog modal-dialog-centered modal-xl">
+
       <div class="modal-content">
   
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Images to select</h4>
+          <h4 class="modal-title">Scraped Data</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
   
         <!-- Modal body -->
         <div class="modal-body">
             <div class="container">
-                <div class="row" id="modal-product-images">
-                    
+                <div class="row" >
+                    <div class="col-12">
+                        <p id="modal-status">please wait we are scraping a product</p>
+                    </div>
+                    <div class="col-12" id="modal-result-area">
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -345,64 +354,7 @@
 </div>
 
 
-<style>
 
-.modal-body .col-3{
-    position: relative;
-}
-
-.modal-body .col-3 .col-img{
-    height:150px;
-    background-size:cover;
-    background-position: center;
-    border:1px solid #ddd;
-}
-
-.modal-img-main-con{
-    position: relative;
-    margin-top:10px;
-    margin-bottom:10px;
-}
-
-.checked{
-    position: absolute;
-    width:40px;
-    height:40px;
-    border-radius: 50%;
-    top:-5%;
-    background:#a5dc86;
-    right:0;
-}
-
-.checked i , .featured i{
-    position: absolute;
-    width:auto;
-    height:auto;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    color:#fff;
-}
-
-
-
-.featured{
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    top: -5%;
-    background: #3fc3ee;
-    left: 0;
-}
-
-#viewing-n-editing button{
-    width:100%;
-    margin-top:1em;
-}
-
-
-</style>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
