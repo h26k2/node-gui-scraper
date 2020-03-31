@@ -769,6 +769,29 @@ app.post("/scrapProducts[prev]",async(req,res)=>{
 
 });
 
+app.post(`/validateMetadata`,(req,res)=>{
+    
+    console.log(`==> Request recieved for validating metadata <==`);
+    req.setTimeout(0);
+
+    let {productCatalogURL , productCatalog , productSingleContainer} = req.body.dataToSend;
+
+    /**
+     * Validation logic
+     * first go the the product catalog then scrape all single products element [scrape products links]
+     * after scraping this go to a product scrape its all the details. Then Find what is second page of the
+     * website then go to the second page peroform the same action
+    */
+
+    try{
+        
+    }
+    catch(err){
+
+    }
+
+})
+
 
 app.listen(port,()=>{
     console.log(`node app is live at port : ${port}`);

@@ -1028,9 +1028,26 @@ const readData = (that) => {
 
 const checkMetadata = () => {
     
+    let dataToSend = fetchMarkupElements(false);
     
+    console.log(`seding request for validating metadata`);
 
-    console.log(dataToSend);
+    fetch(`/validateMetadata`,{
+        method : 'POST',
+        headers : {
+            'Content-Type' : 'application/json;charset=utf-8'
+        },
+        body : JSON.stringify({
+            dataToSend
+        })
+    }).then((res)=>{
+
+        console.log(`response :`);
+        console.log(res);
+
+    }).catch((err)=>{
+        console.log(`Error occured while validating the metadata`);
+    })
 
 
 }
