@@ -12,7 +12,6 @@ const productDetail = require("./controller/requests/productDetail");
 const productImages = require("./controller/requests/productImages");
 const loadMetaData = require("./controller/requests/loadMetaData");
 const saveMetaData = require("./controller/requests/saveMetaData");
-const productPagination = require("./controller/requests/productPagination");
 const scrapImages = require("./controller/requests/scrapImages");
 const downloadImages = require("./controller/requests/downloadImages");
 const scrapProductDetails = require("./controller/requests/scrapProductDetails")
@@ -34,7 +33,6 @@ productDetail(app,puppeteer);
 productImages(app,puppeteer);
 saveMetaData(app,fs);
 loadMetaData(metaData,app);
-productPagination(app,puppeteer);
 
 scrapImages(app,metaData,xpathToIndex,puppeteer);
 downloadImages(app,axios,fs);

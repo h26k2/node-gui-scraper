@@ -1053,28 +1053,3 @@ const readData = (that) => {
     reader.readAsText(that.files[0]);
 
 }
-
-
-const paginationContainer = () => {
-
-    let catalogURL = document.getElementsByClassName("user-input-field")[0].value;
-
-    fetch(`/catalogPagination`,{
-        method : 'POST',
-        headers : {
-            'Content-Type' : 'application/json;charset=utf-8'
-        },
-        body : JSON.stringify({
-            url : catalogURL
-        })
-    }).then((res)=>{
-        res.json().then((data)=>{
-            document.getElementById("input-product-pagination").value = data;
-        });
-    }).catch((err)=>{
-        alert(`Error Occured!`);
-        console.log(err);
-    })
-
-
-}
