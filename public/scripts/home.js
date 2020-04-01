@@ -380,6 +380,9 @@ const scrapProducts = () => {
         button.setAttribute("data-page-current",s_page);
         button.setAttribute("data-page-end",e_page);
         button.setAttribute("data-action","scrapURLs");
+        statusStartPage.innerText = s_page;
+        statusCurrentPage.innerText = s_page;
+        statusEndPage.innerText = e_page;
         scrapProducts();
     }
 
@@ -417,6 +420,7 @@ const scrapProducts = () => {
                 }
                 else if(res.status == 500){
                     status.innerText = `Error occured while peforming the action, please check server console for error`;
+                    console.log(`error occured, check server console`);
                 }
                 
             }).catch((err)=>{
@@ -430,7 +434,7 @@ const scrapProducts = () => {
     else if(action == "scrapProduct"){
         
         console.log(`==> Scraping Product Details <==`);
-
+        
         //let productSeq = parseInt(button.getAttribute("data-product-scraped"));
         let scraped_product_start = parseInt(button.getAttribute("data-scraped-product-start"));
         let scraped_product_end = parseInt(button.getAttribute("data-scraped-product-end"));
@@ -440,7 +444,7 @@ const scrapProducts = () => {
             (scraped_product_current >= scraped_product_start) && (scraped_product_current <= scraped_product_end) ){
             
             console.log(`==> product being scraped : ${productUrlsToScrap[scraped_product_current]} of page ${page_current}`);
-
+            status.innerText = `scraping details of product ${scraped_product_current + 1} of page : ${page_current}`
             fetch(`/scrapProductDetails`,{
                 method : 'POST',
                 headers : {
@@ -449,8 +453,8 @@ const scrapProducts = () => {
                 body : JSON.stringify({link : productUrlsToScrap[scraped_product_current]})
             }).then((res)=>{
                 
-                console.log(`==> product ${scraped_product_current+1} successfully scraped of page : ${page_current} <==`);
-
+                console.log(`==> product ${scraped_product_current} successfully scraped of page : ${page_current} <==`);
+                status.innerText = `successfully scraped product details, next action will start automatically`;
                 res.json().then((data)=>{
 
                     products_scraped.push(...data);
@@ -481,6 +485,9 @@ const scrapProducts = () => {
 
         if(/*urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 */
             (scraped_product_current >= scraped_product_start) && (scraped_product_current <= scraped_product_end)){
+
+                status.innerText = `Sending request for image scraping of product : ${scraped_product_current+1}`
+
             fetch(`/scrapImages`,{
                 method  : 'POST',
                 headers : {
@@ -492,13 +499,15 @@ const scrapProducts = () => {
                 res.json().then((imageRes)=>{
                     console.log(`successfully scraped product images, next product wil be automatically scraped after 10secs`);
                     all_products_url_images.push([...imageRes]);
-                   
+                    
                     //products_scraped[scraped_product_current] = [...products_scraped[scraped_product_current],[...imageRes]];
                     
                     if(scraped_product_current<=scraped_product_end){
                         scraped_product_current++;
+                        statusProductsScraped.innerText = scraped_product_current;
                         button.setAttribute("data-scraped-product-current",scraped_product_current);
-                        button.setAttribute("data-action","scrapProduct")
+                        button.setAttribute("data-action","scrapProduct");
+                        status.innerText = `Successfully scraped product : ${scraped_product_current} of page : ${page_current}\nnext product will scrape automatically, please wait`;
                         setTimeout(()=>{
                             scrapProducts();
                         },10000)
@@ -507,12 +516,15 @@ const scrapProducts = () => {
                         if(page_current < page_end){
                             page_current++;
                             button.setAttribute("data-action","scrapURLs");
+                            statusCurrentPage.innerText = page_current;
+                            status.innerText = `Successfully scraped product : ${scraped_product_current} of page : ${page_current}\nnext page will scrape automatically, please wait`;
                             setTimeout(()=>{
                                 scrapProducts();
                             },10000)
                         }
                         else{
                             console.log(`all done`);
+                            status.innerText = `Successfully scraped all products`;
                         }
                     }
 
