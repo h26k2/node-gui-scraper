@@ -325,7 +325,7 @@ const productDetailLink = (e) => {
 let products_scraped = [];
 let all_products_url_images = [];
 let productUrlsToScrap = [];
-let currentImagesToDownload = undefined;
+
 
 const scrapProducts = () => {
 
@@ -456,13 +456,12 @@ const scrapProducts = () => {
                 res.json().then((data)=>{
 
                     products_scraped.push(...data);
-                    /*
                     console.log(`Timing out for 10secs, image scraping will start automatically`);
-
                     setTimeout(()=>{
                         button.setAttribute("data-action","scrapImages");
                         scrapProducts();
-                    },10000);             */
+                    },10000);   
+
                 });
 
             }).catch((err)=>{
@@ -493,15 +492,33 @@ const scrapProducts = () => {
             }).then((res)=>{
                 
                 res.json().then((imageRes)=>{
-                    console.log(`successfully scraped product images, it will be downloaded automatically after 10secs`);
+                    console.log(`successfully scraped product images, next product wil be automatically scraped after 10secs`);
                     all_products_url_images.push([...imageRes]);
-                    currentImagesToDownload = [...imageRes]
+                   
                     //products_scraped[scraped_product_current] = [...products_scraped[scraped_product_current],[...imageRes]];
                     
-                    setTimeout(()=>{
-                        button.setAttribute("data-action","downloadImages");
-                        scrapProducts();
-                    },10000)
+                    if(scraped_product_current<=scraped_product_end){
+                        scraped_product_current++;
+                        button.setAttribute("data-scraped-product-current",scraped_product_current);
+                        button.setAttribute("data-action","scrapProduct")
+                        setTimeout(()=>{
+                            scrapProducts();
+                        },10000)
+                    }
+                    else{
+                        if(page_current < page_end){
+                            page_current++;
+                            button.setAttribute("data-action","scrapURLs");
+                            setTimeout(()=>{
+                                scrapProducts();
+                            },10000)
+                        }
+                        else{
+                            console.log(`all done`);
+                        }
+                    }
+
+                    
 
                 });
                 
