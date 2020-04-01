@@ -769,25 +769,109 @@ app.post("/scrapProducts[prev]",async(req,res)=>{
 
 });
 
-app.post(`/validateMetadata`,(req,res)=>{
+app.post(`/validateMetadataURLS`,async(req,res)=>{
     
     console.log(`==> Request recieved for validating metadata <==`);
     req.setTimeout(0);
 
     let {productCatalogURL , productCatalog , productSingleContainer} = req.body.dataToSend;
 
-    /**
-     * Validation logic
-     * first go the the product catalog then scrape all single products element [scrape products links]
-     * after scraping this go to a product scrape its all the details. Then Find what is second page of the
-     * website then go to the second page peroform the same action
-    */
-
     try{
-        
+    
+        let browser = await puppeteer.launch({headless: false});
+        let page = await browser.newPage();
+
+        await page.goto(productCatalogURL,{waitUntil : 'networkidle0' , timeout : 0 });
+
+        let productURLs = await page.evaluate((productCatalog,productSingleContainer)=>{
+
+            let product_links = [];
+            let mainContainer = document.getElementsByClassName(productCatalog)[0];
+            
+            let st_in = productSingleContainer.indexOf("\[");
+            let st_en = productSingleContainer.indexOf("\]");
+
+            if(st_in < 0 || st_en < 0){
+                console.log(`unvalid`);
+                return `h26k2-unvalid|can't find main container`;
+            }
+
+            let productClass = productSingleContainer.substring(st_in +1 , st_en );
+            let products = mainContainer.getElementsByClassName(productClass);
+
+            if(products.length < 0 == true){
+                return `h26k2-unvalid|can't find products`
+            }
+
+            let product_anchor = {};
+
+            if(productSingleContainer.includes("xpath")){
+
+                let val = productSingleContainer.substr(productSingleContainer.indexOf("|") + 1,productSingleContainer.length - 1);
+
+                product_anchor = {
+                    type : 'xpath',
+                    value : val
+                }
+
+            }
+            else{
+                //FOR CLASS REMAINING
+            }
+
+            if(product_anchor.type == "xpath" ){
+                
+                let xpath_elem = product_anchor.value;
+                xpath_elem.substr(product_anchor.value.indexOf("|"+1),product_anchor.value.length - 1);
+
+                let xpath_elems = xpath_elem.split("/");
+                let xpath_elem_index = [];
+
+                Array.from(xpath_elems).forEach((elem)=>{
+                    
+                    let s = elem.indexOf(`[`) + 1;
+                    let e = elem.length - 1;
+
+                    xpath_elem_index.push(parseInt(elem.substr(s,e)))
+
+                });
+                
+                Array.from(products).forEach((p)=>{
+
+                    if(p !== undefined ){
+                        let temp = p;
+                        for(let i=0 ; i<xpath_elem_index.length ; i++){
+                            temp = temp.children[xpath_elem_index[i]];
+                        }
+                        product_links.push(temp.getAttribute("href"));
+                        
+                    }
+
+                });
+
+            }
+            else{
+
+            }
+
+            return {
+                links : product_links
+            }
+
+
+        },productCatalog,productSingleContainer);
+
+        console.log(`==> Succesfully found product URLS <==`);
+        console.log(productURLs);
+
+        res.status(200).json(productURLs);
+
+        await browser.close();
+
     }
     catch(err){
-
+        console.log(`error : ${err}`);
+        res.status(204).end();
     }
 
 })

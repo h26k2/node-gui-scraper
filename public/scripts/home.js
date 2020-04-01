@@ -1030,9 +1030,9 @@ const checkMetadata = () => {
     
     let dataToSend = fetchMarkupElements(false);
     
-    console.log(`seding request for validating metadata`);
+    console.log(`seding request for validating metadata...`);
 
-    fetch(`/validateMetadata`,{
+    fetch(`/validateMetadataURLS`,{
         method : 'POST',
         headers : {
             'Content-Type' : 'application/json;charset=utf-8'
@@ -1042,11 +1042,20 @@ const checkMetadata = () => {
         })
     }).then((res)=>{
 
-        console.log(`response :`);
-        console.log(res);
+        if(res.status == 200){
+            res.json().then((r)=>{
+                console.log(r);
+            })
+        }
+        else if(res.status == 204){
+            alert(`An Error occured whle validating the product URLS, try again or check the server console for the error`);
+        }
+
+
 
     }).catch((err)=>{
         console.log(`Error occured while validating the metadata`);
+        console.log(err);
     })
 
 
