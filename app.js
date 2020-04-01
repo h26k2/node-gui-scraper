@@ -874,8 +874,89 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
         res.status(204).end();
     }
 
-})
+});
 
+app.post(`/validateMetadataProduct`,async(req,res)=>{
+    
+    console.log(`==> Request recieved for validating metadata <==`);
+
+    req.setTimeout(0);
+
+    let {productSingleURL , cols} = req.body.dataToSend;
+
+    //finding indexes 
+
+    let indexes = [];
+    let objCount = 0;
+
+    Object.entries(cols).forEach((field)=>{
+        let {val} = field[1];
+        indexes[objCount] = xpathToIndex(val);
+        objCount++;
+    });
+
+    //scraping stuff
+
+    let productDetails = [];
+
+    try{
+        
+        let browser = await puppeteer.launch({headless: false});
+        let page = await browser.newPage();
+
+        await page.goto(productSingleURL,{waitUntil : 'networkidle0' , timeout : 0 });
+
+        page.on('console',async(msg)=>{
+            let data = msg.text();
+            if(data.match("h26k2-data")){
+                data = data.replace("h26k2-data:","")
+                data = data.split("[--]");
+                productDetails.push([...data]);
+                await browser.close();
+                console.log(`successfuly found product details...`);
+                res.status(200).json(productDetails);
+            }
+
+        })
+
+        await page.evaluate((indexes)=>{
+
+            let temp_product_details = [];
+
+            for(let i=0 ; i<indexes.length ; i++){
+                temp = document.body;
+                for(let j=0 ; j<indexes[i].length ; j++){
+                    let temp_index = indexes[i][j];
+                    temp = temp.children[temp_index];
+                }
+                temp_product_details.push(temp.innerText);
+                console.log(temp_product_details);
+            } 
+
+            let temp_str = ``;
+            
+            for(let i=0 ; i<temp_product_details.length ; i++){   
+                if(i == temp_product_details.length - 1){
+                    temp_str += `${temp_product_details[i]}`;
+                }
+                else{
+                    temp_str += `${temp_product_details[i]}[--]`;
+                }
+            }
+
+            console.log(`h26k2-data:${temp_str}`);
+
+        },indexes)
+
+    }
+    catch(err){
+        console.log(`error occured`);
+        console.log(err);
+        res.status(500).end();
+    }
+
+
+});
 
 app.listen(port,()=>{
     console.log(`node app is live at port : ${port}`);

@@ -1025,14 +1025,14 @@ const readData = (that) => {
 
 }
 
-let firstPageURLs ;
+let firstPageURLs = ["https://www.charcoal.com.pk/casual_wear?product_id=4137"] ;
 const checkMetaData = () => {
     
     let dataToSend = fetchMarkupElements(false);
     let status = document.getElementById("modal-status");
     let btn = document.getElementById("modal-btn");
     let action = btn.getAttribute("data-action");
-
+    status.innerText  = "Please Wait...";
 
     if(action == "scrapFirstURLs"){
 
@@ -1086,7 +1086,80 @@ const checkMetaData = () => {
         
         status.innerText = "Sending Request for scraping product details";
 
+        fetch(`/validateMetadataProduct`,{
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify({
+                dataToSend,
+            })
+        }).then((res)=>{
+            
+            res.json().then((r)=>{
+                r = r[0];
+                status.innerText = `Successfully found product details. of this product \n ${dataToSend.productSingleURL}\n Next action will be started automatically`;
+                
+                let temp_html = `<ul>`;
+                for(let i=0 ; i<r.length  ;i++){
+                    temp_html += `<li>${r[i]}</li>`
+                }
+                temp_html += `</ul>`;
+                document.getElementById("product-details").innerHTML = temp_html;
+                btn.setAttribute("data-action","findImages");
+
+                setTimeout(()=>{
+                    checkMetaData();
+                },10000);
+                
+            });
+        }).catch((err)=>{
+            console.log(err);
+            alert(`Error occured, please try again`);
+        })
+
+
+    }
+    else if(action == "scrapFirstProduct2"){
         
+        status.innerText = "Sending Request for scraping product details";
+
+        fetch(`/validateMetadataProduct`,{
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify({
+                dataToSend
+            })
+        }).then((res)=>{
+
+        }).catch((err)=>{
+            console.log(err);
+            alert(`Error occured, please try again`);
+        })
+
+
+    }
+    else if(action == "scrapFirstProduct1"){
+        
+        status.innerText = "Sending Request for scraping product details";
+
+        fetch(`/validateMetadataProduct`,{
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify({
+                dataToSend
+            })
+        }).then((res)=>{
+
+        }).catch((err)=>{
+            console.log(err);
+            alert(`Error occured, please try again`);
+        })
+
 
     }
 

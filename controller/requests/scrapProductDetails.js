@@ -58,7 +58,7 @@ const scrapProductDetails = (app,metaData,puppeteer,xpathToIndex) => {
     
                     }
     
-                }) ;
+                });
     
                 //page evaluation method pupeeteer
                 await page.evaluate((indexes)=>{

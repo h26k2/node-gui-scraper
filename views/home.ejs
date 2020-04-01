@@ -156,7 +156,7 @@
 
     <div class="row">
         <div class="col-6">
-            <button class="btn btn-lg w-100 btn-primary" data-toggle="modal" data-target="#myModal" onclick="checkMetaData()" data-action="scrapFirstURLs" id="modal-btn">check metadata</button>
+            <button class="btn btn-lg w-100 btn-primary" data-toggle="modal" data-target="#myModal" >check metadata</button>
         </div>
         <div class="col-6">
             <button class="btn btn-lg btn-danger w-100" onclick="saveMetaData()">save metadata</button>
@@ -335,7 +335,8 @@
             <div class="container">
                 <div class="row" >
                     <div class="col-12">
-                        <p id="modal-status">please wait we are scraping a product</p>
+                        <p id="modal-status">click on this button to start scraping</p>
+                        <button onclick="checkMetaData()" data-action="scrapFirstProduct" id="modal-btn" class="btn btn-primary">check details</button>
                     </div>
                 </div>
                 <div class="row">
@@ -345,7 +346,9 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <div id=""
+                        <div id="product-details">
+                            
+                        </div>
                     </div>
                 </div>
             </div>
