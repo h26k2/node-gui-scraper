@@ -1025,7 +1025,7 @@ const readData = (that) => {
 
 }
 
-let firstPageURLs = ["https://www.charcoal.com.pk/casual_wear?product_id=4137"] ;
+let firstPageURLs  ;
 const checkMetaData = () => {
     
     let dataToSend = fetchMarkupElements(false);
@@ -1139,13 +1139,13 @@ const checkMetaData = () => {
 
                 let temp_html = `<ul>`;
                 for(let i=0 ; i<r.length ; i++){
-                    temp_html += `<img src="${r[i]}" style="width:50px;margin:5px;"/>`
+                    temp_html += `<li><img src="${r[i]}" style="width:50px;margin:5px;"/></li>`
                 }
                 temp_html += `</ul>`;
                 document.getElementById("product-modal-img").innerHTML = temp_html;
 
                 setTimeout(()=>{
-                    checkMetaData();
+                    //checkMetaData();
                 },10000);
 
             });
