@@ -329,11 +329,14 @@ let productUrlsToScrap = [];
 
 const scrapProducts = () => {
 
-    let statusElem = document.getElementById("scraping-status").getElementsByTagName("td")
-    let status = statusElem[0];
-    let pageScrapedStatus = statusElem[1];
-    let totalPageStatus = statusElem[2];
-    let totalProductStatus = statusElem[3];
+    let statusElem = document.getElementById("scraping-status").getElementsByTagName("p");
+    let  status ,statusCurrentPage , statusStartPage , statusEndPage,statusProductsScraped;
+
+    status = statusElem[0].getElementsByTagName("span")[0];
+    statusCurrentPage = statusElem[1].getElementsByTagName("span")[0];
+    statusStartPage = statusElem[2].getElementsByTagName("span")[0];
+    statusEndPage = statusElem[3].getElementsByTagName("span")[0];
+    statusProductsScraped = statusElem[4].getElementsByTagName("span")[0];
 
 
     let metadata_loaded = document.getElementById("metadata-input").hasAttribute("disabled");
@@ -389,7 +392,7 @@ const scrapProducts = () => {
         if(page_current >= page_start && page_current <= page_end){
         
             console.log(`sending request for page : ${page_current}`);
-            status.innerText = `Scraping page(${page_current})`;
+            status.innerText = `sending request for page ${page_current} to scrape`;
     
             fetch(`/scrapURLs?page=${page_current}`,{method : 'POST'}).then((res)=>{
                 
@@ -397,32 +400,27 @@ const scrapProducts = () => {
 
                     res.json().then((data)=>{
                         console.log(`successfully scraped ${data.length} URLS from page : ${page_current} `);
-                        status.innerText = `successfully scraped ${data.length} URLS from page : (${page_current}) \nTiming Out for 10secs`;
+                        status.innerText = `successfully scraped ${data.length} products URL from page : ${page_current}\nnext action will be started automatically, please wait`;
                         console.log(`timing out for 10sec`);
                         //products_scraped.push(...data);
                         productUrlsToScrap.push(...data);
                         setTimeout(()=>{
-                            /*
-                            button.setAttribute("data-action","scrapProduct");
-                            button.setAttribute("data-product-scraped","0");
-                            */
-
                             button.setAttribute("data-action","scrapProduct");
                             button.setAttribute("data-scraped-product-start","0");
                             button.setAttribute("data-scraped-product-current","0");
                             button.setAttribute("data-scraped-product-end",data.length - 1);
                             scrapProducts();
-
                         },10000);
         
                     });
 
                 }
                 else if(res.status == 500){
-                    status.innerText = `Error occured while finding pages count, Please check server console or try again`;
+                    status.innerText = `Error occured while peforming the action, please check server console for error`;
                 }
                 
             }).catch((err)=>{
+                status.innerText = `Error occured while performing action`;
                 console.log(`error : ${err}`);
             })
     
