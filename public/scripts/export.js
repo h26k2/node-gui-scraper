@@ -45,7 +45,7 @@ const generateCSV = () => {
 
     let data = getDataFromTable();
     let {headings , records} = data;
-
+    
     let rows = [] , i;
 
     for(i=0 ; i<headings.length ; i++){
@@ -58,7 +58,7 @@ const generateCSV = () => {
         }
 
     }
-
+    
     for(i=0 ; i<records.length ; i++){
 
         for(let j=0 ; j<records[i].length ; j++){
@@ -66,7 +66,7 @@ const generateCSV = () => {
             let lastchar = (j == records[i].length - 1) ? `\n` : `,`;            
             
             if(typeof records[i][j] == "string"){
-
+                
                 if(records[i][j].match(/\,/gi)){
                     rows.push(`\"${records[i][j]}\"${lastchar}`);
                 }
@@ -77,13 +77,21 @@ const generateCSV = () => {
             }
             else if(typeof records[i][j] == "object" && Array.isArray(records[i][j])){
                 
-                let temp = `\"`;
-                Array.from(records[i][j]).forEach((record)=>{
-                    temp += `${record},`
-                });
-                temp = temp.substr(0,temp.length - 1);
-                temp += `\"`;
-                rows.push(`${temp}${lastchar}`);
+                if(records[i][j].length > 1){
+
+                    let temp = `\"`;
+                    Array.from(records[i][j]).forEach((record)=>{
+                        temp += `${record},`
+                    });
+                    temp = temp.substr(0,temp.length - 1);
+                    temp += `\"`;
+                    rows.push(`${temp}${lastchar}`);
+                    
+                }
+                else{
+                    rows.push(lastchar);
+                }
+                
 
             }
             else{

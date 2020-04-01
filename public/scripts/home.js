@@ -541,9 +541,6 @@ const scrapProducts = () => {
 
     }
    
-
-    
-
 }
 
 const handleScrapRequest = (e) => {
