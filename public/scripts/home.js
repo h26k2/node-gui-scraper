@@ -1025,38 +1025,70 @@ const readData = (that) => {
 
 }
 
-
-const checkMetadata = () => {
+let firstPageURLs ;
+const checkMetaData = () => {
     
     let dataToSend = fetchMarkupElements(false);
-    
-    console.log(`seding request for validating metadata...`);
+    let status = document.getElementById("modal-status");
+    let btn = document.getElementById("modal-btn");
+    let action = btn.getAttribute("data-action");
 
-    fetch(`/validateMetadataURLS`,{
-        method : 'POST',
-        headers : {
-            'Content-Type' : 'application/json;charset=utf-8'
-        },
-        body : JSON.stringify({
-            dataToSend
-        })
-    }).then((res)=>{
 
-        if(res.status == 200){
-            res.json().then((r)=>{
-                console.log(r);
+    if(action == "scrapFirstURLs"){
+
+        console.log(`seding request for validating metadata...`);
+
+        fetch(`/validateMetadataURLS`,{
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify({
+                dataToSend
             })
-        }
-        else if(res.status == 204){
-            alert(`An Error occured whle validating the product URLS, try again or check the server console for the error`);
-        }
+        }).then((res)=>{
+
+            if(res.status == 200){
+                res.json().then((r)=>{
+                    console.log(r);
+                    console.log(`successfully scraped first page URLs`);
+                    firstPageURLs = r.links;
+                    
+                    let temp_html = `<ul>`;
+                    for(let i=0 ; i<firstPageURLs.length ; i++){
+                        temp_html += `<li>${firstPageURLs[i]}</li>`
+                    }
+                    temp_html += `</ul>`
+
+                    document.getElementById("fist-page-urls").innerHTML = temp_html;
+                    status.innerText = `Successfully scraped urls from first page, next action will be started automatically`;
+                    btn.setAttribute("data-action","scrapFirstProduct");
+
+                    setTimeout(()=>{
+                        checkMetaData();
+                    },10000)
+
+                })
+            }
+            else if(res.status == 204){
+                alert(`An Error occured whle validating the product URLS, try again or check the server console for the error`);
+            }
 
 
+        }).catch((err)=>{
+            console.log(`Error occured while validating the metadata`);
+            console.log(err);
+        });
 
-    }).catch((err)=>{
-        console.log(`Error occured while validating the metadata`);
-        console.log(err);
-    })
+    }
+
+    else if(action == "scrapFirstProduct"){
+        
+        status.innerText = "Sending Request for scraping product details";
+
+        
+
+    }
 
 
 }
