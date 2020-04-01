@@ -1,37 +1,4 @@
 
-products_scraped = [
-    ["Bottega Vaenta Clutch","$289.00","Categories Bags Bottega Veneta",`Description
-
-    Product code #191213-23
-    100% Genuine Leather Matching Quality of Original Louis Vuitton Production (imported from Europe)
-    Comes with dust bag, authentication cards, box, shopping bag and pamphlets. Receipts are only included upon request.
-    Counter Quality Replica (True Mirror Image Replica)
-    Dimensions: 35x19x1
-    
-    Our Guarantee: The handbag you receive will look exactly as pictured on our professionally shot photos on our website (of our own stock) in terms of quality and description! Order from Designer Discreet and experience the difference today!
-    
-    Receive 15% off when you pay through Moneygram, Western Union, or wire transfer.`],
-    [
-        "Bottega Vaenta Clutch","$289.00","Categories Bags Bottega Veneta",
-        `Description
-
-        Product code #191213-24
-        100% Genuine Leather Matching Quality of Original Louis Vuitton Production (imported from Europe)
-        Comes with dust bag, authentication cards, box, shopping bag and pamphlets. Receipts are only included upon request.
-        Counter Quality Replica (True Mirror Image Replica)
-        Dimensions: 35x19x1
-        
-        Our Guarantee: The handbag you receive will look exactly as pictured on our professionally shot photos on our website (of our own stock) in terms of quality and description! Order from Designer Discreet and experience the difference today!
-        
-        Receive 15% off when you pay through Moneygram, Western Union, or wire transfer.`
-    ]
-]
-
-all_products_url_images = [
-    ["http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5266-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5267-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5273-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5272-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5271-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5270-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5269-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5268-1-100x100.jpg"],
-    ["http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5266-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5267-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5273-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5272-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5271-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5270-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5269-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5268-1-100x100.jpg"],
-]
-
 
 const viewScrapedData = () => {
 
