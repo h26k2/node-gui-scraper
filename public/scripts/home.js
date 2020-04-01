@@ -827,49 +827,73 @@ const applyAction = () => {
 
 }
 
-const something = () => {
+let customRoute = undefined;
+
+const findRoutesOfPages = (that) => {
     
-    let s_page = document.getElementById("second-page").value;
-    let url = {};
-
-    if(s_page.match(/\?/gi)){
-        
-        url.type = "query";
-
-        if(s_page.match(/page=[0-9]{1,5}/gi)){
-            
-            url.symbol = "page";
-        }
-        else if(s_page.match(/p=[0-9]{1,5}/gi)){
-            
-            url.symbol = "p";            
-        }
-
-    }
-    else if(s_page.match(/\/page\//gi)){
-        
-        url = {
-            type : "id",
-            symbol : "page"
-        }
-    }
-    else if(s_page.match(/\/p\//gi)){
-        
-        url = {
-            type : "id",
-            symbol : "p"
-        }
-    }
-    else{
-        alert(`We're unable to analyse the route path of the website...`);
-        let custom_path  = prompt(`Please enter the custom path `);
-        url = {
-            type : "custom",
-            symbol : custom_path
-        }
-    }
+    let url = that.value;
     
-    console.log(url);
+    if( (url.match("https://") || url.match("http://") ) && url.length > 10 ){
+    
+        if(url.match(/\?/gi)){
+            
+            url.type = "query";
+
+            if(url.match(/page=[0-9]{1,5}/gi)){
+                url.symbol = "page";
+            }
+            else if(url.match(/p=[0-9]{1,5}/gi)){
+                url.symbol = "p";            
+            }
+            else{
+                
+                let  input = undefined;
+                while(input == undefined){
+                    input = prompt(`We couldn't recongizes the next page path, please enter the path by yourself`);
+                    if( (input.match("https://") || input.match("http://")) == false && input.length < 10 ){
+                        input = undefined;    
+                    }
+                    else{
+                        customRoute = input;
+                    }
+                }
+
+            }
+
+        }
+        
+        else if(url.match(/\/page\//gi)){
+            
+            url = {
+                type : "id",
+                symbol : "page"
+            }
+        }
+
+        else if(url.match(/\/p\//gi)){
+            
+            url = {
+                type : "id",
+                symbol : "p"
+            }
+        }
+
+        else{
+            
+            let  input = undefined;
+            while(input == undefined){
+                input = prompt(`We couldn't recongizes the next page path, please enter the path by yourself`);
+                if( (input.match("https://") || input.match("http://")) == false && input.length < 10 ){
+                    input = undefined;    
+                }
+                else{
+                    customRoute = input;
+                }
+            }
+
+        }
+
+    }
 
 }
 
@@ -949,7 +973,7 @@ const readData = (that) => {
 
 }
 
-let firstPageURLs  ;
+
 const checkMetaData = () => {
     
     let dataToSend = fetchMarkupElements(false);
@@ -976,7 +1000,7 @@ const checkMetaData = () => {
                 res.json().then((r)=>{
                     console.log(r);
                     console.log(`successfully scraped first page URLs`);
-                    firstPageURLs = r.links;
+                    let firstPageURLs = r.links;
                     
                     let temp_html = `<ul>`;
                     for(let i=0 ; i<firstPageURLs.length ; i++){
@@ -1080,11 +1104,11 @@ const checkMetaData = () => {
 
 
     }
-    else if(action == "scrapFirstProduct1"){
+    else if(action == "scrapRoutes"){
         
         status.innerText = "Sending Request for scraping product details";
 
-        fetch(`/validateMetadataProduct`,{
+        fetch(`/validateMetadataRoute`,{
             method : 'POST',
             headers : {
                 'Content-Type' : 'application/json;charset=utf-8'
@@ -1093,7 +1117,7 @@ const checkMetaData = () => {
                 dataToSend
             })
         }).then((res)=>{
-
+            console.log(res);
         }).catch((err)=>{
             console.log(err);
             alert(`Error occured, please try again`);

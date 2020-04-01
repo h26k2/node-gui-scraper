@@ -53,7 +53,7 @@
             <p>Enter second page URL</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control user-input-field"/>
+            <input type="text" class="form-control user-input-field" onblur="findRoutesOfPages(this)"/>
         </div>
     </div>
 
@@ -300,12 +300,6 @@
 </div>
 
 
-
-<button type="button" class="btn btn-primary" >
-    Open modal
-</button>
-
-
 <!-- The Modal -->
 <div class="modal fade " id="myModal">
 
@@ -318,14 +312,14 @@
           <h4 class="modal-title">Scraped Data</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-  
+        
         <!-- Modal body -->
         <div class="modal-body">
             <div class="container">
                 <div class="row" >
                     <div class="col-12">
                         <p id="modal-status">click on this button to start scraping</p>
-                        <button onclick="checkMetaData()" data-action="scrapFirstURLs" id="modal-btn" class="btn btn-primary">check details</button>
+                        <button onclick="checkMetaData()" data-action="scrapRoutes" id="modal-btn" class="btn btn-primary">check details</button>
                     </div>
                 </div>
                 <div class="row">
