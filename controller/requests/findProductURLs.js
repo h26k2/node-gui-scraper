@@ -75,13 +75,18 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
                         xpath_elem_index.push(parseInt(elem.substr(s,e)))
 
                     });
-                    console.log(`ye rha`);
-                    console.log(xpath_elem_index);
                     
                     Array.from(products).forEach((p)=>{
+
                         if(p !== undefined ){
-                            product_links.push(p.children[0].getAttribute("href"));
+
+                            let temp = p;
+                            for(let i=0 ; i<xpath_elem_index.length ; i++){
+                                temp = temp.children[xpath_elem_index[i]];
+                            }
+                            product_links.push(temp.getAttribute("href"));
                         }
+
                     });
 
                 }

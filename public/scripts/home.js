@@ -369,58 +369,23 @@ const scrapProducts = () => {
 
     let has_page_start = button.hasAttribute("data-page-start");
     let has_page_end = button.hasAttribute("data-page-end");
-    let has_page_count = button.hasAttribute("data-page-count");
     let has_page_current = button.hasAttribute("data-page-current"); 
 
 
-    if( (has_page_start == false || has_page_end == false || has_page_count == false || 
-        has_page_current == false) && action == "findPageCount" ){
-
-        console.log(`finding pages count`);
-        status.innerText = `Finding Pages Count`;
-        fetch(`/findPagesCount`).then((res)=>{
-            
-            if(res.status == 200){
-                console.log(res);
-                res.json().then((d)=>{
-                    console.log(`Total Pages are : ${d.val}`);
-                    status.innerText = `Successfully found total pages, next action will be started automatically after 10s`;
-                    totalPageStatus.innerText = d.val;
-                    /*
-                    button.setAttribute("data-page",s_page);
-                    button.setAttribute("data-start",s_page);
-                    button.setAttribute("data-end",e_page);
-                    button.setAttribute("data-count",d.val);*/
-                    
-                    button.setAttribute("data-page-start",s_page);
-                    button.setAttribute("data-page-end",e_page);
-                    button.setAttribute("data-page-current",s_page);
-                    button.setAttribute("data-page-count",d.val);
-                    button.setAttribute("data-action","scrapURLs");
-                    setTimeout(()=>{
-                        scrapProducts();
-                    },10000)
-
-                });
-            }
-            
-            
-        }).catch((err)=>{
-            status.innerText = `Error occured, finding pages count. Please check console or try again`;
-            console.log(err);
-        });
-
-
+    if( (has_page_start == false || has_page_end == false || has_page_current == false)){
+        button.setAttribute("data-page-start",s_page);
+        button.setAttribute("data-page-current",s_page);
+        button.setAttribute("data-page-end",e_page);
+        scrapProducts();
     }
 
     let page_current = parseInt(button.getAttribute("data-page-current"));
     let page_start = parseInt(button.getAttribute("data-page-start"));
     let page_end = parseInt(button.getAttribute("data-page-end"));
-    let page_count = parseInt(button.getAttribute("data-page-count"));
 
     if(action == "scrapURLs"){
 
-        if(page_current >= page_start && page_current <= page_end && page_current <= page_count){
+        if(page_current >= page_start && page_current <= page_end){
         
             console.log(`sending request for page : ${page_current}`);
             status.innerText = `Scraping page(${page_current})`;
