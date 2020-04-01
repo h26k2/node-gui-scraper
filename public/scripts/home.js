@@ -376,6 +376,7 @@ const scrapProducts = () => {
         button.setAttribute("data-page-start",s_page);
         button.setAttribute("data-page-current",s_page);
         button.setAttribute("data-page-end",e_page);
+        button.setAttribute("data-action","scrapURLs");
         scrapProducts();
     }
 
@@ -390,7 +391,7 @@ const scrapProducts = () => {
             console.log(`sending request for page : ${page_current}`);
             status.innerText = `Scraping page(${page_current})`;
     
-            fetch(`/scrapURLs?page=${page_current}`,{method : 'POST',}).then((res)=>{
+            fetch(`/scrapURLs?page=${page_current}`,{method : 'POST'}).then((res)=>{
                 
                 if(res.status == 200){
 
@@ -450,17 +451,18 @@ const scrapProducts = () => {
                 body : JSON.stringify({link : productUrlsToScrap[scraped_product_current]})
             }).then((res)=>{
                 
-                console.log(`==> product ${scraped_product_current} successfully scraped of page : ${page_current} <==`);
+                console.log(`==> product ${scraped_product_current+1} successfully scraped of page : ${page_current} <==`);
 
                 res.json().then((data)=>{
 
                     products_scraped.push(...data);
+                    /*
                     console.log(`Timing out for 10secs, image scraping will start automatically`);
 
                     setTimeout(()=>{
                         button.setAttribute("data-action","scrapImages");
                         scrapProducts();
-                    },10000);             
+                    },10000);             */
                 });
 
             }).catch((err)=>{
@@ -511,74 +513,7 @@ const scrapProducts = () => {
         
 
     }
-    else if(action == "downloadImages"){
-        
-        if(currentImagesToDownload != undefined){
-            
-            console.log(`sending request for downloading images....`);
-
-            fetch(`/downloadImages`,{
-                method : 'POST',
-                headers : {
-                    'Content-Type' : 'application/json;charset=utf-8'
-                },
-                body : JSON.stringify({links : currentImagesToDownload ,})
-            }).then((res)=>{
-                console.log(`Images Downloaded Successfully`);
-                console.log(res);
-                console.log(`timing out for 10 secs`);
-                setTimeout(()=>{
-
-                    currentImagesToDownload = undefined;
-                    
-                    let current_product = parseInt(button.getAttribute("data-scraped-product-current"));
-                    let last_product = parseInt(button.getAttribute("data-scraped-product-end"));
-
-                    let user_page_current = parseInt(button.getAttribute("data-page-current"));
-                    let user_page_end = parseInt(button.getAttribute("data-page-end"));
-                    let page_count = parseInt(button.getAttribute("data-page-count"));
-
-                    //checking that the current scraped product is less than or equal to last product
-                    //if in range then scrap otherwise go to else condition
-                    if(current_product <= last_product ){
-                        current_product++;
-                        button.setAttribute("data-scraped-product-current",current_product);
-                        button.setAttribute("data-action","scrapProduct");
-                        console.log(`app will scrap next product`)
-                        scrapProducts();
-                    }
-                    else{
-                        
-                        //if page is in range then then scrap increment next page and then start other page
-                        //else go to another condition
-                        if(user_page_current <= user_page_end && user_page_current <= page_count){
-                            button.setAttribute("data-action","scrapURLs");
-                            console.log(`next page scraping is going to be started...`);
-                            user_page_current++;
-                            button.setAttribute("data-page-current",user_page_current);
-                            scrapProducts();
-                        }
-                        else{
-                            console.log(`all done`);
-                        }
-                        
-                    }
-                    
-
-
-                },10000)
-            }).catch((err)=>{
-                console.log(`Error occured while downloading current images`);
-                console.log(err);
-            })
-
-
-        }
-        
-        
-
-    }
-    
+   
 
     
 
