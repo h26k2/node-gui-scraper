@@ -1106,7 +1106,7 @@ const checkMetaData = () => {
                 }
                 temp_html += `</ul>`;
                 document.getElementById("product-details").innerHTML = temp_html;
-                btn.setAttribute("data-action","findImages");
+                btn.setAttribute("data-action","scrapImages");
 
                 setTimeout(()=>{
                     checkMetaData();
@@ -1120,11 +1120,11 @@ const checkMetaData = () => {
 
 
     }
-    else if(action == "scrapFirstProduct2"){
+    else if(action == "scrapImages"){
         
-        status.innerText = "Sending Request for scraping product details";
+        status.innerText = "Sending Request for scraping product images";
 
-        fetch(`/validateMetadataProduct`,{
+        fetch(`/validateMetadataImages`,{
             method : 'POST',
             headers : {
                 'Content-Type' : 'application/json;charset=utf-8'
@@ -1133,7 +1133,22 @@ const checkMetaData = () => {
                 dataToSend
             })
         }).then((res)=>{
+            res.json().then((r)=>{
+                status.innerText = `Successfully scraped product images, next action will be started automatically`;
+                btn.setAttribute("data-action","findSecondURL");
 
+                let temp_html = `<ul>`;
+                for(let i=0 ; i<r.length ; i++){
+                    temp_html += `<img src="${r[i]}" style="width:50px;margin:5px;"/>`
+                }
+                temp_html += `</ul>`;
+                document.getElementById("product-modal-img").innerHTML = temp_html;
+
+                setTimeout(()=>{
+                    checkMetaData();
+                },10000);
+
+            });
         }).catch((err)=>{
             console.log(err);
             alert(`Error occured, please try again`);

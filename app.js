@@ -958,6 +958,83 @@ app.post(`/validateMetadataProduct`,async(req,res)=>{
 
 });
 
+app.post(`/validateMetadataImages`,async(req,res)=>{
+
+    req.setTimeout(0);
+
+    let {productSingleURL , productImagesContainer } = req.body.dataToSend;
+    console.log(`==> Request recieved for validating metadata <==`);
+
+    let index = xpathToIndex(productImagesContainer);
+
+    try{
+        
+        let browser = await puppeteer.launch({headless: false  });
+        let page = await browser.newPage();
+        await page.goto(productSingleURL,{waitUntil : 'networkidle0' , timeout : 0 });
+
+
+        page.on('console',(msg)=>{
+                    
+            let data = msg.text();
+
+            if(data.match("h26k2-data")){
+
+                data = data.replace("h26k2-data:","")
+                data = data.split("[--]");
+                page.close();
+                browser.close();
+                console.log(`successfully scraped product images`);
+                res.status(200).json(data);
+            }
+
+        });
+
+
+        await page.evaluate((index)=>{
+            
+            let temp_image_element = null ;
+            let temp = document.body;
+            
+            for(let i=0 ; i<index.length ; i++){
+                temp = temp.children[index[i]];    
+            }
+
+            temp_image_element= temp.getElementsByTagName("img");
+
+            let img_src = [];
+        
+            Array.from(temp_image_element).forEach((elem)=>{
+                img_src.push(elem.getAttribute("src"));
+            })
+
+            let temp_str = ``;
+            for(let i=0 ; i<img_src.length ; i++){
+                    
+                if(i == img_src.length - 1){
+                    temp_str += `${img_src[i]}`;
+                }
+                else{
+                    temp_str += `${img_src[i]}[--]`;
+                }
+
+            }
+
+            console.log(`h26k2-data:${temp_str}`);
+
+        },index);
+
+    }
+    catch(err){
+        console.log(`Error occured`);
+        console.log(err);
+        res.status(500).end();
+    }
+
+
+});
+
+
 app.listen(port,()=>{
     console.log(`node app is live at port : ${port}`);
 });
