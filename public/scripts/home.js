@@ -1128,27 +1128,7 @@ const checkMetaData = () => {
 
 
     }
-    else if(action == "scrapRoutes"){
-        
-        status.innerText = "Sending Request for scraping product details";
-
-        fetch(`/validateMetadataRoute`,{
-            method : 'POST',
-            headers : {
-                'Content-Type' : 'application/json;charset=utf-8'
-            },
-            body : JSON.stringify({
-                dataToSend
-            })
-        }).then((res)=>{
-            console.log(res);
-        }).catch((err)=>{
-            console.log(err);
-            alert(`Error occured, please try again`);
-        })
-
-
-    }
+   
 
 
 }
