@@ -365,6 +365,17 @@ app.post("/scrapURLs",(req,res)=>{
 });
 
 
+
+app.post("/dropMetadata",(req,res)=>{
+
+    console.log(`==> Request recieved for droping metadata <==`);
+    metaData = []; 
+    console.log(`==> Successfully dropped metadata file <==`);
+    res.status(200).end();
+
+});
+
+
 /*creating a global variable so that the client don't send multiple request
 let spd_request = false;
 

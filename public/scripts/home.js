@@ -1230,3 +1230,33 @@ const fetchMarkupElements = (validation) => {
 
 }
 
+const dropMetadata = () => {
+    
+    let uploadInputElem = document.getElementById("metadata-input");
+    let uploadButtonElem = document.getElementById("btn-load-metadata");
+
+    if(uploadButtonElem.hasAttribute("disabled") && uploadInputElem.hasAttribute("disabled")){
+
+        fetch(`/dropMetadata`,{
+            method : 'POST'
+        }).then((res)=>{
+            if(res.status == 200){
+                uploadInputElem.removeAttribute("disabled");
+                document.getElementsByClassName("custom-file-label")[0].innerText = "Choose File";
+                uploadButtonElem.removeAttribute("disabled");
+                alert("Metadata successfully dropped");
+            }
+            else{
+                alert(`Error occured!, check server console`)
+            }
+        }).catch((err)=>{
+            alert(`Error occured while droping the metadata file`);
+            console.log(err);
+        });
+
+    }
+    else{
+        alert(`You've not uploaded a metadata yet..`);
+    }
+
+}
