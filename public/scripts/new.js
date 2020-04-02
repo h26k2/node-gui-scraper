@@ -29,10 +29,15 @@ const viewScrapedData = () => {
         
         body_html += `<td>`;
         for(let k=0 ; k<all_products_url_images[i].length ; k++){
-            body_html += `<img src="${all_products_url_images[i][k]}" style="width:50px;margin:1px;"  />`;
+            body_html += `<img src="${all_products_url_images[i][k]}"  />`
+        }
+        body_html += `<ol>`;
+        for(let k=0 ; k<all_products_url_images[i].length ; k++){
+            body_html += `<li>${all_products_url_images[i][k]}</li>`
         }
 
-        body_html += `</td>`;
+
+        body_html += `</ol></td>`;
 
         body_html += `</tr>`;
 

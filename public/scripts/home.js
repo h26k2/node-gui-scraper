@@ -548,7 +548,7 @@ const scrapProducts = () => {
             
 
         }
-        
+
     }
 }
 
@@ -962,7 +962,7 @@ const readData = (that) => {
                     for(let i=0 ; i<userProductFields.length ; i++){
                         temp_colDropdownElem += `<option>${userProductFields[i]}</option>`
                     }
-
+                    temp_colDropdownElem += `<option>productimages</option>`;
                     colDropdownElem.innerHTML = temp_colDropdownElem;
 
                     userProductFields.push("productImages");
@@ -1223,6 +1223,7 @@ const dropMetadata = () => {
                 uploadInputElem.removeAttribute("disabled");
                 document.getElementsByClassName("custom-file-label")[0].innerText = "Choose File";
                 uploadButtonElem.removeAttribute("disabled");
+                userProductFields = [];
                 alert("Metadata successfully dropped");
             }
             else{

@@ -193,3 +193,18 @@ button.btn-sec:focus{
 .action button:nth-child(2){
    background:teal!important
 }
+
+.table ol{
+    text-align:left!important;
+    text-transform:none;
+}
+
+.table img{
+    width:50px;
+    margin:1px;
+}
+
+.table li{
+    font-size:12px;
+    font-family:consolas;
+}
