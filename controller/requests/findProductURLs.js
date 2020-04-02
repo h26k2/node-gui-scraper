@@ -54,6 +54,13 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
 
                 }
                 else{
+                    
+                    let val = catalogSingleProduct.substr(catalogSingleProduct.indexOf("|") + 1,catalogSingleProduct.length - 1);
+
+                    product_anchor = {
+                        type : 'class',
+                        value : val
+                    }
 
                 }
 
@@ -91,7 +98,17 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
 
                 }
                 else{
+                    let {value} = product_anchor;
+                    Array.from(products).forEach((p)=>{
+                        
+                        if( p != undefined){
+                            let temp_href_elem =  p.getElementsByClassName(value)[0]
+                            if(temp_href_elem != undefined){
+                                product_links.push(temp_href_elem.getElementsByClassName("href"));
+                            }
+                        }
 
+                    })
                 }
                 
                 return {
