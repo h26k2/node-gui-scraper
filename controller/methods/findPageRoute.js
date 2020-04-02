@@ -11,11 +11,9 @@ const findPageRoute = (web_url) => {
         url.type = "query";
 
         if(web_url.match(/page=[0-9]{1,5}/gi)){
-            
             url.symbol = "page";
         }
         else if(web_url.match(/p=[0-9]{1,5}/gi)){
-            
             url.symbol = "p";            
         }
         else{

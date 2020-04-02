@@ -53,7 +53,7 @@
             <p>Enter second page URL</p>
         </div>
         <div class="col-6">
-            <input type="text" class="form-control user-input-field"/>
+            <input type="text" class="form-control user-input-field" id="second-page"/>
         </div>
     </div>
 
@@ -126,21 +126,6 @@
 
     <div class="row">
         <div class="col-6">
-            <p>choose catalog pagination</p>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <button class="btn btn-choose btn-sec" onclick="paginationContainer()">
-                    <i class="fas fa-map-marker-alt" ></i>
-                </button>
-                <input type="text" class="form-control" id="input-product-pagination"/>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-6">
             <p>choose product images</p>
         </div>
         <div class="col-6">
@@ -170,7 +155,9 @@
     </div>
 
     <div class="row">
-        <div class="col-6"></div>
+        <div class="col-6">
+            <button class="btn btn-lg w-100 btn-primary" data-toggle="modal" data-target="#myModal" >check metadata</button>
+        </div>
         <div class="col-6">
             <button class="btn btn-lg btn-danger w-100" onclick="saveMetaData()">save metadata</button>
         </div>
@@ -206,7 +193,8 @@
     <div class="row">
         <div class="col-6"></div>
         <div class="col-6">
-            <button class="btn btn-lg btn-danger w-100" id="btn-load-metadata">load metadata</button>
+            <button class="btn btn-lg btn-danger w-100" id="btn-load-metadata" style="margin-bottom:5px">load metadata</button>
+            <a href="javascript:void(0)" onclick="dropMetadata()" style="color:#000;font-size:14px;padding-left:0.2em;margin-bottom:0;line-height: 0;">Drop this metadata</a>
         </div>
     </div>
 </div>
@@ -215,7 +203,7 @@
     
     <div class="row">
         <div class="col-12">
-            <h2>scrap products</h2>
+            <h2>scrape products</h2>
         </div>
     </div>
     
@@ -240,28 +228,18 @@
     <div class="row">
         <div class="col-6"></div>
         <div class="col-6">
-            <button class="btn btn-lg btn-danger w-100" onclick="scrapProducts()" id="scrap-products-btn" data-action="findPageCount">scrap products</button>
+            <button class="btn btn-lg btn-danger w-100" onclick="scrapProducts()" id="scrap-products-btn" style="margin-bottom:5px">scrap products</button>
+           <!-- <a href="javacript:void(0" style="font-size:14px;color:#000; padding-left:0.2em" onclick="stopScraping(true)">Stop scraping</a>-->
         </div>
     </div>
     
-    <blockquote class="blockquote">
-        <h5>Scraping Status</h5>
-        <table class="table table-striped capitalize centered ">
-            <thead>
-                <tr>
-                    <th>current status</th>
-                    <th>pages scraped</th>
-                    <th>total pages</th>
-                    <th>products scraped</th>
-                </tr>
-            </thead>
-            <tbody id="scraping-status">
-                <td>--</td>
-                <td>--</td>
-                <td>--</td>
-                <td>--</td>
-            </tbody>
-        </table>
+    <blockquote class="blockquote" id="scraping-status">
+        <h5>Scraping Status</h2>
+        <p>current status : <span> No action or task to show </span></p>
+        <p>current page : <span> Not chosen yet </span></p>
+        <p>start page : <span> Not chosen yet </span></p>
+        <p>end page : <span>Not yet chosen</span></p>
+        <p>products scraped : <span> 0 </span></p>
     </blockquote>
 
 </div>
@@ -324,28 +302,44 @@
 </div>
 
 
-
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-    Open modal
-</button>
-
-
 <!-- The Modal -->
 <div class="modal fade " id="myModal">
+
     <div class="modal-dialog modal-dialog-centered modal-xl">
+
       <div class="modal-content">
   
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Images to select</h4>
+          <h4 class="modal-title">Scraped Data</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-  
+        
         <!-- Modal body -->
         <div class="modal-body">
             <div class="container">
-                <div class="row" id="modal-product-images">
-                    
+                <div class="row" >
+                    <div class="col-12">
+                        <p id="modal-status">click on this button to start scraping</p>
+                        <button onclick="checkMetaData()" data-action="scrapFirstURLs" id="modal-btn" class="btn btn-primary">check details</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div id="fist-page-urls">
+
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div id="product-details">
+
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div id="product-modal-img">
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -360,64 +354,7 @@
 </div>
 
 
-<style>
 
-.modal-body .col-3{
-    position: relative;
-}
-
-.modal-body .col-3 .col-img{
-    height:150px;
-    background-size:cover;
-    background-position: center;
-    border:1px solid #ddd;
-}
-
-.modal-img-main-con{
-    position: relative;
-    margin-top:10px;
-    margin-bottom:10px;
-}
-
-.checked{
-    position: absolute;
-    width:40px;
-    height:40px;
-    border-radius: 50%;
-    top:-5%;
-    background:#a5dc86;
-    right:0;
-}
-
-.checked i , .featured i{
-    position: absolute;
-    width:auto;
-    height:auto;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    color:#fff;
-}
-
-
-
-.featured{
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    top: -5%;
-    background: #3fc3ee;
-    left: 0;
-}
-
-#viewing-n-editing button{
-    width:100%;
-    margin-top:1em;
-}
-
-
-</style>
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>

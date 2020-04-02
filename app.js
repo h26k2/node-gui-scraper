@@ -12,7 +12,6 @@ const productDetail = require("./controller/requests/productDetail");
 const productImages = require("./controller/requests/productImages");
 const loadMetaData = require("./controller/requests/loadMetaData");
 const saveMetaData = require("./controller/requests/saveMetaData");
-const productPagination = require("./controller/requests/productPagination");
 const scrapImages = require("./controller/requests/scrapImages");
 const downloadImages = require("./controller/requests/downloadImages");
 const scrapProductDetails = require("./controller/requests/scrapProductDetails")
@@ -34,238 +33,10 @@ productDetail(app,puppeteer);
 productImages(app,puppeteer);
 saveMetaData(app,fs);
 loadMetaData(metaData,app);
-productPagination(app,puppeteer);
 
 scrapImages(app,metaData,xpathToIndex,puppeteer);
 downloadImages(app,axios,fs);
 scrapProductDetails(app,metaData,puppeteer,xpathToIndex)
-
-
-const selectProduct = async (url,filename,brandName ) => {
-
-    let browser = await puppeteer.launch({headless: false});
-
-    let page = await browser.newPage();
-
-    await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
-    
-    await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
-
-    page.on('console',(msg)=>{
-        
-        let val = msg.text();
-        
-        if(val.match("h26k2-data:")){
-            
-            let data = val.substr(val.indexOf(":")+1,val.length); 
-            console.log(data);   
-            metadata.push({
-                type : 'productCatalogProduct',
-                val : data
-            })
-        }
-
-    });
-
-    await page.evaluate((filename,brandName)=>{
-        
-        let prev = undefined;
-        
-        window.addEventListener("mouseover",(e)=>{
-
-            let current = e.target;
-            
-            if(current !== undefined && current.classList.contains("h26k2-color") != true){
-                current.classList.add("h26k2-color");
-                prev = current;
-            }
-            
-        });
-
-        window.addEventListener("mouseout",(e)=>{
-    
-            if(prev !== undefined && prev.classList.contains("h26k2-color") == true){
-                prev.classList.remove("h26k2-color");
-            }
-        
-        });
-
-        window.addEventListener("click",async(e)=>{
-            
-            let elem = e.target;
-            
-            if(elem != undefined && elem.getAttribute("data-name") == undefined){
-
-                let anchors = elem.getElementsByTagName("a");
-                let element_classes = elem.getAttribute("class");
-
-                for(let i=0 ; i<anchors.length ; i++){
-                
-                    let a_href = anchors[i].getAttribute("href");
-                    let a_class = anchors[i].getAttribute("class");
-    
-                    let confirm_string = `URL : ${a_href}\nElement : ${a_class}\nDo you want to want to select this element ? `;
-    
-                    if(confirm(confirm_string)){
-
-                        let product_string = `Please enter the name you want us to target on individual product from the given below data\n${element_classes}`;
-
-                        let elem = prompt(product_string);
-                        alert("done");
-                        let data = `${a_class}|${elem}`;
-                        console.log(`h26k2-data:${data}`);
-                        /*
-                        try{
-                            const blob = new Blob([`${filename}\n${data}`],{type : 'text/csv'});
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.setAttribute("data-name","csv");
-                            a.setAttribute('hidden','');
-                            a.setAttribute('href',url);
-                            a.setAttribute('download',`${brandName}_${filename}.csv`);
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-
-                            alert(`successfully saved metafile as : ${brandName}_${filename}.csv\n You can now close this window`);
-                            
-                        }
-                        catch(err){
-                            alert(`error occured while downloading meta file\n Check console for error`);
-                            console.log(err);
-                        }*/
-
-                        break;
-                    }
-                    else{
-                        continue;
-                    }
-    
-    
-                }
-    
-            }
-            
-        });
-
-
-    },filename,brandName);
-
-
-}
-
-const selectProductDetails = async (url , filename , brandName, uniqueCheck) => {
-
-    let browser = await puppeteer.launch({headless: false  });
-
-    let page = await browser.newPage();
-
-    await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
-    
-    await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
-    
-    page.on('console',(msg)=>{
-        
-        let val = msg.text();
-        
-        if(val.match("h26k2-data:")){
-            
-            let data = val.substr(val.indexOf(":")+1,val.length);    
-            metadata.push({
-                
-                type : 'productDetail',
-                name : filename,
-                val : data
-                
-            });
-        }
-
-    });
-
-    await page.evaluate(()=>{
-
-        let prev = undefined;
-
-        window.addEventListener("mouseover",(e)=>{
-
-            let current = e.target;
-            
-            if(current !== undefined && current.classList.contains("h26k2-color") != true){
-                current.classList.add("h26k2-color");
-                prev = current;
-            }
-            
-        });
-
-        window.addEventListener("mouseout",(e)=>{
-    
-            if(prev !== undefined && prev.classList.contains("h26k2-color") == true){
-                prev.classList.remove("h26k2-color");
-            }
-        
-        });
-
-        window.addEventListener("click",async(e)=>{
-
-            let elem = e.target;
-
-            if(elem != undefined && elem.getAttribute("data-name") == undefined){
-
-                let status = window.confirm("Select this element ? ");
-                    
-                if(status == true){
-                    console.log(`this is element`);
-                    console.log(elem);
-                    console.log(elem.parentElement);
-                    let structureDetails = [];
-                    
-                    while(true){
-                        
-                        if(elem.parentElement.nodeName == "HTML"){
-                            break;
-                        }
-
-                        console.log(`****************`);
-                        console.log(elem.parentElement);
-                        console.log(`index of element is : ${[...elem.parentElement.children].indexOf(elem)}`)
-
-                        structureDetails.push(
-                            {
-                                elem : elem.parentElement.nodeName,
-                                index : [...elem.parentElement.children].indexOf(elem)
-                            }
-                        );
-
-                        elem = elem.parentElement;
-
-                    }
-                    
-                    let structureString = ``;
-                    
-                    for(let i=structureDetails.length  - 1; i>= 0 ; i--){
-                        
-                        let elem = structureDetails[i].elem;
-                        let index = structureDetails[i].index;
-
-                        structureString += `${elem}[${index}]/`
-                    }
-
-                    structureString = structureString.substr(0,structureString.length - 1);
-                    alert(`Done! Xpath is : ${structureString}`);
-                    console.log(`h26k2-data:${structureString}`);
-
-                }
-
-            }
-
-        });
-
-    });
-
-    
-
-}
-
 
 
 app.get("/",async(req,res) => {
@@ -351,14 +122,14 @@ app.post("/scrapURLs",(req,res)=>{
             console.log("*************************************************");
             console.log(`==> Successfully Sent Response to the client <==`)
             console.log("**************************************************");
-            urlScrapRequest = true;
+            urlScrapRequest = false;
             res.status(200).json(links);
 
         }).catch((err)=>{
             console.log(`==> Error Occured while scraping URLs <==`);
             console.log(err);
             res.status(500).end();
-            urlScrapRequest = true;
+            urlScrapRequest = false;
         });
 
 
@@ -367,407 +138,279 @@ app.post("/scrapURLs",(req,res)=>{
 });
 
 
-/*creating a global variable so that the client don't send multiple request
-let spd_request = false;
 
-app.post(`/scrapProductDetails`,async(req,res)=>{
+app.post("/dropMetadata",(req,res)=>{
 
-    if(spd_request == false){
-
-        req.setTimeout(0);
-
-        let {link} = req.body;
-        console.log(`===> Request recieved for scraping details : [${link}] <===`);
-
-        //finding indexes of the product details
-
-        let indexes = [];
-        let {productFields} = metaData[0];
-        let objCount = 0;
-        
-        Object.entries(productFields).forEach((field)=>{
-            let {val} = field[1];
-            indexes[objCount] = xpathToIndex(val);
-            objCount++;
-        });
-       
-        
-        /*****************
-         * Scraping Stuff
-        ******************
-
-        let productDetails = [];
-
-        try{
-            
-            let browser = await puppeteer.launch({headless: false  });
-
-            let page = await browser.newPage();
-            await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
-
-            //page console
-            page.on('console',(msg)=>{
-                
-                let data = msg.text();
-
-                if(data.match("h26k2-data")){
-
-                    data = data.replace("h26k2-data:","")
-                    data = data.split("[--]");
-                    productDetails.push([...data]);
-                    console.log("**************************************************");
-                    console.log(`==> Successfully scraped product details <==`);
-                    console.log("**************************************************");
-                    //spd_request = false;
-                    page.close();
-                    browser.close();
-                    res.status(200).json(productDetails);
-
-                }
-
-            }) ;
-
-            //page evaluation method pupeeteer
-            await page.evaluate((indexes)=>{
-                
-                let temp_product_details = [];
-
-                //Saving data into temporary variable
-                for(let i=0 ; i<indexes.length ; i++){
-                    temp = document.body;
-                    for(let j=0 ; j<indexes[i].length ; j++){
-                        let temp_index = indexes[i][j];
-                        temp = temp.children[temp_index];
-                    }
-                    temp_product_details.push(temp.innerText);
-                    console.log(temp_product_details);
-                } 
-                
-                //chaning the aray into string so that data can easily be retrieved
-                let temp_str = ``;
-                for(let i=0 ; i<temp_product_details.length ; i++){
-                        
-                    if(i == temp_product_details.length - 1){
-                        temp_str += `${temp_product_details[i]}`;
-                    }
-                    else{
-                        temp_str += `${temp_product_details[i]}[--]`;
-                    }
-
-                }
-
-                console.log(`h26k2-data:${temp_str}`);
-
-            },indexes);
-
-
-        }
-        catch(err){
-            res.status(500).end();
-            console.log(`==> Error occured while scraping product details <==`);
-            console.log(err);
-            //spd_request = false;
-        }
-
-
-    }
+    console.log(`==> Request recieved for droping metadata <==`);
+    metaData = []; 
+    console.log(`==> Successfully dropped metadata file <==`);
+    res.status(200).end();
 
 });
 
-/*
-let si_request = false;
 
-app.post('/scrapImages',async(req,res)=>{
+app.post(`/validateMetadataURLS`,async(req,res)=>{
+    
+    console.log(`==> Request recieved for validating catalog urls metadata <==`);
+    req.setTimeout(0);
 
-    if(si_request == false){
-        
-        req.setTimeout(0);
-        
-        let {link} = req.body;
-        console.log(`==> Request recieved for scraping images , [${link}] <===`);
-        
-        let {productImages} = metaData[0];
+    let {productCatalogURL , productCatalog , productSingleContainer} = req.body.dataToSend;
+
+    try{
     
-        let index = xpathToIndex(productImages);
-        
-        try{
-    
-            let browser = await puppeteer.launch({headless: false  });
-    
-            let page = await browser.newPage();
-            await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
+        let browser = await puppeteer.launch({headless: false});
+        let page = await browser.newPage();
+
+        await page.goto(productCatalogURL,{waitUntil : 'networkidle0' , timeout : 0 });
+
+        let productURLs = await page.evaluate((productCatalog,productSingleContainer)=>{
+
+            let product_links = [];
+            let mainContainer = document.getElementsByClassName(productCatalog)[0];
             
-            page.on('console',(msg)=>{
-                
-                let data = msg.text();
-    
-                if(data.match("h26k2-data")){
-    
-                    data = data.replace("h26k2-data:","")
-                    data = data.split("[--]");
-    
-                    console.log("**************************************************");
-                    console.log(`==> Successfully scraped product images <==`);
-                    console.log("**************************************************");
-                    
-                    page.close();
-                    browser.close();
-                    res.status(200).json(data);
-                }
-    
-            }) 
-            
-            await page.evaluate((index)=>{
-                
-                let temp_image_element = null ;
-                let temp = document.body;
-    
-                for(let i=0 ; i<index.length ; i++){
-                    temp = temp.children[index[i]];    
-                }
-                
-                temp_image_element= temp.getElementsByTagName("img");
-    
-                if(temp_image_element == null){
-                    //log error
-                    console.log(`it is null`);
-                }
-    
-                 //extracting urls from images
-                 let img_src = [];
-    
-                 Array.from(temp_image_element).forEach((elem)=>{
-                     img_src.push(elem.getAttribute("src"));
-                 })
-    
-    
-                //chaning the array into string so that data can easily be retrieved
-                let temp_str = ``;
-                for(let i=0 ; i<img_src.length ; i++){
-                        
-                    if(i == img_src.length - 1){
-                        temp_str += `${img_src[i]}`;
-                    }
-                    else{
-                        temp_str += `${img_src[i]}[--]`;
-                    }
-    
-                }
-    
-                console.log(`h26k2-data:${temp_str}`);
-    
-            },index);
-    
-        }
-        catch(err){
-            res.status(500).end();
-            console.log(`==> Error occured while scraping product details <==`);
-            console.log(err);
-        }
-    }
+            let st_in = productSingleContainer.indexOf("\[");
+            let st_en = productSingleContainer.indexOf("\]");
 
-
-});
-*/
-/*
-let di_request = false;
-
-app.post('/downloadImages',async(req,res)=>{
-
-    if(di_request == false){
-        
-        req.setTimeout(0);
-        console.log(`request recieved for downloading images...`);
-
-        let {links} = req.body;
-        console.log(links);
-        let folder = "test";
-        //for creating folder
-
-        try{
-            fs.readdirSync(folder);
-        }
-        catch(err){
-            fs.mkdirSync(folder);
-        }
-
-        let savedCount = 0;
-
-        try{
-
-            for(let i=0 ; i<links.length ; i++){
-            
-                if(links[i] == null || links[i].length < 1){
-                    savedCount++;
-                    continue;
-                }
-    
-                let imageName = links[i];
-                imageName = imageName.toLowerCase();
-    
-                let startIndex = imageName.lastIndexOf("/") + 1;
-                let endIndex = imageName.length;
-    
-                imageName = imageName.toLowerCase().substr(startIndex,endIndex);
-    
-                const writer = fs.createWriteStream(`${folder}/${imageName}`);
-    
-                let img_url = links[i];
-    
-                const response = await axios({
-                    url : encodeURI(img_url),
-                    method: 'GET',
-                    responseType: 'stream'
-                });
-    
-                response.data.pipe(writer);
-    
-                writer.on('finish',()=>{
-    
-                    savedCount++;
-                    console.log(`saved image : ${savedCount} / ${links.length}`);
-                    
-    
-                    if(savedCount == links.length){
-                        console.log(`Successfully saved images...`)
-                        res.end();
-                    }
-        
-                });
-    
-                writer.on('error',()=>{
-                    reject('IDK-ERROR');
-                })
-    
-    
+            if(st_in < 0 || st_en < 0){
+                console.log(`unvalid`);
+                return `h26k2-unvalid|can't find main container`;
             }
 
-        }
-        catch(err){
-            console.log(`==> ERROR OCCURED WHILE DOWNLOADING IMAGES <==`)
-            console.log(err);
-        }
-        
+            let productClass = productSingleContainer.substring(st_in +1 , st_en );
+            let products = mainContainer.getElementsByClassName(productClass);
+
+            if(products.length < 0 == true){
+                return `h26k2-unvalid|can't find products`
+            }
+
+            let product_anchor = {};
+
+            if(productSingleContainer.includes("xpath")){
+
+                let val = productSingleContainer.substr(productSingleContainer.indexOf("|") + 1,productSingleContainer.length - 1);
+
+                product_anchor = {
+                    type : 'xpath',
+                    value : val
+                }
+
+            }
+            else{
+                //FOR CLASS REMAINING
+            }
+
+            if(product_anchor.type == "xpath" ){
+                
+                let xpath_elem = product_anchor.value;
+                xpath_elem.substr(product_anchor.value.indexOf("|"+1),product_anchor.value.length - 1);
+
+                let xpath_elems = xpath_elem.split("/");
+                let xpath_elem_index = [];
+
+                Array.from(xpath_elems).forEach((elem)=>{
+                    
+                    let s = elem.indexOf(`[`) + 1;
+                    let e = elem.length - 1;
+
+                    xpath_elem_index.push(parseInt(elem.substr(s,e)))
+
+                });
+                
+                Array.from(products).forEach((p)=>{
+
+                    if(p !== undefined ){
+                        let temp = p;
+                        for(let i=0 ; i<xpath_elem_index.length ; i++){
+                            temp = temp.children[xpath_elem_index[i]];
+                        }
+                        product_links.push(temp.getAttribute("href"));
+                        
+                    }
+
+                });
+
+            }
+            else{
+
+            }
+
+            return {
+                links : product_links
+            }
 
 
-       
+        },productCatalog,productSingleContainer);
 
+        console.log(`==> Succesfully found product URLS <==`);
+        console.log(productURLs);
+
+        res.status(200).json(productURLs);
+
+        await browser.close();
+
+    }
+    catch(err){
+        console.log(`error : ${err}`);
+        res.status(204).end();
     }
 
 });
 
-*/
-
-let requested = false;
-app.post("/scrapProducts[prev]",async(req,res)=>{
-
-    if(requested == false){
-        
-        console.log(`==> REQUEST RECIEVED FOR SCRAPING <==`);
-
-        req.setTimeout(0);
-        let allProducts = [];
-
-        requested = true;
+app.post(`/validateMetadataProduct`,async(req,res)=>{
     
-        let {page} = req.query;
-        let {productPath , baseURL , productFields} = metaData[0];
+    console.log(`==> Request recieved for validating product details metadata <==`);
 
-        let indexes = [];
-        Object.entries(productFields).forEach((field)=>{
-            let {val} = field[1];
-            indexes.push([...xpathToIndex(val)]);
-        });
+    req.setTimeout(0);
 
-        findProductURLs(productPath,baseURL,metaData,page , puppeteer).then(async(data)=>{
-           
-            console.log(`==> Successfully found product URLs <==`);
-            let {links} = data;
-            console.log(links);
-            let productDetails = [];
+    let {productSingleURL , cols} = req.body.dataToSend;
 
-            for(let i=0 ; i<links.length ; i++){
+    //finding indexes 
 
-                let br = await puppeteer.launch({headless: false});
-                let p = await br.newPage();
-                await p.goto(links[i],{waitUntil : 'networkidle2' , timeout : 0 });
+    let indexes = [];
+    let objCount = 0;
 
-                p.on('console',(msg)=>{
+    Object.entries(cols).forEach((field)=>{
+        let {val} = field[1];
+        indexes[objCount] = xpathToIndex(val);
+        objCount++;
+    });
 
-                    let data = msg.text();
+    //scraping stuff
 
-                    if(data.match(`h26k2-data`)){
-                        data = data.replace("h26k2-data:","")
-                        data = data.split("[--]");
-                        productDetails.push([...data])
-                        console.log(`==> Product Scraped ${i+1} <==`);
-                        p.close();
-                        br.close();
-                        setTimeout(()=>{
+    let productDetails = [];
 
-                        },10000)
-                    }
+    try{
+        
+        let browser = await puppeteer.launch({headless: false});
+        let page = await browser.newPage();
 
-                    if(i == links.length - 1){
-                        requested = false;
-                        res.status(200).json(productDetails);
-                    }
+        await page.goto(productSingleURL,{waitUntil : 'networkidle0' , timeout : 0 });
 
-            
-                });
-
-                await p.evaluate((indexes)=>{
-                    
-                
-                    let temp_product_details = [];
-
-                    //Saving data into a temporary element
-
-                    for(let i=0 ; i<indexes.length ; i++){
-                        let temp = document.body;
-                        for(let j=0 ; j<indexes[i].length ; j++){
-                            let temp_index = indexes[i][j];
-                            temp = temp.children[temp_index];
-                        }
-                        temp_product_details.push(temp.innerText);
-                    }
-                    
-                    //chaning the aray into string so that data can easily be retrieved
-                    let temp_str = ``;
-
-                    for(let i=0 ; i<temp_product_details.length ; i++){
-                        
-                        if(i == temp_product_details.length - 1){
-                            temp_str += `${temp_product_details[i]}`;
-                        }
-                        else{
-                            temp_str += `${temp_product_details[i]}[--]`;
-                        }
-
-                    }
-
-                    console.log(`h26k2-data:${temp_str}`);
-                    
-                } , indexes)
-
-               // productDetails.push(temp_product_details.details);
-                
-               // console.log(`==> Product Scraped : ${i+1} <==`);
-
+        page.on('console',async(msg)=>{
+            let data = msg.text();
+            if(data.match("h26k2-data")){
+                data = data.replace("h26k2-data:","")
+                data = data.split("[--]");
+                productDetails.push([...data]);
+                await browser.close();
+                console.log(`successfuly found product details...`);
+                res.status(200).json(productDetails);
             }
-           // console.log(`THIS IS PRODUCT DETAILS...`);
-           // console.log(productDetails);
-            //requested = false;
-            //res.status(200).json(productDetails);
-        }).catch((err)=>{
-            requested = false;
-            console.log(err);
-            res.status(500).end();
+
         })
 
+        await page.evaluate((indexes)=>{
 
-    } //requested delimeter
-    
+            let temp_product_details = [];
+
+            for(let i=0 ; i<indexes.length ; i++){
+                temp = document.body;
+                for(let j=0 ; j<indexes[i].length ; j++){
+                    let temp_index = indexes[i][j];
+                    temp = temp.children[temp_index];
+                }
+                temp_product_details.push(temp.innerText);
+                console.log(temp_product_details);
+            } 
+
+            let temp_str = ``;
+            
+            for(let i=0 ; i<temp_product_details.length ; i++){   
+                if(i == temp_product_details.length - 1){
+                    temp_str += `${temp_product_details[i]}`;
+                }
+                else{
+                    temp_str += `${temp_product_details[i]}[--]`;
+                }
+            }
+
+            console.log(`h26k2-data:${temp_str}`);
+
+        },indexes)
+
+    }
+    catch(err){
+        console.log(`error occured`);
+        console.log(err);
+        res.status(500).end();
+    }
+
+
+});
+
+app.post(`/validateMetadataImages`,async(req,res)=>{
+
+    req.setTimeout(0);
+
+    let {productSingleURL , productImagesContainer } = req.body.dataToSend;
+    console.log(`==> Request recieved for validating images metadata <==`);
+
+    let index = xpathToIndex(productImagesContainer);
+
+    try{
+        
+        let browser = await puppeteer.launch({headless: false  });
+        let page = await browser.newPage();
+        await page.goto(productSingleURL,{waitUntil : 'networkidle0' , timeout : 0 });
+
+
+        page.on('console',(msg)=>{
+                    
+            let data = msg.text();
+
+            if(data.match("h26k2-data")){
+
+                data = data.replace("h26k2-data:","")
+                data = data.split("[--]");
+                page.close();
+                browser.close();
+                console.log(`successfully scraped product images`);
+                res.status(200).json(data);
+            }
+
+        });
+
+
+        await page.evaluate((index)=>{
+            
+            let temp_image_element = null ;
+            let temp = document.body;
+            
+            for(let i=0 ; i<index.length ; i++){
+                temp = temp.children[index[i]];    
+            }
+
+            temp_image_element= temp.getElementsByTagName("img");
+
+            let img_src = [];
+        
+            Array.from(temp_image_element).forEach((elem)=>{
+                img_src.push(elem.getAttribute("src"));
+            })
+
+            let temp_str = ``;
+            for(let i=0 ; i<img_src.length ; i++){
+                    
+                if(i == img_src.length - 1){
+                    temp_str += `${img_src[i]}`;
+                }
+                else{
+                    temp_str += `${img_src[i]}[--]`;
+                }
+
+            }
+
+            console.log(`h26k2-data:${temp_str}`);
+
+        },index);
+
+    }
+    catch(err){
+        console.log(`Error occured`);
+        console.log(err);
+        res.status(500).end();
+    }
+
 
 });
 

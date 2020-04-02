@@ -1,38 +1,4 @@
 
-products_scraped = [
-    ["Bottega Vaenta Clutch","$289.00","Categories Bags Bottega Veneta",`Description
-
-    Product code #191213-23
-    100% Genuine Leather Matching Quality of Original Louis Vuitton Production (imported from Europe)
-    Comes with dust bag, authentication cards, box, shopping bag and pamphlets. Receipts are only included upon request.
-    Counter Quality Replica (True Mirror Image Replica)
-    Dimensions: 35x19x1
-    
-    Our Guarantee: The handbag you receive will look exactly as pictured on our professionally shot photos on our website (of our own stock) in terms of quality and description! Order from Designer Discreet and experience the difference today!
-    
-    Receive 15% off when you pay through Moneygram, Western Union, or wire transfer.`],
-    [
-        "Bottega Vaenta Clutch","$289.00","Categories Bags Bottega Veneta",
-        `Description
-
-        Product code #191213-24
-        100% Genuine Leather Matching Quality of Original Louis Vuitton Production (imported from Europe)
-        Comes with dust bag, authentication cards, box, shopping bag and pamphlets. Receipts are only included upon request.
-        Counter Quality Replica (True Mirror Image Replica)
-        Dimensions: 35x19x1
-        
-        Our Guarantee: The handbag you receive will look exactly as pictured on our professionally shot photos on our website (of our own stock) in terms of quality and description! Order from Designer Discreet and experience the difference today!
-        
-        Receive 15% off when you pay through Moneygram, Western Union, or wire transfer.`
-    ]
-]
-
-all_products_url_images = [
-    ["http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5266-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5267-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5273-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5272-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5271-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5270-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5269-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5268-1-100x100.jpg"],
-    ["http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5266-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5267-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5274-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5273-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5272-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5271-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5270-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5269-1-100x100.jpg","http://designer-discreet.ru/wp-content/uploads/2019/12/IMG_5268-1-100x100.jpg"],
-]
-
-
 const viewScrapedData = () => {
 
 
@@ -63,10 +29,15 @@ const viewScrapedData = () => {
         
         body_html += `<td>`;
         for(let k=0 ; k<all_products_url_images[i].length ; k++){
-            body_html += `<img src="${all_products_url_images[i][k]}" style="width:50px;margin:1px;"  />`;
+            body_html += `<img src="${all_products_url_images[i][k]}"  />`
+        }
+        body_html += `<ol>`;
+        for(let k=0 ; k<all_products_url_images[i].length ; k++){
+            body_html += `<li>${all_products_url_images[i][k]}</li>`
         }
 
-        body_html += `</td>`;
+
+        body_html += `</ol></td>`;
 
         body_html += `</tr>`;
 
@@ -76,5 +47,40 @@ const viewScrapedData = () => {
 
     table_elem.innerHTML = all_temp_html;
     
+
+}
+
+const stopScraping = (ask) => {
+
+    let remove = false;
+
+    let btn = document.getElementById("scrap-products-btn");
+
+    if(btn.hasAttribute("data-action") == false){
+        return;
+    }
+
+    if(ask){
+        let userWish = confirm("Do you really want to stop scraping, the current state will be lost ");
+        if(userWish){
+            remove = true;
+        }
+    }
+    else{
+        remove = true;
+    }
+    
+    if(remove){
+
+        let attributesToRemove = ["data-scraped-product-current","data-scraped-product-start",
+        "data-scraped-product-end","data-page-start","data-page-current","data-page-end" , "data-action"];
+
+        for(attr of attributesToRemove){
+            btn.removeAttribute(attr);
+        }
+
+        alert("Scraping state set to default.");
+
+    }
 
 }

@@ -54,6 +54,13 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
 
                 }
                 else{
+                    
+                    let val = catalogSingleProduct.substr(catalogSingleProduct.indexOf("|") + 1,catalogSingleProduct.length - 1);
+
+                    product_anchor = {
+                        type : 'class',
+                        value : val
+                    }
 
                 }
 
@@ -75,18 +82,33 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
                         xpath_elem_index.push(parseInt(elem.substr(s,e)))
 
                     });
-                    console.log(`ye rha`);
-                    console.log(xpath_elem_index);
                     
                     Array.from(products).forEach((p)=>{
+
                         if(p !== undefined ){
-                            product_links.push(p.children[0].getAttribute("href"));
+
+                            let temp = p;
+                            for(let i=0 ; i<xpath_elem_index.length ; i++){
+                                temp = temp.children[xpath_elem_index[i]];
+                            }
+                            product_links.push(temp.getAttribute("href"));
                         }
+
                     });
 
                 }
                 else{
+                    let {value} = product_anchor;
+                    Array.from(products).forEach((p)=>{
+                        
+                        if( p != undefined){
+                            let temp_href_elem =  p.getElementsByClassName(value)[0]
+                            if(temp_href_elem != undefined){
+                                product_links.push(temp_href_elem.getElementsByClassName("href"));
+                            }
+                        }
 
+                    })
                 }
                 
                 return {

@@ -171,10 +171,15 @@ button.btn-sec:focus{
 
 
 .blockquote p{
-    padding-top:0.2em;
-    text-align: center;
-    margin-bottom:0.4em;
+    margin-bottom:0;
+    font-size:16px;
+    padding-left:1.2em;
 }
+
+.blockquote p span , .blockquote p{
+    font-family: consolas,sans-serif;
+}
+    
 
 
 .capitalize{
@@ -187,4 +192,19 @@ button.btn-sec:focus{
 
 .action button:nth-child(2){
    background:teal!important
+}
+
+.table ol{
+    text-align:left!important;
+    text-transform:none;
+}
+
+.table img{
+    width:50px;
+    margin:1px;
+}
+
+.table li{
+    font-size:12px;
+    font-family:consolas;
 }

@@ -14,19 +14,19 @@ const performAction = (action) => {
         alert(`Please Enter data to perform action...`);
         return;
     }
-
+    
 
     //Finding the requrired index of column of the table
 
     let headings = tableElem.getElementsByTagName("th");
     let requrired_index = undefined;
 
-    for(let i=0 ; i<headings.length ;i++){
-        if(action_col == headings[i].innerText.toLowerCase()){
+    for(let i=0 ; i<headings.length ;i++){ 
+        if(action_col == headings[i].innerText.toLowerCase()){ 
             requrired_index = i;
         }
     }
-
+    
     if(requrired_index == undefined){
         alert(`Unable to find colum, to perform action...`);
         return;
@@ -35,7 +35,14 @@ const performAction = (action) => {
 
     if(action == "replace"){
         let search = prompt("Input data you want to replace with ? ");
-        replaceAction(requrired_index,inputtedData,search.toLowerCase() , tableElem);
+
+        if(action_col == "productimages"){
+            replaceImageAction(requrired_index,inputtedData,search.toLowerCase(),tableElem);
+        }
+        else{
+            replaceAction(requrired_index,inputtedData,search.toLowerCase() , tableElem);
+        }
+
     }
     else if(action == "append"){
         appendAction(requrired_index,inputtedData,tableElem);
@@ -58,8 +65,15 @@ const replaceAction = (col, inputtedData , existingData , table) => {
         let tab_data  = rows[i].getElementsByTagName("td")[col].innerText.toLowerCase();
 
         if(tab_data.match(existingData)){
-            let replaced_data = tab_data.replace(existingData,inputtedData)
-            rows[i].getElementsByTagName("td")[col].innerHTML = replaced_data;
+            if(inputtedData.toLowerCase() == "del"){
+                let replaced_data = tab_data.replace(existingData,"")
+                rows[i].getElementsByTagName("td")[col].innerHTML = replaced_data;
+            }
+            else{
+                let replaced_data = tab_data.replace(existingData,inputtedData)
+                rows[i].getElementsByTagName("td")[col].innerHTML = replaced_data;
+            }
+            
         }
 
     }
@@ -123,6 +137,13 @@ const mathsAction = (col,expression,table) => {
         }
 
         let ans ;
+        
+        //editing the expression so that if the user want the table data twice he can add @ [at the rate]
+        if(expression.match("@")){
+            expression = expression.replace(/\@/gi,tab_data)
+        }
+
+        //perform operation
         if(position == "start"){
             ans = eval(`${tab_data} ${expression}`)
         }
@@ -134,5 +155,49 @@ const mathsAction = (col,expression,table) => {
         
     }
 
+
+}
+
+const replaceImageAction = (col , inputtedData , existingData , table) => {
+    
+    let rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+    for(let i=0 ; i<rows.length  ; i++){
+
+        let tab_data  = rows[i].getElementsByTagName("td")[col];
+
+        let imgsElems = tab_data.getElementsByTagName("img");
+        let listsElem = tab_data.getElementsByTagName("li");
+
+        
+        for(let img of imgsElems){
+            let temp_src = img.getAttribute("src");
+            temp_src = temp_src.replace(existingData,inputtedData);
+            img.setAttribute("src",temp_src);
+        }
+
+        for(let l of listsElem){
+            let replaced_data = l.innerText.replace(existingData,inputtedData);
+            l.innerText = replaced_data;
+        }
+
+        let temp_html = ``;
+
+        for(let i of imgsElems){
+            temp_html += `<img src="${i.src}" />`;
+        }
+        
+        temp_html += `<ol>`;
+
+        for(let l of listsElem){
+            temp_html += `<li>${l.innerText}</li>`;
+        }
+
+        temp_html += `</ol>`;
+
+       
+        rows[i].getElementsByTagName("td")[col].innerHTML =  temp_html;    
+
+    }
 
 }

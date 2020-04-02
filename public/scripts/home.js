@@ -53,11 +53,10 @@ const productDetailChooser = () => {
 
 const saveMetaData = () => {
 
-    let user_inputs = document.getElementsByClassName("user-input-field");
+    /*let user_inputs = document.getElementsByClassName("user-input-field");
     let input_mainContainer = document.getElementById("main-container");
     let input_individualProduct = document.getElementById("individual-product");
     let input_productImages = document.getElementById("input-product-image");
-    let input_productPagination = document.getElementById("input-product-pagination");
     let input_cols = document.getElementById("columns").getElementsByTagName("input");
     
     let inputFieldsToCheck = [...user_inputs,input_mainContainer,
@@ -76,7 +75,6 @@ const saveMetaData = () => {
         productCatalog : input_mainContainer.value,
         productSingleContainer : input_individualProduct.value,
         productImagesContainer : input_productImages.value,
-        productPagination : input_productPagination.value,
         cols : {
 
         }
@@ -98,6 +96,15 @@ const saveMetaData = () => {
         ...temp_cols
     }
     
+    */
+
+    let dataToSend = fetchMarkupElements(true);
+   
+    if(dataToSend == undefined){
+        return;
+    }
+    
+    console.log(`Sending request to the server for saving metadata`);
 
     fetch(`/saveMetaData`,{
         method  : 'POST',
@@ -110,23 +117,20 @@ const saveMetaData = () => {
     }).then((res)=>{
         
         if(res.status == 200){ 
-            
-            res.json().then((d)=>{
-
-                alert(`Successfully Saved and Loaded Metadata!`);
-                document.getElementById("metadata-input").setAttribute("disabled",true);
-                document.getElementsByClassName("custom-file-label")[0].innerText = d;
-                let btn  = document.getElementById("btn-load-metadata");
-                btn.innerText = `Loaded Data`;
-                btn.setAttribute("disabled",true);
-
-            });
-
+            alert(`Successfully Saved Metadata!`);
         }
         else if(res.status == 204){
             
-            let custom_path ;
-            custom_path = prompt(`We couldn't detect the url of the website\nenter the custom path`);
+            let custom_path = null;
+
+            while(custom_path == null){
+                
+                custom_path = prompt(`We couldn't detect the url of the website\nenter the custom path`);
+                if(custom_path.length < 2){
+                    custom_path = null;
+                }
+
+            }
 
             fetch(`/saveMetaData?custom_path=${custom_path}`,{
                 method : 'POST',
@@ -137,22 +141,16 @@ const saveMetaData = () => {
                     dataToSend
                 })
             }).then((data)=>{
+
                 if(data.status == 200){
-
-                    alert(`Successfully Saved and Loaded Metadata!`);
-                    document.getElementById("metadata-input").setAttribute("disabled",true);
-                    document.getElementsByClassName("custom-file-label")[0].innerText = d;
-                    let btn  = document.getElementById("btn-load-metadata");
-                    btn.innerText = `Loaded Data`;
-                    btn.setAttribute("disabled",true);
-
+                    alert(`Successfully Saved Metadata!`);
                 }
                 else{
                     console.log(`error occured`);
                     alert(`Error occured saving metadata`);
                 }
             }).catch((err)=>{
-                alert(`Error occured!`);
+                alert(`Error occured, we couldn't save the metadata`);
                 console.log(err);
             })           
 
@@ -327,15 +325,18 @@ const productDetailLink = (e) => {
 let products_scraped = [];
 let all_products_url_images = [];
 let productUrlsToScrap = [];
-let currentImagesToDownload = undefined;
+
 
 const scrapProducts = () => {
 
-    let statusElem = document.getElementById("scraping-status").getElementsByTagName("td")
-    let status = statusElem[0];
-    let pageScrapedStatus = statusElem[1];
-    let totalPageStatus = statusElem[2];
-    let totalProductStatus = statusElem[3];
+    let statusElem = document.getElementById("scraping-status").getElementsByTagName("p");
+    let  status ,statusCurrentPage , statusStartPage , statusEndPage,statusProductsScraped;
+    console.log(`called`);
+    status = statusElem[0].getElementsByTagName("span")[0];
+    statusCurrentPage = statusElem[1].getElementsByTagName("span")[0];
+    statusStartPage = statusElem[2].getElementsByTagName("span")[0];
+    statusEndPage = statusElem[3].getElementsByTagName("span")[0];
+    statusProductsScraped = statusElem[4].getElementsByTagName("span")[0];
 
 
     let metadata_loaded = document.getElementById("metadata-input").hasAttribute("disabled");
@@ -371,254 +372,184 @@ const scrapProducts = () => {
 
     let has_page_start = button.hasAttribute("data-page-start");
     let has_page_end = button.hasAttribute("data-page-end");
-    let has_page_count = button.hasAttribute("data-page-count");
     let has_page_current = button.hasAttribute("data-page-current"); 
 
 
-    if( (has_page_start == false || has_page_end == false || has_page_count == false || 
-        has_page_current == false) && action == "findPageCount" ){
-
-        console.log(`finding pages count`);
-        status.innerText = `Finding Pages Count`;
-        fetch(`/findPagesCount`).then((res)=>{
-            
-            if(res.status == 200){
-                console.log(res);
-                res.json().then((d)=>{
-                    console.log(`Total Pages are : ${d.val}`);
-                    status.innerText = `Successfully found total pages, next action will be started automatically after 10s`;
-                    totalPageStatus.innerText = d.val;
-                    /*
-                    button.setAttribute("data-page",s_page);
-                    button.setAttribute("data-start",s_page);
-                    button.setAttribute("data-end",e_page);
-                    button.setAttribute("data-count",d.val);*/
-                    
-                    button.setAttribute("data-page-start",s_page);
-                    button.setAttribute("data-page-end",e_page);
-                    button.setAttribute("data-page-current",s_page);
-                    button.setAttribute("data-page-count",d.val);
-                    button.setAttribute("data-action","scrapURLs");
-                    setTimeout(()=>{
-                        scrapProducts();
-                    },10000)
-
-                });
-            }
-            
-            
-        }).catch((err)=>{
-            status.innerText = `Error occured, finding pages count. Please check console or try again`;
-            console.log(err);
-        });
-
-
+    if( (has_page_start == false || has_page_end == false || has_page_current == false)){
+        button.setAttribute("data-page-start",s_page);
+        button.setAttribute("data-page-current",s_page);
+        button.setAttribute("data-page-end",e_page);
+        button.setAttribute("data-action","scrapURLs");
+        statusStartPage.innerText = s_page;
+        statusCurrentPage.innerText = s_page;
+        statusEndPage.innerText = e_page;
+        scrapProducts();
     }
+    else{
 
-    let page_current = parseInt(button.getAttribute("data-page-current"));
-    let page_start = parseInt(button.getAttribute("data-page-start"));
-    let page_end = parseInt(button.getAttribute("data-page-end"));
-    let page_count = parseInt(button.getAttribute("data-page-count"));
+        let page_current = parseInt(button.getAttribute("data-page-current"));
+        let page_start = parseInt(button.getAttribute("data-page-start"));
+        let page_end = parseInt(button.getAttribute("data-page-end"));
 
-    if(action == "scrapURLs"){
+        if(action == "scrapURLs"){
 
-        if(page_current >= page_start && page_current <= page_end && page_current <= page_count){
-        
-            console.log(`sending request for page : ${page_current}`);
-            status.innerText = `Scraping page(${page_current})`;
-    
-            fetch(`/scrapURLs?page=${page_current}`,{method : 'POST',}).then((res)=>{
+            if(page_current >= page_start && page_current <= page_end){
+            
+                console.log(`sending request for page : ${page_current}`);
+                status.innerText = `sending request for page ${page_current} to scrape`;
                 
-                if(res.status == 200){
+                fetch(`/scrapURLs?page=${page_current}`,{method : 'POST'}).then((res)=>{
+                    
+                    if(res.status == 200){
 
-                    res.json().then((data)=>{
-                        console.log(`successfully scraped ${data.length} URLS from page : ${page_current} `);
-                        status.innerText = `successfully scraped ${data.length} URLS from page : (${page_current}) \nTiming Out for 10secs`;
-                        console.log(`timing out for 10sec`);
-                        //products_scraped.push(...data);
-                        productUrlsToScrap.push(...data);
-                        setTimeout(()=>{
-                            /*
-                            button.setAttribute("data-action","scrapProduct");
-                            button.setAttribute("data-product-scraped","0");
-                            */
+                        res.json().then((data)=>{
+                            console.log(`successfully scraped ${data.length} URLS from page : ${page_current} `);
+                            status.innerText = `successfully scraped ${data.length} products URL from page : ${page_current}`;
+                            console.log(`timing out for 10sec`);
+                            //products_scraped.push(...data);
+                            productUrlsToScrap = [...data];
+                            setTimeout(()=>{
+                                button.setAttribute("data-action","scrapProduct");
+                                button.setAttribute("data-scraped-product-start","0");
+                                button.setAttribute("data-scraped-product-current","0");
+                                button.setAttribute("data-scraped-product-end",data.length - 1);
+                                scrapProducts();
+                            },10000);
+            
+                        });
 
-                            button.setAttribute("data-action","scrapProduct");
-                            button.setAttribute("data-scraped-product-start","0");
-                            button.setAttribute("data-scraped-product-current","0");
-                            button.setAttribute("data-scraped-product-end",data.length - 1);
-                            scrapProducts();
-
-                        },10000);
+                    }
+                    else if(res.status == 500){
+                        status.innerText = `Error occured while peforming the action, please check server console for error`;
+                        console.log(`error occured, check server console`);
+                    }
+                    
+                }).catch((err)=>{
+                    status.innerText = `Error occured while performing action`;
+                    console.log(`error : ${err}`);
+                })
         
+            }
+
+        }
+        else if(action == "scrapProduct"){
+            
+            console.log(`==> Scraping Product Details <==`);
+            
+            //let productSeq = parseInt(button.getAttribute("data-product-scraped"));
+            let scraped_product_start = parseInt(button.getAttribute("data-scraped-product-start"));
+            let scraped_product_end = parseInt(button.getAttribute("data-scraped-product-end"));
+            let scraped_product_current = parseInt(button.getAttribute("data-scraped-product-current"));
+            
+            if( /*urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1*/
+                (scraped_product_current >= scraped_product_start) && (scraped_product_current <= scraped_product_end) ){
+                
+                console.log(`==> product being scraped : ${productUrlsToScrap[scraped_product_current]} of page ${page_current}`);
+                status.innerText = `scraping details of product ${scraped_product_current + 1} / ${scraped_product_end +1 } of page : ${page_current}`
+                fetch(`/scrapProductDetails`,{
+                    method : 'POST',
+                    headers : {
+                        'Content-Type' : 'application/json;charset=utf-8'
+                    },
+                    body : JSON.stringify({link : productUrlsToScrap[scraped_product_current]})
+                }).then((res)=>{
+                    
+                    console.log(`==> product ${scraped_product_current} successfully scraped of page : ${page_current} <==`);
+                    status.innerText = `product ${scraped_product_current + 1} / ${scraped_product_end+1} details successfully scraped from page : ${page_current}`;
+                    res.json().then((data)=>{
+
+                        products_scraped.push(...data);
+                        console.log(`Timing out for 10secs, image scraping will start automatically`);
+                        setTimeout(()=>{
+                            button.setAttribute("data-action","scrapImages");
+                            scrapProducts();
+                        },10000);   
+
                     });
 
-                }
-                else if(res.status == 500){
-                    status.innerText = `Error occured while finding pages count, Please check server console or try again`;
-                }
-                
-            }).catch((err)=>{
-                console.log(`error : ${err}`);
-            })
-    
-        }
-
-    }
-    else if(action == "scrapProduct"){
-        
-        console.log(`==> Scraping Product Details <==`);
-
-        //let productSeq = parseInt(button.getAttribute("data-product-scraped"));
-        let scraped_product_start = parseInt(button.getAttribute("data-scraped-product-start"));
-        let scraped_product_end = parseInt(button.getAttribute("data-scraped-product-end"));
-        let scraped_product_current = parseInt(button.getAttribute("data-scraped-product-current"));
-        
-        if( /*urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1*/
-            (scraped_product_current >= scraped_product_start) && (scraped_product_current <= scraped_product_end) ){
-            
-            console.log(`==> product being scraped : ${productUrlsToScrap[scraped_product_current]} of page ${page_current}`);
-
-            fetch(`/scrapProductDetails`,{
-                method : 'POST',
-                headers : {
-                    'Content-Type' : 'application/json;charset=utf-8'
-                },
-                body : JSON.stringify({link : productUrlsToScrap[scraped_product_current]})
-            }).then((res)=>{
-                
-                console.log(`==> product ${scraped_product_current} successfully scraped of page : ${page_current} <==`);
-
-                res.json().then((data)=>{
-
-                    products_scraped.push(...data);
-                    console.log(`Timing out for 10secs, image scraping will start automatically`);
-
-                    setTimeout(()=>{
-                        button.setAttribute("data-action","scrapImages");
-                        scrapProducts();
-                    },10000);             
+                }).catch((err)=>{
+                    console.log(`Error occured while scraping product details`);
+                    console.log(err);
                 });
 
-            }).catch((err)=>{
-                console.log(`Error occured while scraping product details`);
-                console.log(err);
-            });
+            }
 
         }
-
-    }
-    else if(action == "scrapImages"){
-        
-        console.log(` ==> Scraping Product Images <==`);
-
-        //let productSeq = parseInt(button.getAttribute("data-product-scraped"));
-        let scraped_product_current = parseInt(button.getAttribute("data-scraped-product-current"));
-        let scraped_product_start = parseInt(button.getAttribute("data-scraped-product-start"));
-        let scraped_product_end = parseInt(button.getAttribute("data-scraped-product-end"));
-
-        if(/*urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 */
-            (scraped_product_current >= scraped_product_start) && (scraped_product_current <= scraped_product_end)){
-            fetch(`/scrapImages`,{
-                method  : 'POST',
-                headers : {
-                    'Content-type' : 'application/json;charset=utf-8' 
-                },
-                body : JSON.stringify({link : productUrlsToScrap[scraped_product_current] })
-            }).then((res)=>{
-                
-                res.json().then((imageRes)=>{
-                    console.log(`successfully scraped product images, it will be downloaded automatically after 10secs`);
-                    all_products_url_images.push([...imageRes]);
-                    currentImagesToDownload = [...imageRes]
-                    //products_scraped[scraped_product_current] = [...products_scraped[scraped_product_current],[...imageRes]];
-                    
-                    setTimeout(()=>{
-                        button.setAttribute("data-action","downloadImages");
-                        scrapProducts();
-                    },10000)
-
-                });
-                
-            }).catch((err)=>{
-                console.log(`Error occured in downloading images`);
-                console.log(err);
-            })
-        }
-        
-
-    }
-    else if(action == "downloadImages"){
-        
-        if(currentImagesToDownload != undefined){
+        else if(action == "scrapImages"){
             
-            console.log(`sending request for downloading images....`);
+            console.log(` ==> Scraping Product Images <==`);
 
-            fetch(`/downloadImages`,{
-                method : 'POST',
-                headers : {
-                    'Content-Type' : 'application/json;charset=utf-8'
-                },
-                body : JSON.stringify({links : currentImagesToDownload ,})
-            }).then((res)=>{
-                console.log(`Images Downloaded Successfully`);
-                console.log(res);
-                console.log(`timing out for 10 secs`);
-                setTimeout(()=>{
+            //let productSeq = parseInt(button.getAttribute("data-product-scraped"));
+            let scraped_product_current = parseInt(button.getAttribute("data-scraped-product-current"));
+            let scraped_product_start = parseInt(button.getAttribute("data-scraped-product-start"));
+            let scraped_product_end = parseInt(button.getAttribute("data-scraped-product-end"));
 
-                    currentImagesToDownload = undefined;
+            if(/*urlsToScrap.length >= 1 && productSeq <= urlsToScrap.length-1 */
+                (scraped_product_current >= scraped_product_start) && (scraped_product_current <= scraped_product_end)){
+
+                    status.innerText = `scraping images of product : ${scraped_product_current+1} / ${scraped_product_end+1} of page : ${page_current}`
+
+                fetch(`/scrapImages`,{
+                    method  : 'POST',
+                    headers : {
+                        'Content-type' : 'application/json;charset=utf-8' 
+                    },
+                    body : JSON.stringify({link : productUrlsToScrap[scraped_product_current] })
+                }).then((res)=>{
                     
-                    let current_product = parseInt(button.getAttribute("data-scraped-product-current"));
-                    let last_product = parseInt(button.getAttribute("data-scraped-product-end"));
-
-                    let user_page_current = parseInt(button.getAttribute("data-page-current"));
-                    let user_page_end = parseInt(button.getAttribute("data-page-end"));
-                    let page_count = parseInt(button.getAttribute("data-page-count"));
-
-                    //checking that the current scraped product is less than or equal to last product
-                    //if in range then scrap otherwise go to else condition
-                    if(current_product <= last_product ){
-                        current_product++;
-                        button.setAttribute("data-scraped-product-current",current_product);
-                        button.setAttribute("data-action","scrapProduct");
-                        console.log(`app will scrap next product`)
-                        scrapProducts();
-                    }
-                    else{
+                    res.json().then((imageRes)=>{
+                        console.log(`successfully scraped product images`);
+                        status.innerText = `images of product : ${scraped_product_current+1} / ${scraped_product_end+1} of page ${page_current} successfully scraped`
+                        all_products_url_images.push([...imageRes]);
+                        statusProductsScraped.innerText = products_scraped.length;
+                        //products_scraped[scraped_product_current] = [...products_scraped[scraped_product_current],[...imageRes]];
                         
-                        //if page is in range then then scrap increment next page and then start other page
-                        //else go to another condition
-                        if(user_page_current <= user_page_end && user_page_current <= page_count){
-                            button.setAttribute("data-action","scrapURLs");
-                            console.log(`next page scraping is going to be started...`);
-                            user_page_current++;
-                            button.setAttribute("data-page-current",user_page_current);
-                            scrapProducts();
+                        //check if there is remaining product to scrap or not
+                        if(scraped_product_current < scraped_product_end){
+                            scraped_product_current++;
+                            
+                            console.log(`next product will scrape after 10secs`);
+                            button.setAttribute("data-scraped-product-current",scraped_product_current);
+                            button.setAttribute("data-action","scrapProduct");
+                            setTimeout(()=>{
+                                scrapProducts();
+                            },10000)
                         }
                         else{
-                            console.log(`all done`);
+                            //check if there is remaining page or not
+                            if(page_current < page_end){
+                                page_current++;
+                                statusCurrentPage.innerText = page_current;
+                                button.setAttribute("data-page-current",page_current);
+                                console.log(`next page will be scraped after 10secs`);
+                                button.removeAttribute("data-scraped-product-start");
+                                button.removeAttribute("data-scraped-product-current");
+                                button.removeAttribute("data-scraped-product-end");
+                                button.setAttribute("data-action","scrapURLs");
+                                setTimeout(()=>{
+                                    scrapProducts();
+                                },10000)
+                            }
+                            else{
+                                status.innerText = "Successfully scraped all products";
+                                console.log(`All Done`);
+                                stopScraping(false);
+                            }
                         }
-                        
-                    }
+
+
+                    });
                     
-
-
-                },10000)
-            }).catch((err)=>{
-                console.log(`Error occured while downloading current images`);
-                console.log(err);
-            })
-
+                }).catch((err)=>{
+                    console.log(`Error occured in downloading images`);
+                    console.log(err);
+                })
+            }
+            
 
         }
-        
-        
 
     }
-    
-
-    
-
 }
 
 const handleScrapRequest = (e) => {
@@ -671,10 +602,6 @@ const loadMetaData = () => {
 
 }
 
-let data = [
-   ["Bottega Vaenta Butter","$389.00","Categories Bags Bottega Veneta",`Description Product code #191213-20 100% Genuine Leather Matching Quality of Original Louis Vuitton Production (imported from Europe) Comes with dust bag, authentication cards, box, shopping bag and pamphlets. Receipts are only included upon request. Counter Quality Replica (True Mirror Image Replica) Dimensions: 31.5x37x10 Our Guarantee: The handbag you receive will look exactly as pictured on our professionally shot photos on our website (of our own stock) in terms of quality and description! Order from Designer Discreet and experience the difference today! Receive 15% off when you pay through Moneygram, Western Union, or wire transfer.`]
-]
-
 
 const viewScrapedProducts = () => {
     
@@ -726,33 +653,6 @@ const viewScrapedProducts = () => {
 
 }
 
-const fillModal = (imagePaths) => {
-
-    let modal_body = document.getElementById("modal-product-images");
-    modal_body.innerHTML = "";
-    let temp_images_html = ``;
-    
-    for(let i=0 ; i<imagePaths.length ; i++){
-    
-        let temp_html = `
-            <div class="col-3 modal-img-main-con" onclick="productImageSelect(event)" oncontextmenu="featuredImageSelect(event)" data-clicked="no" >
-                <div class="col-img" style="background-image:url('${imagePaths[i]}')"></div>
-            </div>
-        `;
-    
-        temp_images_html += temp_html;
-    
-    }
-    
-    modal_body.innerHTML = temp_images_html;
-    
-}
-
-
-fillModal(["https://officialchansneakers.com/image/cache/catalog/d_social_login/48-570x570.jpeg",
-"https://officialchansneakers.com/image/cache/catalog/d_social_login/44-570x570.jpeg",
-"https://officialchansneakers.com/image/cache/catalog/Adidas/16-570x570.JPG",
-"https://officialchansneakers.com/image/cache/catalog/d_social_login/27-570x570.jpeg"])
 
 const productImageSelect = (e) => {
     
@@ -920,8 +820,6 @@ const applyAction = () => {
                     let ans = eval(`${new_exp} ${d_op}`);
                     data_cols[col_to_edit].innerText = `${existing_symbol}${ans}`;
                 }
-
-
             
             }
             
@@ -932,49 +830,93 @@ const applyAction = () => {
 
 }
 
-const something = () => {
+let pagePath = undefined;
+
+const findRoutesOfPages = (that) => {
     
-    let s_page = document.getElementById("second-page").value;
-    let url = {};
-
-    if(s_page.match(/\?/gi)){
+    let url = that.value;
+    
+    let path = {};
+    
+    if(url.match(/\?/gi)){
         
-        url.type = "query";
+        path.type = "query";
 
-        if(s_page.match(/page=[0-9]{1,5}/gi)){
-            
-            url.symbol = "page";
+        if(url.match(/page=[0-9]{1,5}/gi)){
+            path.symbol = "page";
         }
-        else if(s_page.match(/p=[0-9]{1,5}/gi)){
-            
-            url.symbol = "p";            
+        else if(url.match(/p=[0-9]{1,5}/gi)){
+            path.symbol = "p";            
         }
+        else{
+            
+            let input = undefined;
+            
+            while(input == undefined){
+
+                input = prompt(`We couldn't recognize the route, please enter the route`);
+                if(  input != null && input.length > 10 && (input.match("https://") || input.match("http://")) &&
+                input.match("{")  && input.match("}")){
+                    path = {
+                        type : "custom",
+                        url : input
+                    }
+                }
+                else{
+                    input = undefined;
+                }
+
+            }
+
+
+        }
+
+        pagePath = path;
 
     }
-    else if(s_page.match(/\/page\//gi)){
+    
+    else if(url.match(/\/page\//gi)){
         
-        url = {
+        path = {
             type : "id",
             symbol : "page"
         }
     }
-    else if(s_page.match(/\/p\//gi)){
+
+    else if(url.match(/\/p\//gi)){
         
-        url = {
+        path = {
             type : "id",
             symbol : "p"
         }
     }
+
     else{
-        alert(`We're unable to analyse the route path of the website...`);
-        let custom_path  = prompt(`Please enter the custom path `);
-        url = {
-            type : "custom",
-            symbol : custom_path
-        }
+        
+        let input = undefined;
+            
+            while(input == undefined){
+
+                input = prompt(`We couldn't recognize the route, please enter the route`);
+                if(  input != null && input.length > 10 && (input.match("https://") || input.match("http://")) &&
+                input.match("{")  && input.match("}")){
+                    
+                    path = {
+                        type : "custom",
+                        url : input
+                    }
+
+                }
+                else{
+                    input = undefined;
+                }
+
+            }
+        
+
     }
-    
-    console.log(url);
+
+    return path;
 
 }
 
@@ -1020,7 +962,7 @@ const readData = (that) => {
                     for(let i=0 ; i<userProductFields.length ; i++){
                         temp_colDropdownElem += `<option>${userProductFields[i]}</option>`
                     }
-
+                    temp_colDropdownElem += `<option>productimages</option>`;
                     colDropdownElem.innerHTML = temp_colDropdownElem;
 
                     userProductFields.push("productImages");
@@ -1055,26 +997,246 @@ const readData = (that) => {
 }
 
 
-const paginationContainer = () => {
+const checkMetaData = () => {
+    
+    let dataToSend = fetchMarkupElements(false);
+    let status = document.getElementById("modal-status");
+    let btn = document.getElementById("modal-btn");
+    let action = btn.getAttribute("data-action");
+    
+    if(action == "scrapFirstURLs"){
+        
+        status.innerText = `seding request for validating metadata...`;
 
-    let catalogURL = document.getElementsByClassName("user-input-field")[0].value;
+        fetch(`/validateMetadataURLS`,{
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify({
+                dataToSend
+            })
+        }).then((res)=>{
 
-    fetch(`/catalogPagination`,{
-        method : 'POST',
-        headers : {
-            'Content-Type' : 'application/json;charset=utf-8'
-        },
-        body : JSON.stringify({
-            url : catalogURL
-        })
-    }).then((res)=>{
-        res.json().then((data)=>{
-            document.getElementById("input-product-pagination").value = data;
+            if(res.status == 200){
+                res.json().then((r)=>{
+                    console.log(r);
+                    console.log(`successfully scraped first page URLs`);
+                    let firstPageURLs = r.links;
+                    
+                    let temp_html = `<h4>products links extracted from catalog:</h4><ul>`;
+                    for(let i=0 ; i<firstPageURLs.length ; i++){
+                        temp_html += `<li>${firstPageURLs[i]}</li>`
+                    }
+                    temp_html += `</ul>`
+
+                    document.getElementById("fist-page-urls").innerHTML = temp_html;
+                    status.innerText = `Successfully scraped urls from first page, next action will be started automatically`;
+                    btn.setAttribute("data-action","scrapFirstProduct");
+
+                    setTimeout(()=>{
+                        checkMetaData();
+                    },10000)
+
+                })
+            }
+            else if(res.status == 204){
+                alert(`An Error occured whle validating the product URLS, try again or check the server console for the error`);
+            }
+
+
+        }).catch((err)=>{
+            console.log(`Error occured while validating the metadata`);
+            console.log(err);
         });
-    }).catch((err)=>{
-        alert(`Error Occured!`);
-        console.log(err);
-    })
 
+    }
+    else if(action == "scrapFirstProduct"){
+        
+        status.innerText = "Sending Request for scraping product details";
+
+        fetch(`/validateMetadataProduct`,{
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify({
+                dataToSend,
+            })
+        }).then((res)=>{
+            
+            res.json().then((r)=>{
+                r = r[0];
+                status.innerText = `Successfully found product details. `;
+                
+                let temp_html = `<h4>product details : </h4><ul>`;
+                for(let i=0 ; i<r.length  ;i++){
+                    temp_html += `<li>${r[i]}</li>`
+                }
+                temp_html += `</ul>`;
+                document.getElementById("product-details").innerHTML = temp_html;
+                btn.setAttribute("data-action","scrapImages");
+
+                setTimeout(()=>{
+                    checkMetaData();
+                },10000);
+                
+            });
+        }).catch((err)=>{
+            console.log(err);
+            alert(`Error occured, please try again`);
+        })
+
+
+    }
+    else if(action == "scrapImages"){
+        
+        status.innerText = "Sending Request for scraping product images";
+
+        fetch(`/validateMetadataImages`,{
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify({
+                dataToSend
+            })
+        }).then((res)=>{
+            res.json().then((r)=>{
+                status.innerText = `Successfully scraped product images`;
+                btn.setAttribute("data-action","scrapFirstURLs");
+
+                let temp_html = `<h4>product images : </h4><ul>`;
+                for(let i=0 ; i<r.length ; i++){
+                    temp_html += `<li><img src="${r[i]}" style="width:50px;margin:5px;"/></li>`
+                }
+                temp_html += `</ul>`;
+                document.getElementById("product-modal-img").innerHTML = temp_html;
+
+                setTimeout(()=>{
+                    //checkMetaData();
+                },10000);
+
+            });
+        }).catch((err)=>{
+            console.log(err);
+            alert(`Error occured, please try again`);
+        })
+
+
+    }
+   
+}
+
+const fetchMarkupElements = (validation) => {
+     
+    let user_inputs = document.getElementsByClassName("user-input-field");
+    let input_mainContainer = document.getElementById("main-container");
+    let input_individualProduct = document.getElementById("individual-product");
+    let input_productImages = document.getElementById("input-product-image");
+    let input_cols = document.getElementById("columns").getElementsByTagName("input");
+    
+    let inputFieldsToCheck = [...user_inputs,input_mainContainer,
+        input_individualProduct,input_productImages,...input_cols]
+
+    
+    if(checkForEmpty(inputFieldsToCheck)){
+        alert(`You can't leave above fields empty...`);
+        return;
+    }
+    
+    
+
+    let dataToSend = {
+        productCatalogURL : user_inputs[0].value,
+        productSecondPageURL  : user_inputs[1].value,
+        productSingleURL  : user_inputs[2].value,
+        productBrandName  : user_inputs[3].value,
+        productCatalog : input_mainContainer.value,
+        productSingleContainer : input_individualProduct.value,
+        productImagesContainer : input_productImages.value,
+        cols : {
+
+        }
+    }
+
+    
+    let temp_cols = [];
+    Array.from(input_cols).forEach((i_col)=>{
+        let name  = i_col.parentElement.getElementsByClassName("btn-choose")[0].getAttribute("data-val");
+        let val = i_col.value;
+
+        temp_cols.push(
+            {name,val}
+        )
+
+    }); 
+
+    dataToSend.cols = {
+        ...temp_cols
+    }
+
+
+    if(validation == true){
+
+        //finding Route
+
+        let url = findRoutesOfPages(document.getElementById("second-page"))
+        console.log(url);
+        if(url.type == "custom"){
+            dataToSend.productPath = {
+                path_type : "custom",
+                url : url
+            }
+        }
+        else if(url.type == "query"){
+            dataToSend.productPath = {
+                path_type : "defined",
+                url : url
+            }
+        }
+        else if(url.type == "id"){
+            dataToSend.productPath = {
+                path_type : "defined",
+                url : url
+            }
+        }
+
+    }
+
+    
+    return dataToSend;
+
+}
+
+const dropMetadata = () => {
+    
+    let uploadInputElem = document.getElementById("metadata-input");
+    let uploadButtonElem = document.getElementById("btn-load-metadata");
+
+    if(uploadButtonElem.hasAttribute("disabled") && uploadInputElem.hasAttribute("disabled")){
+
+        fetch(`/dropMetadata`,{
+            method : 'POST'
+        }).then((res)=>{
+            if(res.status == 200){
+                uploadInputElem.removeAttribute("disabled");
+                document.getElementsByClassName("custom-file-label")[0].innerText = "Choose File";
+                uploadButtonElem.removeAttribute("disabled");
+                userProductFields = [];
+                alert("Metadata successfully dropped");
+            }
+            else{
+                alert(`Error occured!, check server console`)
+            }
+        }).catch((err)=>{
+            alert(`Error occured while droping the metadata file`);
+            console.log(err);
+        });
+
+    }
+    else{
+        alert(`You've not uploaded a metadata yet..`);
+    }
 
 }
