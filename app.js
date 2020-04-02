@@ -349,14 +349,14 @@ app.post("/scrapURLs",(req,res)=>{
             console.log("*************************************************");
             console.log(`==> Successfully Sent Response to the client <==`)
             console.log("**************************************************");
-            urlScrapRequest = true;
+            urlScrapRequest = false;
             res.status(200).json(links);
 
         }).catch((err)=>{
             console.log(`==> Error Occured while scraping URLs <==`);
             console.log(err);
             res.status(500).end();
-            urlScrapRequest = true;
+            urlScrapRequest = false;
         });
 
 
