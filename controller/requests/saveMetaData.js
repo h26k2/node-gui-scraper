@@ -8,12 +8,11 @@ const saveMetaData = (app,fs) => {
         console.log(`==> Request recieved for saving metadata <==`);
 
         let {dataToSend} = req.body;
-        let {custom_path} = req.query;
-
+        console.log(dataToSend);
         //Saving metadata details to an object
 
         let {productCatalogURL,productBrandName,productCatalog,productSingleContainer,productImagesContainer,
-            cols , productPagination} = req.body.dataToSend;
+            cols , productPagination , productPath} = req.body.dataToSend;
 
         let dataToSave = {
             baseURL : productCatalogURL,
@@ -27,22 +26,11 @@ const saveMetaData = (app,fs) => {
             }
         };
         
-        if(custom_path == undefined){
-
-            let {productSecondPageURL} = dataToSend;
-
-            let returned_data = findPageRoute(productSecondPageURL);
-
-            if(returned_data == -1){
-                res.status(204).end();
-                return;
-            }
-
-            dataToSave.productPath = {path_type : 'defined',returned_data};
-            
+        if(productPath.path_type == "custom"){
+            dataToSave.productPath = {path_type : 'custom',val : productPath.url.url};
         }
-        else{
-            dataToSave.productPath = {path_type : 'custom' , val : custom_path}
+        else if(productPath.path_type == "defined"){
+            dataToSave.productPath = {path_type : 'defined' , url : productPath.url}
         }
 
         try{

@@ -99,11 +99,11 @@ const saveMetaData = () => {
     */
 
     let dataToSend = fetchMarkupElements(true);
-
+   
     if(dataToSend == undefined){
         return;
     }
-
+    
     console.log(`Sending request to the server for saving metadata`);
 
     fetch(`/saveMetaData`,{
@@ -815,8 +815,6 @@ const applyAction = () => {
                     let ans = eval(`${new_exp} ${d_op}`);
                     data_cols[col_to_edit].innerText = `${existing_symbol}${ans}`;
                 }
-
-
             
             }
             
@@ -827,73 +825,93 @@ const applyAction = () => {
 
 }
 
-let customRoute = undefined;
+let pagePath = undefined;
 
 const findRoutesOfPages = (that) => {
     
     let url = that.value;
     
-    if( (url.match("https://") || url.match("http://") ) && url.length > 10 ){
+    let path = {};
     
-        if(url.match(/\?/gi)){
-            
-            url.type = "query";
-
-            if(url.match(/page=[0-9]{1,5}/gi)){
-                url.symbol = "page";
-            }
-            else if(url.match(/p=[0-9]{1,5}/gi)){
-                url.symbol = "p";            
-            }
-            else{
-                
-                let  input = undefined;
-                while(input == undefined){
-                    input = prompt(`We couldn't recongizes the next page path, please enter the path by yourself`);
-                    if( (input.match("https://") || input.match("http://")) == false && input.length < 10 ){
-                        input = undefined;    
-                    }
-                    else{
-                        customRoute = input;
-                    }
-                }
-
-            }
-
-        }
+    if(url.match(/\?/gi)){
         
-        else if(url.match(/\/page\//gi)){
-            
-            url = {
-                type : "id",
-                symbol : "page"
-            }
-        }
+        path.type = "query";
 
-        else if(url.match(/\/p\//gi)){
-            
-            url = {
-                type : "id",
-                symbol : "p"
-            }
+        if(url.match(/page=[0-9]{1,5}/gi)){
+            path.symbol = "page";
         }
-
+        else if(url.match(/p=[0-9]{1,5}/gi)){
+            path.symbol = "p";            
+        }
         else{
             
-            let  input = undefined;
+            let input = undefined;
+            
             while(input == undefined){
-                input = prompt(`We couldn't recongizes the next page path, please enter the path by yourself`);
-                if( (input.match("https://") || input.match("http://")) == false && input.length < 10 ){
-                    input = undefined;    
+
+                input = prompt(`We couldn't recognize the route, please enter the route`);
+                if(  input != null && input.length > 10 && (input.match("https://") || input.match("http://")) &&
+                input.match("{")  && input.match("}")){
+                    path = {
+                        type : "custom",
+                        url : input
+                    }
                 }
                 else{
-                    customRoute = input;
+                    input = undefined;
                 }
+
             }
+
 
         }
 
+        pagePath = path;
+
     }
+    
+    else if(url.match(/\/page\//gi)){
+        
+        path = {
+            type : "id",
+            symbol : "page"
+        }
+    }
+
+    else if(url.match(/\/p\//gi)){
+        
+        path = {
+            type : "id",
+            symbol : "p"
+        }
+    }
+
+    else{
+        
+        let input = undefined;
+            
+            while(input == undefined){
+
+                input = prompt(`We couldn't recognize the route, please enter the route`);
+                if(  input != null && input.length > 10 && (input.match("https://") || input.match("http://")) &&
+                input.match("{")  && input.match("}")){
+                    
+                    path = {
+                        type : "custom",
+                        url : input
+                    }
+
+                }
+                else{
+                    input = undefined;
+                }
+
+            }
+        
+
+    }
+
+    return path;
 
 }
 
@@ -1176,6 +1194,31 @@ const fetchMarkupElements = (validation) => {
     dataToSend.cols = {
         ...temp_cols
     }
+
+    //finding Route
+
+    let url = findRoutesOfPages(document.getElementById("second-page"))
+    console.log(url);
+    if(url.type == "custom"){
+        dataToSend.productPath = {
+            path_type : "custom",
+            url : url
+        }
+    }
+    else if(url.type == "query"){
+        dataToSend.productPath = {
+            path_type : "defined",
+            url : url
+        }
+    }
+    else if(url.type == "id"){
+        dataToSend.productPath = {
+            path_type : "defined",
+            url : url
+        }
+    }
+
+
 
     return dataToSend;
 
