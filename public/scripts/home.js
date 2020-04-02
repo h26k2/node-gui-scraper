@@ -406,7 +406,7 @@ const scrapProducts = () => {
                         status.innerText = `successfully scraped ${data.length} products URL from page : ${page_current}\nnext action will be started automatically, please wait`;
                         console.log(`timing out for 10sec`);
                         //products_scraped.push(...data);
-                        productUrlsToScrap.push(...data);
+                        productUrlsToScrap = [...data];
                         setTimeout(()=>{
                             button.setAttribute("data-action","scrapProduct");
                             button.setAttribute("data-scraped-product-start","0");

@@ -58,8 +58,15 @@ const replaceAction = (col, inputtedData , existingData , table) => {
         let tab_data  = rows[i].getElementsByTagName("td")[col].innerText.toLowerCase();
 
         if(tab_data.match(existingData)){
-            let replaced_data = tab_data.replace(existingData,inputtedData)
-            rows[i].getElementsByTagName("td")[col].innerHTML = replaced_data;
+            if(inputtedData.toLowerCase() == "del"){
+                let replaced_data = tab_data.replace(existingData,"")
+                rows[i].getElementsByTagName("td")[col].innerHTML = replaced_data;
+            }
+            else{
+                let replaced_data = tab_data.replace(existingData,inputtedData)
+                rows[i].getElementsByTagName("td")[col].innerHTML = replaced_data;
+            }
+            
         }
 
     }
@@ -123,6 +130,13 @@ const mathsAction = (col,expression,table) => {
         }
 
         let ans ;
+        
+        //editing the expression so that if the user want the table data twice he can add @ [at the rate]
+        if(expression.match("@")){
+            expression = expression.replace(/\@/gi,tab_data)
+        }
+
+        //perform operation
         if(position == "start"){
             ans = eval(`${tab_data} ${expression}`)
         }
