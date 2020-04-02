@@ -44,3 +44,38 @@ const viewScrapedData = () => {
     
 
 }
+
+const stopScraping = (ask) => {
+
+    let remove = false;
+
+    let btn = document.getElementById("scrap-products-btn");
+
+    if(btn.hasAttribute("data-action") == false){
+        return;
+    }
+
+    if(ask){
+        let userWish = confirm("Do you really want to stop scraping, the current state will be lost ");
+        if(userWish){
+            remove = true;
+        }
+    }
+    else{
+        remove = true;
+    }
+    
+    if(remove){
+
+        let attributesToRemove = ["data-scraped-product-current","data-scraped-product-start",
+        "data-scraped-product-end","data-page-start","data-page-current","data-page-end" , "data-action"];
+
+        for(attr of attributesToRemove){
+            btn.removeAttribute(attr);
+        }
+
+        alert("Scraping state set to default.");
+
+    }
+
+}
