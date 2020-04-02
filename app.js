@@ -782,7 +782,7 @@ app.post("/scrapProducts[prev]",async(req,res)=>{
 
 app.post(`/validateMetadataURLS`,async(req,res)=>{
     
-    console.log(`==> Request recieved for validating metadata <==`);
+    console.log(`==> Request recieved for validating catalog urls metadata <==`);
     req.setTimeout(0);
 
     let {productCatalogURL , productCatalog , productSingleContainer} = req.body.dataToSend;
@@ -889,7 +889,7 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
 
 app.post(`/validateMetadataProduct`,async(req,res)=>{
     
-    console.log(`==> Request recieved for validating metadata <==`);
+    console.log(`==> Request recieved for validating product details metadata <==`);
 
     req.setTimeout(0);
 
@@ -974,7 +974,7 @@ app.post(`/validateMetadataImages`,async(req,res)=>{
     req.setTimeout(0);
 
     let {productSingleURL , productImagesContainer } = req.body.dataToSend;
-    console.log(`==> Request recieved for validating metadata <==`);
+    console.log(`==> Request recieved for validating images metadata <==`);
 
     let index = xpathToIndex(productImagesContainer);
 

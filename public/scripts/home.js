@@ -1004,11 +1004,10 @@ const checkMetaData = () => {
     let status = document.getElementById("modal-status");
     let btn = document.getElementById("modal-btn");
     let action = btn.getAttribute("data-action");
-    status.innerText  = "Please Wait...";
-
+    
     if(action == "scrapFirstURLs"){
-
-        console.log(`seding request for validating metadata...`);
+        
+        status.innerText = `seding request for validating metadata...`;
 
         fetch(`/validateMetadataURLS`,{
             method : 'POST',
@@ -1026,7 +1025,7 @@ const checkMetaData = () => {
                     console.log(`successfully scraped first page URLs`);
                     let firstPageURLs = r.links;
                     
-                    let temp_html = `<ul>`;
+                    let temp_html = `<h4>products links extracted from catalog:</h4><ul>`;
                     for(let i=0 ; i<firstPageURLs.length ; i++){
                         temp_html += `<li>${firstPageURLs[i]}</li>`
                     }
@@ -1053,7 +1052,6 @@ const checkMetaData = () => {
         });
 
     }
-
     else if(action == "scrapFirstProduct"){
         
         status.innerText = "Sending Request for scraping product details";
@@ -1070,9 +1068,9 @@ const checkMetaData = () => {
             
             res.json().then((r)=>{
                 r = r[0];
-                status.innerText = `Successfully found product details. of this product \n ${dataToSend.productSingleURL}\n Next action will be started automatically`;
+                status.innerText = `Successfully found product details. `;
                 
-                let temp_html = `<ul>`;
+                let temp_html = `<h4>product details : </h4><ul>`;
                 for(let i=0 ; i<r.length  ;i++){
                     temp_html += `<li>${r[i]}</li>`
                 }
@@ -1106,10 +1104,10 @@ const checkMetaData = () => {
             })
         }).then((res)=>{
             res.json().then((r)=>{
-                status.innerText = `Successfully scraped product images, next action will be started automatically`;
-                btn.setAttribute("data-action","findSecondURL");
+                status.innerText = `Successfully scraped product images`;
+                btn.setAttribute("data-action","scrapFirstURLs");
 
-                let temp_html = `<ul>`;
+                let temp_html = `<h4>product images : </h4><ul>`;
                 for(let i=0 ; i<r.length ; i++){
                     temp_html += `<li><img src="${r[i]}" style="width:50px;margin:5px;"/></li>`
                 }
@@ -1129,8 +1127,6 @@ const checkMetaData = () => {
 
     }
    
-
-
 }
 
 const fetchMarkupElements = (validation) => {
@@ -1144,12 +1140,12 @@ const fetchMarkupElements = (validation) => {
     let inputFieldsToCheck = [...user_inputs,input_mainContainer,
         input_individualProduct,input_productImages,...input_cols]
 
-    if(validation == true){
-        if(checkForEmpty(inputFieldsToCheck)){
-            alert(`You can't leave above fields empty...`);
-            return;
-        }
+    
+    if(checkForEmpty(inputFieldsToCheck)){
+        alert(`You can't leave above fields empty...`);
+        return;
     }
+    
     
 
     let dataToSend = {
@@ -1181,31 +1177,35 @@ const fetchMarkupElements = (validation) => {
         ...temp_cols
     }
 
-    //finding Route
 
-    let url = findRoutesOfPages(document.getElementById("second-page"))
-    console.log(url);
-    if(url.type == "custom"){
-        dataToSend.productPath = {
-            path_type : "custom",
-            url : url
+    if(validation == true){
+
+        //finding Route
+
+        let url = findRoutesOfPages(document.getElementById("second-page"))
+        console.log(url);
+        if(url.type == "custom"){
+            dataToSend.productPath = {
+                path_type : "custom",
+                url : url
+            }
         }
-    }
-    else if(url.type == "query"){
-        dataToSend.productPath = {
-            path_type : "defined",
-            url : url
+        else if(url.type == "query"){
+            dataToSend.productPath = {
+                path_type : "defined",
+                url : url
+            }
         }
-    }
-    else if(url.type == "id"){
-        dataToSend.productPath = {
-            path_type : "defined",
-            url : url
+        else if(url.type == "id"){
+            dataToSend.productPath = {
+                path_type : "defined",
+                url : url
+            }
         }
+
     }
 
-
-
+    
     return dataToSend;
 
 }
