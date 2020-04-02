@@ -7,9 +7,7 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
 
     return new Promise(async(resolve,reject)=>{
 
-        let {productPath} = metaData[0];
-
-        let url = findRoutePath(baseURL,productPath,page);return;
+        let url = findRoutePath(baseURL,productPath,page);
         console.log(`Scraping started for this page : ${url} `);
 
         let {catalogMainContainer , catalogSingleProduct } = metaData[0];

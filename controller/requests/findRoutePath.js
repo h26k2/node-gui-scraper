@@ -57,7 +57,7 @@ const findRoutePath = (baseURL,productPath,page) => {
                     newURL += `&${symbol}=${page}`
                 }
             }
-            else{console.log(`else wala`);
+            else{
                 newURL += `?${symbol}=${page}`
             }
 
@@ -70,9 +70,9 @@ const findRoutePath = (baseURL,productPath,page) => {
         newURL = val.replace(/\{[0-9]{1,4}\}/gi,page)
        
     }
-    console.log(newURL , `final`);
     
-    //return newURL;
+    
+    return newURL;
 
 }
 
