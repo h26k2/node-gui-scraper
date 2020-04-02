@@ -59,7 +59,10 @@ const findRoutePath = (baseURL,productPath,page) => {
 
     }
     else if(productPath.path_type == "custom"){
-
+        
+        let {val} = productPath;
+        newURL = val.replace(/\{[0-9]{1,4}\}/gi,page)
+       
     }
 
     //return newURL;
