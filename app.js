@@ -156,17 +156,42 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
 
     let {productCatalogURL , productCatalog , productSingleContainer} = req.body.dataToSend;
 
+    let index ;
+
+    if(productCatalog.match("xpath")){
+        let xpath = productCatalog.substr(productCatalog.indexOf("|") +1,productCatalog.length - 1);
+        index = xpathToIndex(xpath);
+    }
+
     try{
     
         let browser = await puppeteer.launch({headless: false});
         let page = await browser.newPage();
 
-        await page.goto(productCatalogURL,{waitUntil : 'networkidle0' , timeout : 0 });
+        await page.goto(productCatalogURL,{waitUntil : 'networkidle2' , timeout : 0 });
 
-        let productURLs = await page.evaluate((productCatalog,productSingleContainer)=>{
-
+        let productURLs = await page.evaluate((productCatalog,productSingleContainer,index)=>{
+           
             let product_links = [];
-            let mainContainer = document.getElementsByClassName(productCatalog)[0];
+            let mainContainer ;
+
+            if(productCatalog.match("xpath") == false){
+                mainContainer =  document.getElementsByClassName(productCatalog)[0];
+            }
+            else{
+                let temp_elem = document.body;
+                for(let i=0 ; i<index.length ; i++){
+                    temp_elem = temp_elem.children[index[i]];
+                }
+                if(temp_elem != undefined){
+                    mainContainer = temp_elem;
+                }
+                else{
+                    alert(`There are conflits while getting the xpath`);
+                    return;
+                }
+            }
+
             
             let st_in = productSingleContainer.indexOf("\[");
             let st_en = productSingleContainer.indexOf("\]");
@@ -178,7 +203,7 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
 
             let productClass = productSingleContainer.substring(st_in +1 , st_en );
             let products = mainContainer.getElementsByClassName(productClass);
-
+            console.log(products);
             if(products.length < 0 == true){
                 return `h26k2-unvalid|can't find products`
             }
@@ -196,9 +221,16 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
 
             }
             else{
-                //FOR CLASS REMAINING
-            }
+                
+                let val = productSingleContainer.substr(productSingleContainer.indexOf("|") + 1,productSingleContainer.length - 1);
 
+                product_anchor = {
+                    type : 'class',
+                    value : val
+                }
+
+            }
+            
             if(product_anchor.type == "xpath" ){
                 
                 let xpath_elem = product_anchor.value;
@@ -231,22 +263,71 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
 
             }
             else{
+                let {value} = product_anchor;
+
+                Array.from(products).forEach((p)=>{
+                    if(p != undefined){
+                        let temp_anchor = p.getElementsByClassName(value)[0];
+                        if(temp_anchor != undefined){
+                            product_links.push(temp_anchor.getAttribute("href"));
+                        }
+                    }
+                })
 
             }
-
+            
             return {
                 links : product_links
             }
 
 
-        },productCatalog,productSingleContainer);
+        },productCatalog,productSingleContainer,index);
 
-        console.log(`==> Succesfully found product URLS <==`);
-        console.log(productURLs);
+        //if the paths are relative make them absolute
+        
+        if(productURLs.links.length > 1){
+            
+            if(productURLs.links[0].includes("wwww.") == false){
+               
+                let p_urls = [];
+                let mainURL = productCatalogURL;
+                let partToAdd ;
+                
+                if(mainURL.match("https://")){
+                    mainURL = mainURL.replace("https://","");
+                }
+                else if(mainURL.match("http://")){
+                    mainURL = mainURL.replace("http://","");
+                }
+                
+                partToAdd = mainURL.substr(0,mainURL.indexOf("/"))
+                
+                for(let u of productURLs.links){
 
-        res.status(200).json(productURLs);
-
-        await browser.close();
+                    if(u[0] == "/"){
+                        p_urls.push(`https://${partToAdd}${u}`);
+                    }
+                    else{
+                        p_urls.push(`https://${partToAdd}/${u}`)
+                    }
+                    
+                }
+                console.log(`==> Succesfully found product URLS <==`);
+                console.log(p_urls);
+        
+                res.status(200).json({links : p_urls});
+        
+                await browser.close();
+            }
+        }
+        else{
+            console.log(`==> Succesfully found product URLS <==`);
+            console.log(productURLs);
+    
+            res.status(200).json(productURLs);
+    
+            await browser.close();
+        }
 
     }
     catch(err){
@@ -351,7 +432,7 @@ app.post(`/validateMetadataImages`,async(req,res)=>{
         
         let browser = await puppeteer.launch({headless: false  });
         let page = await browser.newPage();
-        await page.goto(productSingleURL,{waitUntil : 'networkidle0' , timeout : 0 });
+        await page.goto(productSingleURL,{waitUntil : 'networkidle2' , timeout : 0 });
 
 
         page.on('console',(msg)=>{
