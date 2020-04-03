@@ -289,7 +289,7 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
         if(productURLs.links.length > 1){
             
             if(productURLs.links[0].includes("www.") == false){
-                console.log('yaha aya');
+                
                 let p_urls = [];
                 let mainURL = productCatalogURL;
                 let partToAdd ;
