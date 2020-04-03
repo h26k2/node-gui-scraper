@@ -67,10 +67,10 @@ const individualProduct = (app,puppeteer) => {
                     
                         let a_href = anchors[i].getAttribute("href");
                         let a_class = anchors[i].getAttribute("class");
-                        
+                        let a_classList = anchors[i].classList;
                         let confirm_string;
 
-                        if(a_class != null && a_class != undefined){
+                        if(a_class != null && a_class != undefined && a_classList.length > 0){
                             confirm_string = `URL : ${a_href}\nElement with class : [a].${a_class}\nIs this the product URL ?  `;
                         }
                         else{
@@ -81,10 +81,10 @@ const individualProduct = (app,puppeteer) => {
                         
                         if(confirm(confirm_string) ){
                            
-                            if(elem.getElementsByClassName(a_class).length == 1){
-                                dataToSend = `class|${a_class}`;
+                            if( a_classList.length > 0 &&  elem.getElementsByClassName(a_class).length == 1){
+                                dataToSend = `class|${a_class}`;console.log("in if");
                             }
-                            else{
+                            else{ 
                                 
                                 let temp_an = anchors[i];
                                 let structureDetails = [];
@@ -133,7 +133,13 @@ const individualProduct = (app,puppeteer) => {
                                 }
             
                                 structureString = structureString.substr(0,structureString.length - 1);
-                                alert(`Done! Xpath is : ${structureString}`);
+                                try{
+                                    alert(`Done! Xpath is : ${structureString}`);
+                                }
+                                catch(err){
+                                    confirm(`Done! Xpath is : ${structureString}`);
+                                }
+                                
                                 dataToSend = `xpath|${structureString}`;
 
                             }
@@ -142,7 +148,13 @@ const individualProduct = (app,puppeteer) => {
                             let product_string = `Please enter the name you want us to target on individual product from the given below data\n${clicked_elem_classes}`;
                             
                             let product_elem = prompt(product_string);
-                            alert(`Successfully Selected!\nYou can close the window.`);
+                            try{
+                                alert(`Successfully Selected!\nYou can close the window.`);
+                            }
+                            catch(err){
+                                confirm(`Successfully Selected!\nYou can close the window.`);
+                            }
+                            
                             
                             console.log(`h26k2-data:[${product_elem}]${dataToSend}`);
     

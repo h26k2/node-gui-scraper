@@ -96,7 +96,13 @@ const productDetail = (app,puppeteer) => {
                         }
     
                         structureString = structureString.substr(0,structureString.length - 1);
-                        alert(`Successfully chosen!\nXPATH is : ${structureString}\nNow you can close the window`);
+                        try{
+                            alert(`Successfully chosen!\nXPATH is : ${structureString}\nNow you can close the window`);
+                        }
+                        catch(err){
+                            confirm(`Successfully chosen!\nXPATH is : ${structureString}\nNow you can close the window`);
+                        }
+                        
                         console.log(`h26k2-data:${structureString}`);
     
                     }

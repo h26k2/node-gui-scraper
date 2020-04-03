@@ -433,7 +433,7 @@ app.post(`/validateMetadataImages`,async(req,res)=>{
         
         let browser = await puppeteer.launch({headless: false  });
         let page = await browser.newPage();
-        await page.goto(productSingleURL,{waitUntil : 'networkidle2' , timeout : 0 });
+        await page.goto(productSingleURL,{waitUntil : 'networkidle0' , timeout : 0 });
 
 
         page.on('console',(msg)=>{

@@ -72,7 +72,13 @@ const productImages = (app,puppeteer) => {
                         let images = elem.getElementsByTagName("img");
     
                         if(images.length < 1){
-                            alert(`The container which you've selected doesn't have any image element`);
+                            try{
+                                alert(`The container which you've selected doesn't have any image element`);
+                            }
+                            catch{
+                                confirm(`The container which you've selected doesn't have any image element`);
+                            }
+                            
                         }
                         else{
                             
@@ -106,7 +112,13 @@ const productImages = (app,puppeteer) => {
                             }
 
                             structureString = structureString.substr(0,structureString.length - 1);
-                            alert(`Done! Xpath is : ${structureString}`);
+                            try{
+                                alert(`Done! Xpath is : ${structureString}`);
+                            }
+                            catch(err){
+                                confirm(`Done! Xpath is : ${structureString}`);
+                            }
+                            
                             console.log(`h26k2-data:${structureString}`);
 
 
