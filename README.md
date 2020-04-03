@@ -15,3 +15,5 @@ A script written in NodeJS for crawling and extracting structured data from thei
 ### Getting Started
 
 Below is your step by step guide to using the application for crawling the web pages
+
+#### 1. Enter Website URL
