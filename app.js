@@ -285,19 +285,19 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
         },productCatalog,productSingleContainer,index);
 
         //if the paths are relative make them absolute
-        
+        //console.log(productURLs);
         if(productURLs.links.length > 1){
             
-            if(productURLs.links[0].includes("wwww.") == false){
-               
+            if(productURLs.links[0].includes("www.") == false){
+                console.log('yaha aya');
                 let p_urls = [];
                 let mainURL = productCatalogURL;
                 let partToAdd ;
                 
-                if(mainURL.match("https://")){
+                if(mainURL.includes("https://")){
                     mainURL = mainURL.replace("https://","");
                 }
-                else if(mainURL.match("http://")){
+                else if(mainURL.includes("http://")){
                     mainURL = mainURL.replace("http://","");
                 }
                 
@@ -319,6 +319,14 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
                 res.status(200).json({links : p_urls});
         
                 await browser.close();
+            }
+            else{
+
+                console.log(`==> Succesfully found product URLS <==`);
+                console.log(productURLs);
+                res.status(200).json(productURLs);
+                await browser.close();
+
             }
         }
         else{
