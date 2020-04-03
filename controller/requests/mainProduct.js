@@ -12,7 +12,7 @@ const mainProduct = (app,puppeteer) => {
         let page = await browser.newPage();
 
         await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
-    
+        await page.setViewport({width: 1200, height: 800});
         await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
 
         page.on('console',(msg)=>{
