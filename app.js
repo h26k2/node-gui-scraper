@@ -158,9 +158,10 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
 
     let index ;
 
-    if(productCatalog.match("xpath")){
+    if(productCatalog.includes("xpath")){
         let xpath = productCatalog.substr(productCatalog.indexOf("|") +1,productCatalog.length - 1);
         index = xpathToIndex(xpath);
+        console.log(index , 'ye rha index');
     }
 
     try{
@@ -168,14 +169,14 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
         let browser = await puppeteer.launch({headless: false});
         let page = await browser.newPage();
 
-        await page.goto(productCatalogURL,{waitUntil : 'networkidle2' , timeout : 0 });
-
+        await page.goto(productCatalogURL,{waitUntil : 'networkidle0' , timeout : 0 });
+        console.log(index);
         let productURLs = await page.evaluate((productCatalog,productSingleContainer,index)=>{
-           
+            console.log(index);
             let product_links = [];
             let mainContainer ;
 
-            if(productCatalog.match("xpath") == false){
+            if(productCatalog.includes("xpath") == false){
                 mainContainer =  document.getElementsByClassName(productCatalog)[0];
             }
             else{
@@ -300,10 +301,10 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
                     mainURL = mainURL.replace("http://","");
                 }
                 
-                partToAdd = mainURL.substr(0,mainURL.indexOf("/"))
+                partToAdd = mainURL.substr(0,mainURL.indexOf("/")).trim();
                 
                 for(let u of productURLs.links){
-
+                    u  = u.trim();
                     if(u[0] == "/"){
                         p_urls.push(`https://${partToAdd}${u}`);
                     }

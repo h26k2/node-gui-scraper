@@ -171,10 +171,10 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
                         mainURL = mainURL.replace("http://","");
                     }
                     
-                    partToAdd = mainURL.substr(0,mainURL.indexOf("/"))
+                    partToAdd = mainURL.substr(0,mainURL.indexOf("/")).trim();
                     
                     for(let u of productURLs.links){
-    
+                        u = u.trim();
                         if(u[0] == "/"){
                             p_urls.push(`https://${partToAdd}${u}`);
                         }
