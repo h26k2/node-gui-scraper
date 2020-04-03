@@ -18,4 +18,4 @@ Below is your step by step guide to using the application for crawling the web p
 
 #### 1. Enter Website URL (Product Catalog Page)
 
-You are requested to enter url of the webpaged which contains the products. Below is the graphical example of the url you need to enter
+You are requested to enter url of the webpage which contains the products. Below is the graphical example of the url you need to enter
