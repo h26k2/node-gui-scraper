@@ -11,3 +11,7 @@ A script written in NodeJS for crawling and extracting structured data from thei
 - run this command for using the app `npm start`
 - you can access the app on port `8080` 
     - open your browser and go to `localhost:8080` for accessing the app
+
+### Getting Started
+
+Below is your step by step guide to using the application for crawling the web pages
