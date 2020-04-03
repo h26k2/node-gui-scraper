@@ -453,20 +453,20 @@ const scrapProducts = () => {
                     },
                     body : JSON.stringify({link : productUrlsToScrap[scraped_product_current]})
                 }).then((res)=>{
-                    
-                    console.log(`==> product ${scraped_product_current} successfully scraped of page : ${page_current} <==`);
-                    status.innerText = `product ${scraped_product_current + 1} / ${scraped_product_end+1} details successfully scraped from page : ${page_current}`;
-                    res.json().then((data)=>{
-
-                        products_scraped.push(...data);
-                        console.log(`Timing out for 10secs, image scraping will start automatically`);
-                        setTimeout(()=>{
-                            button.setAttribute("data-action","scrapImages");
-                            scrapProducts();
-                        },10000);   
-
-                    });
-
+                    if(res.status == 200){
+                        console.log(`==> product ${scraped_product_current} successfully scraped of page : ${page_current} <==`);
+                        status.innerText = `product ${scraped_product_current + 1} / ${scraped_product_end+1} details successfully scraped from page : ${page_current}`;
+                        res.json().then((data)=>{
+    
+                            products_scraped.push(...data);
+                            console.log(`Timing out for 10secs, image scraping will start automatically`);
+                            setTimeout(()=>{
+                                button.setAttribute("data-action","scrapImages");
+                                scrapProducts();
+                            },10000);   
+    
+                        });
+                    }
                 }).catch((err)=>{
                     console.log(`Error occured while scraping product details`);
                     console.log(err);

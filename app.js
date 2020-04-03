@@ -161,7 +161,6 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
     if(productCatalog.includes("xpath")){
         let xpath = productCatalog.substr(productCatalog.indexOf("|") +1,productCatalog.length - 1);
         index = xpathToIndex(xpath);
-        console.log(index , 'ye rha index');
     }
 
     try{
@@ -170,7 +169,7 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
         let page = await browser.newPage();
 
         await page.goto(productCatalogURL,{waitUntil : 'networkidle0' , timeout : 0 });
-        console.log(index);
+        
         let productURLs = await page.evaluate((productCatalog,productSingleContainer,index)=>{
             console.log(index);
             let product_links = [];

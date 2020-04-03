@@ -12,25 +12,27 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
 
         let {catalogMainContainer , catalogSingleProduct } = metaData[0];
 
-        let index ;
-        if(catalogMainContainer.match("xpath")){
+        let index ;console.log(catalogMainContainer);
+        console.log(catalogMainContainer.includes("xpath"));
+        if(catalogMainContainer.includes("xpath")){
             let xpath = catalogMainContainer.substr(catalogMainContainer.indexOf("|") +1,catalogMainContainer.length - 1);
             index = xpathToIndex(xpath);
+            console.log(index,'ye rha bsdk')
         }
 
         try{
             
-            let browser = await puppeteer.launch({headless : false , timeout : 0});
+            let browser = await puppeteer.launch({headless : false});
             let page = await browser.newPage();
 
-            await page.goto(url , {waitUntil : 'networkidle2'});
-
+            await page.goto(url , {waitUntil : 'networkidle0' ,  timeout : 0});
+            console.log(index,'ye rha');
             let productURLs = await page.evaluate((catalogMainContainer , catalogSingleProduct,index)=>{
-                
+                console.log(index);
                 let product_links = [];
                 let mainContainer ;
 
-                if(catalogMainContainer.match("xpath") == false){
+                if(catalogMainContainer.includes("xpath") == false){
                     mainContainer =  document.getElementsByClassName(catalogMainContainer)[0];
                 }
                 else{
@@ -158,16 +160,16 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
             }
             else if(productURLs.links.length > 1){
 
-                if(productURLs.links[0].includes("wwww.") == false){
+                if(productURLs.links[0].includes("www.") == false){
                
                     let p_urls = [];
                     let mainURL = url;
                     let partToAdd ;
                     
-                    if(mainURL.match("https://")){
+                    if(mainURL.includes("https://")){
                         mainURL = mainURL.replace("https://","");
                     }
-                    else if(mainURL.match("http://")){
+                    else if(mainURL.includes("http://")){
                         mainURL = mainURL.replace("http://","");
                     }
                     
@@ -184,6 +186,9 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
                         
                     }
                     resolve({links : p_urls});;
+                }
+                else{
+                    resolve(productURLs);
                 }
             }
             else{
