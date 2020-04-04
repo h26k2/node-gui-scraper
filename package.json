@@ -4,7 +4,7 @@
   "description": "A GUI Based Web-Scraper for scraping website using NodeJS",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "node app.js",
     "gitAdd": "git add .",
     "gitCommit": "git commit -m [--com]"
   },
