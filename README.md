@@ -64,3 +64,24 @@ You are requested to click the button which is in that field for choosing produc
 We've added this for you so that you can enter the fields or columns or data you want to scrap from website,
 all you have to do is just enter the field name press enter a new text element will be generated automatically, Now do the same process for choosing elements you want to scrape 
 
+#### 9. Check Metadata [optional]
+
+We've added this for your ease that so that you can see the data of the elements which you've selected if there's any changing you can do this right-away.
+
+#### 10. Save Metadata
+
+You are requested to click this button when you are done will all that, it will create a metadata file of the things which you've selected or choosen so far.
+
+#### 11. Upload Metadata
+
+You are requested to upload metadata, so that the server load the data which you want to scrape.
+
+#### 12. Scraping Products
+
+- Enter start page of the website
+- Enter end page of the website
+- Click on scrap products to `start scraping`
+
+#### 13. Viewing data
+
+Click on the View data button to show the data which is scraped from the website when it will be done
