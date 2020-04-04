@@ -1224,6 +1224,8 @@ const dropMetadata = () => {
                 document.getElementsByClassName("custom-file-label")[0].innerText = "Choose File";
                 uploadButtonElem.removeAttribute("disabled");
                 userProductFields = [];
+                all_products_url_images = [];
+                products_scraped = [];
                 alert("Metadata successfully dropped");
             }
             else{
