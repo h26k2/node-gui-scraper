@@ -20,7 +20,7 @@ const getDataFromTable = () => {
 
             let imgs = set.getElementsByTagName("img")
             let imgtemp = [];
-            if(set.innerText == "" && imgs != undefined ){
+            if(imgs.length > 0){
                 Array.from(imgs).forEach((img)=>{
                     imgtemp.push(img.src);
                 });
