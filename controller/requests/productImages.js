@@ -14,7 +14,7 @@ const productImages = (app,puppeteer) => {
         let page = await browser.newPage();
 
         await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
-    
+        await page.setViewport({width: 1200, height: 800});
         await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
 
         page.on('console',(msg)=>{
@@ -72,7 +72,13 @@ const productImages = (app,puppeteer) => {
                         let images = elem.getElementsByTagName("img");
     
                         if(images.length < 1){
-                            alert(`The container which you've selected doesn't have any image element`);
+                            try{
+                                alert(`The container which you've selected doesn't have any image element`);
+                            }
+                            catch{
+                                confirm(`The container which you've selected doesn't have any image element`);
+                            }
+                            
                         }
                         else{
                             
@@ -106,7 +112,13 @@ const productImages = (app,puppeteer) => {
                             }
 
                             structureString = structureString.substr(0,structureString.length - 1);
-                            alert(`Done! Xpath is : ${structureString}`);
+                            try{
+                                alert(`Done! Xpath is : ${structureString}`);
+                            }
+                            catch(err){
+                                confirm(`Done! Xpath is : ${structureString}`);
+                            }
+                            
                             console.log(`h26k2-data:${structureString}`);
 
 

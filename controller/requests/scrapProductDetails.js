@@ -36,7 +36,7 @@ const scrapProductDetails = (app,metaData,puppeteer,xpathToIndex) => {
                 let browser = await puppeteer.launch({headless: false  });
     
                 let page = await browser.newPage();
-                await page.goto(link,{waitUntil : 'networkidle2' , timeout : 0 });
+                await page.goto(link,{waitUntil : 'networkidle0' , timeout : 0 });
     
                 //page console
                 page.on('console',(msg)=>{
@@ -59,10 +59,10 @@ const scrapProductDetails = (app,metaData,puppeteer,xpathToIndex) => {
                     }
     
                 });
-    
+                console.log(indexes);
                 //page evaluation method pupeeteer
                 await page.evaluate((indexes)=>{
-                    
+                    console.log(indexes);
                     let temp_product_details = [];
     
                     //Saving data into temporary variable

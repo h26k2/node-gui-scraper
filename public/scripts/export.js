@@ -20,14 +20,21 @@ const getDataFromTable = () => {
 
             let imgs = set.getElementsByTagName("img")
             let imgtemp = [];
-            if(set.innerText == "" && imgs != undefined ){
+            if(imgs.length > 0){
                 Array.from(imgs).forEach((img)=>{
                     imgtemp.push(img.src);
                 });
                 data.push(imgtemp)
             }
             else{
-                data.push(set.innerText)
+                let {innerText} = set;
+                if(innerText.match("\n")){
+                    data.push(innerText.replace(/\n/gi,""));
+                }
+                else{
+                    data.push(set.innerText)
+                }
+                
             }
 
         });
@@ -45,7 +52,8 @@ const generateCSV = () => {
 
     let data = getDataFromTable();
     let {headings , records} = data;
-    
+    console.log(headings);
+    console.log(records);
     let rows = [] , i;
 
     for(i=0 ; i<headings.length ; i++){

@@ -12,7 +12,7 @@ const mainProduct = (app,puppeteer) => {
         let page = await browser.newPage();
 
         await page.goto(url,{waitUntil : 'networkidle2' , timeout : 0 });
-    
+        await page.setViewport({width: 1200, height: 800});
         await page.addStyleTag({content : '.h26k2-color{background : yellow!important}'});
 
         page.on('console',(msg)=>{
@@ -61,9 +61,18 @@ const mainProduct = (app,puppeteer) => {
                     let status = window.confirm("Select this element ? ");
                     
                     if(status == true){
-                       
-                        elem = elem.getAttribute("class");
-                        elem = elem.replace("h26k2-color","")
+
+                        let selectedElem = elem;
+
+                        if(elem.classList.length > 2 ){
+                            elem = elem.getAttribute("class");
+                            elem = elem.replace("h26k2-color","")
+                            elem = prompt(`Type the class name you want to target ? from the below classes ${elem}`)
+                        }
+                        else{
+                            elem = elem.getAttribute("class");
+                            elem = elem.replace("h26k2-color","");
+                        }
     
                         let dom_elem = document.getElementsByClassName(elem);
                         
@@ -75,9 +84,48 @@ const mainProduct = (app,puppeteer) => {
     
                         }
                         else{
-                            alert(`This element can't be select as there are some conflicts in XPATH`);
+                            
+                            console.log(`this is element`);
+                            console.log(selectedElem);
+                            console.log(selectedElem.parentElement);
+                            let structureDetails = [];
+
+                            while(true){
+                                
+                                if(selectedElem.parentElement.nodeName == "HTML"){
+                                    break;
+                                }
+
+                                console.log(`****************`);
+                                console.log(selectedElem.parentElement);
+                                console.log(`index of element is : ${[...selectedElem.parentElement.children].indexOf(elem)}`);
+
+                                structureDetails.push(
+                                    {
+                                        elem : selectedElem.parentElement.nodeName,
+                                        index : [...selectedElem.parentElement.children].indexOf(selectedElem)
+                                    }
+                                );
+
+                                selectedElem = selectedElem.parentElement;
+
+                            }
+
+                            let structureString = ``;
+
+                            for(let i=structureDetails.length  - 1; i>= 0 ; i--){
+                            
+                                let elem = structureDetails[i].elem;
+                                let index = structureDetails[i].index;
+        
+                                structureString += `${elem}[${index}]/`
+                            }
+
+                            structureString = structureString.substr(0,structureString.length - 1);
+                            alert(`Successfully chosen!\nXPATH is : ${structureString}\nNow you can close the window`);
+                            console.log(`h26k2-data:xpath|${structureString}`);
+
                         }
-    
     
                     }
     

@@ -1,7 +1,7 @@
 
 
 const findRoutePath = require("./findRoutePath");
-
+const xpathToIndex = require("../methods/xpathToIndex")
 
 const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) => {
 
@@ -12,18 +12,46 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
 
         let {catalogMainContainer , catalogSingleProduct } = metaData[0];
 
+        let index ;console.log(catalogMainContainer);
+        console.log(catalogMainContainer.includes("xpath"));
+        if(catalogMainContainer.includes("xpath")){
+            let xpath = catalogMainContainer.substr(catalogMainContainer.indexOf("|") +1,catalogMainContainer.length - 1);
+            index = xpathToIndex(xpath);
+            console.log(index,'ye rha bsdk')
+        }
+
         try{
             
-            let browser = await puppeteer.launch({headless : false , timeout : 0});
+            let browser = await puppeteer.launch({headless : false});
             let page = await browser.newPage();
 
-            await page.goto(url , {waitUntil : 'networkidle2'});
-
-            let productURLs = await page.evaluate((catalogMainContainer , catalogSingleProduct)=>{
-                
+            await page.goto(url , {waitUntil : 'networkidle0' ,  timeout : 0});
+            console.log(index,'ye rha');
+            let productURLs = await page.evaluate((catalogMainContainer , catalogSingleProduct,index)=>{
+                console.log(index);
                 let product_links = [];
+                let mainContainer ;
+
+                if(catalogMainContainer.includes("xpath") == false){
+                    mainContainer =  document.getElementsByClassName(catalogMainContainer)[0];
+                }
+                else{
+                    let temp_elem = document.body;
+
+                    for(let i=0 ; i<index.length ; i++){
+                        temp_elem = temp_elem.children[index[i]];
+                    }
+
+                    if(temp_elem != undefined){
+                        mainContainer = temp_elem;
+                    }
+                    else{
+                        alert(`There are conflits while getting the xpath`);
+                        return;
+                    }
+
+                }
                 
-                let mainContainer = document.getElementsByClassName(catalogMainContainer)[0];
                 
                 let st_in = catalogSingleProduct.indexOf("\[");
                 let st_en = catalogSingleProduct.indexOf("\]");
@@ -104,7 +132,7 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
                         if( p != undefined){
                             let temp_href_elem =  p.getElementsByClassName(value)[0]
                             if(temp_href_elem != undefined){
-                                product_links.push(temp_href_elem.getElementsByClassName("href"));
+                                product_links.push(temp_href_elem.getAttribute("href"));
                             }
                         }
 
@@ -116,7 +144,7 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
                 }
 
 
-            },catalogMainContainer,catalogSingleProduct);
+            },catalogMainContainer,catalogSingleProduct,index);
 
             await browser.close();
             
@@ -130,7 +158,42 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
                     reject(productURLs.substr(s_in + 1 , productURLs.length  - 1));
                 }
             }
-            resolve(productURLs);
+            else if(productURLs.links.length > 1){
+
+                if(productURLs.links[0].includes("www.") == false){
+               
+                    let p_urls = [];
+                    let mainURL = url;
+                    let partToAdd ;
+                    
+                    if(mainURL.includes("https://")){
+                        mainURL = mainURL.replace("https://","");
+                    }
+                    else if(mainURL.includes("http://")){
+                        mainURL = mainURL.replace("http://","");
+                    }
+                    
+                    partToAdd = mainURL.substr(0,mainURL.indexOf("/")).trim();
+                    
+                    for(let u of productURLs.links){
+                        u = u.trim();
+                        if(u[0] == "/"){
+                            p_urls.push(`https://${partToAdd}${u}`);
+                        }
+                        else{
+                            p_urls.push(`https://${partToAdd}/${u}`)
+                        }
+                        
+                    }
+                    resolve({links : p_urls});;
+                }
+                else{
+                    resolve(productURLs);
+                }
+            }
+            else{
+                resolve(productURLs);
+            }
 
         }
         catch(err){
