@@ -89,3 +89,18 @@ Click on the View data button to show the data which is scraped from the website
 #### 14. Exporting data
 
 click on the `Generate CSV` button to download the scraped data
+
+### Actions Guide
+
+##### 1. Enter Custom path
+
+![prouduct catalog url image](docs/images/unrecognized-path.png)
+
+if the URL path is not recognized by our application the app will ask you enter the custom so all you have to do is just paste the website path to the input dialog and where there is page index wrap this with `{} curly braces` so that we increment its value for nex pages. It is recommended that first please check the path before then enter it
+
+Suppose this is the url of the website 
+`https://www.debenhams.com/women/coats-jackets?pn=1`
+just note that there is pn which can be short term for **page number** and is set to **1** which means that
+the website is showing you page 1, now test this url to your browser by replaced **pn=1** to **pn=2**. If the browser shows you the next page then you can enter this to that dialog. but don't forget to `wrap the page index with braces` so that we can increment its value to moving to next pages.
+
+![prouduct catalog url image](docs/images/unrecognized-path1.png)
