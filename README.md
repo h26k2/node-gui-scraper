@@ -85,3 +85,7 @@ You are requested to upload metadata, so that the server load the data which you
 #### 13. Viewing data
 
 Click on the View data button to show the data which is scraped from the website when it will be done
+
+#### 14. Exporting data
+
+click on the `Generate CSV` button to download the scraped data
