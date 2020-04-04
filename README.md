@@ -106,3 +106,36 @@ the website is showing you page 1, now test this url to your browser by replaced
 ![prouduct catalog url image](docs/images/unrecognized-path1.png)
 
 ##### 2. CSV Operation Guide
+
+Below is your guide for applying operations in csv stuff
+
+- `select column` on which you want to apply action, from the column name list which is provided to you
+- Available actions
+    - Replace
+    - Append
+    - Prepend
+    - Maths Operation (only work on price field)
+- **For Replace**
+    - Enter data you want to replace and then click on replace a new modal will be shown to you asking which data you want to replace this inputted data. so u've to enter the existing data which you want to replace. After clicking **OK** you will see the changes
+    - You can also delete a value using this action to delete a text you just have to input **del** then a dialog box will appear asking you what to replace with type the text you want to delete it will be deleted from the table
+- **For Append**
+    - After choosing column, enter data you want to append and then click on the append action. your inputted data will be appended to that column
+- **For Prepend**
+    - After choosing column, enter data you want to prepend and then click on the append action. your inputted data will be prepended to that column
+- **For Maths-Opeation**
+    - This action is only valid to price column, to apply a maths operations you just have enter **_** (underscore) on either the start of the expression or end of the expression then wrap your expression with `[]` square brakcets and write your expression. **It is important because, it is specify the table data** for example : the data in the table is **235** so if i have to do addition operation i write 
+    `[+2]_` {here underscore specify tha table data } *2+235*
+    - Suppose we've to divide the existed value with 2 so we've to write the expression as
+    `_[/2]` *235 / 2*
+    - you can write the complete mathematical expressions like suppose i've to increase it's value by 20% so i've to first take out 20% of the number then add this to the existing value so if you want to use the table data again in the expression you can use *@* . The expression for this can be written as:
+        - **[ ( (@/100) * 20 ) + ]_** : this expression means = **((235/100)*20)+235**
+    - `It is necessary that the under must be either at the start or at the end followed by square braces with no space between them. you can use space between braces`
+    - **Some Examples**
+        - `_[+3]` **valid expression**
+        - `_ [+3]` **invalid expression because after underscore there is space**
+        - `[+3]_` **valid expression**
+        - `[+3] _` **invalid expression because before underscore there is space**
+        - `[ +3 ]_` **valid expression**
+        - `_[ +3 ]` **valid expression**
+    
+`To Restore the table into it's default state just click again the **view data button**`
