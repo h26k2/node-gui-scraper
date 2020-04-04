@@ -21,3 +21,10 @@ Below is your step by step guide to using the application for crawling the web p
 You are requested to enter url of the webpage which contains the products. Below is the graphical example of the url you need to enter
 
 ![proudct catalog url image](docs/images/main-catalog-url.png)
+
+#### 2. Enter Website Second Page URL (Product Catalog Second Page)
+
+You are requested to enter url of the second webpage which contains the products.We'll use this image for recognizing paths .Below is the graphical example of the url you need to enter
+
+![proudct catalog url image](docs/images/main-catalog-url.png)
+
