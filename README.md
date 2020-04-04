@@ -51,3 +51,16 @@ You are requested to click the button which is in that field for choosing main c
 You are requested to click the button which is in that field for choosing individual product
 
 ![prouduct catalog url image](docs/images/single-product.png)
+
+
+#### 7. Choose Product Images
+
+You are requested to click the button which is in that field for choosing product images
+
+![prouduct catalog url image](docs/images/product-images.png)
+
+#### 8. Enter Column Name
+
+We've added this for you so that you can enter the fields or columns or data you want to scrap from website,
+all you have to do is just enter the field name press enter a new text element will be generated automatically, Now do the same process for choosing elements you want to scrape 
+
