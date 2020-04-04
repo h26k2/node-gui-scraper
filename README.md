@@ -128,7 +128,7 @@ Below is your guide for applying operations in csv stuff
     - Suppose we've to divide the existed value with 2 so we've to write the expression as
     `_[/2]` *235 / 2*
     - you can write the complete mathematical expressions like suppose i've to increase it's value by 20% so i've to first take out 20% of the number then add this to the existing value so if you want to use the table data again in the expression you can use *@* . The expression for this can be written as:
-        - **[ ( (@/100) * 20 ) + ]_** : this expression means = **((235/100)*20)+235**
+        - **[ ( (@/100) * 20 ) + ]_** : this expression means = `((235/100) * 20)+235`**`
     - `It is necessary that the under must be either at the start or at the end followed by square braces with no space between them. you can use space between braces`
     - **Some Examples**
         - `_[+3]` **valid expression**
@@ -138,4 +138,4 @@ Below is your guide for applying operations in csv stuff
         - `[ +3 ]_` **valid expression**
         - `_[ +3 ]` **valid expression**
     
-`To Restore the table into it's default state just click again the **view data button**`
+`To Restore the table into it's default state just click again the view data button`
