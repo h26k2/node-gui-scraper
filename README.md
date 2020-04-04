@@ -124,12 +124,12 @@ Below is your guide for applying operations in csv stuff
     - After choosing column, enter data you want to prepend and then click on the append action. your inputted data will be prepended to that column
 - **For Maths-Opeation**
     - This action is only valid to price column, to apply a maths operations you just have enter **_** (underscore) on either the start of the expression or end of the expression then wrap your expression with `[]` square brakcets and write your expression. **It is important because, it is specify the table data** for example : the data in the table is **235** so if i have to do addition operation i write 
-    `[+2]_` {here underscore specify tha table data } *2+235*
+    `[+2]_` {here underscore specify tha table data } `2+235`
     - Suppose we've to divide the existed value with 2 so we've to write the expression as
-    `_[/2]` *235 / 2*
+    `_[/2]` `235 / 2`
     - you can write the complete mathematical expressions like suppose i've to increase it's value by 20% so i've to first take out 20% of the number then add this to the existing value so if you want to use the table data again in the expression you can use *@* . The expression for this can be written as:
-        - **[ ( (@/100) * 20 ) + ]_** : this expression means = `((235/100) * 20)+235`
-    - `It is necessary that the under must be either at the start or at the end followed by square braces with no space between them. you can use space between braces`
+        - `[ ( (@/100) * 20 ) + ]_` : this expression means = `((235/100) * 20)+235`
+    - `It is necessary that the underscore must be either at the start or at the end followed by square braces with no space between them. you can use space between braces`
     - **Some Examples**
         - `_[+3]` **valid expression**
         - `_ [+3]` **invalid expression because after underscore there is space**
@@ -139,3 +139,17 @@ Below is your guide for applying operations in csv stuff
         - `_[ +3 ]` **valid expression**
     
 `To Restore the table into it's default state just click again the view data button`
+
+### App performance
+
+i've tried this app to scrape data from the following urls
+
+1. `https://www.matalan.co.uk/womens/coats-and-jackets`
+2. `https://www.newlook.com/uk/womens/clothing/coats-jackets/c/uk-womens-clothing-jackets-coats#/?q=:relevance&page=0&sort=relevance&content=false`
+3. `https://www.macys.com/shop/womens-clothing/womens-jackets?id=120`
+4. `https://www.debenhams.com/women/coats-jackets?pn=1`
+5. `https://www.daraz.pk/womens-traditional-clothing/?spm=a2a0e.searchlistcategory.cate_8.1.23b42910fbjy4w`
+6. `http://www.octa.pk/product-category/biometric-fingerprint-products/zkteco-in-pakistan/zkteco-time-attendance/`
+7. `https://www.charcoal.com.pk/casual_wear`
+
+**You can see there results in docs/videos/** 
