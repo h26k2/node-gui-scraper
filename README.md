@@ -104,3 +104,5 @@ just note that there is pn which can be short term for **page number** and is se
 the website is showing you page 1, now test this url to your browser by replaced **pn=1** to **pn=2**. If the browser shows you the next page then you can enter this to that dialog. but don't forget to `wrap the page index with braces` so that we can increment its value to moving to next pages.
 
 ![prouduct catalog url image](docs/images/unrecognized-path1.png)
+
+##### 2. CSV Operation Guide
