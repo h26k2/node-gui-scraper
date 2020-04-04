@@ -152,4 +152,4 @@ i've tried this app to scrape data from the following urls
 6. `http://www.octa.pk/product-category/biometric-fingerprint-products/zkteco-in-pakistan/zkteco-time-attendance/`
 7. `https://www.charcoal.com.pk/casual_wear`
 
-**You can see there results in docs/videos/** 
+**You can see their results in docs/videos/** 

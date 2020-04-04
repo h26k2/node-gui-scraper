@@ -222,10 +222,10 @@ const delCol = (event) => {
     }
 
     let colElem = document.getElementById("columns");
-    let rowElem = colElem.getElementsByClassName("btn-danger");
+    let rowElem = colElem.getElementsByClassName("btn-delete");
     
     for(let i=0 ; i<rowElem.length ; i++ ){
-        
+
         if(rowElem[i].getAttribute("data-sku") == elem.getAttribute("data-sku")){
             //rowElem.removeChild(rowElem.childNodes[i]);
             colElem.removeChild(colElem.childNodes[i]);
