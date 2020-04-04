@@ -34,21 +34,20 @@ You are requested to enter any product URL so that we can open it for you to cho
 
 ![prouduct catalog url image](docs/images/individual-product-url.png)
 
-#### 4. Enter Individual Product URL
+#### 4. Enter Brand Name
 
 You are requested to enter any brand name, we'll use this for naming your metadata.
 
 ![prouduct catalog url image](docs/images/brand-name.png)
 
-#### 4. Enter Individual Product URL
-
-You are requested to enter any brand name, we'll use this for naming your metadata.
-
-![prouduct catalog url image](docs/images/brand-name.png)
-
-
-#### 5. Choosing Main Container
+#### 5. Choose Main Container
 
 You are requested to click the button which is in that field for choosing main container (which contains all the prducts)
 
 ![prouduct catalog url image](docs/images/main-container.png)
+
+#### 6. Choose Individual Product
+
+You are requested to click the button which is in that field for choosing individual product
+
+![prouduct catalog url image](docs/images/single-product.png)
