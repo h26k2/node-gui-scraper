@@ -153,3 +153,7 @@ i've tried this app to scrape data from the following urls
 7. `https://www.charcoal.com.pk/casual_wear`
 
 **You can see their results in docs/videos/** 
+
+### Video Guidance
+
+**For Video Guidance, please go to** `docs/videos`
