@@ -283,11 +283,66 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
 
         },productCatalog,productSingleContainer,index);
 
-        //if the paths are relative make them absolute
-        //console.log(productURLs);
+
+        await browser.close();
+            
+            
+        if(productURLs.links.length > 1){
+
+            let baseURL = url;
+            
+            if(baseURL.includes("http://")){
+                baseURL = baseURL.replace("http://","");
+            }
+            else if(baseURL.includes("https://")){
+                baseURL = baseURL.replace("https://","");
+            }
+        
+            let domain = baseURL.substr(0,baseURL.indexOf("/")).trim();
+
+            if(productURLs.links[0].includes(domain)){
+                res.json(productURLs);
+            }
+            else{
+                
+                let p_urls = [];
+
+                for(let l of productURLs.links){
+                    
+                    l = l.trim();
+
+                    if(l.includes("https://")){
+                        l = l.replace("https://","");
+                    }
+                    else if(l.includes("http://")){
+                        l = l.replace("http://","");
+                    }
+
+                    if(l[0] == "/"){
+                        p_urls.push(`https://${domain}${l}`)
+                    }
+                    else{
+                        p_urls.push(`https://${domain}/${l}`)
+                    }
+                }
+
+                res.json({links : p_urls});;
+
+            }
+
+
+
+        }
+        else{
+            res.json(productURLs);
+        }
+
+
+
+        /*
         if(productURLs.links.length > 1){
             
-            if(productURLs.links[0].includes("www.") == false){
+            if(productURLs.links[0].includes("https://") == false || productURLs.links[0].includes("http://") == false ){
                 
                 let p_urls = [];
                 let mainURL = productCatalogURL;
@@ -335,7 +390,7 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
             res.status(200).json(productURLs);
     
             await browser.close();
-        }
+        }*/
 
     }
     catch(err){

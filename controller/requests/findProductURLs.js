@@ -17,7 +17,6 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
         if(catalogMainContainer.includes("xpath")){
             let xpath = catalogMainContainer.substr(catalogMainContainer.indexOf("|") +1,catalogMainContainer.length - 1);
             index = xpathToIndex(xpath);
-            console.log(index,'ye rha bsdk')
         }
 
         try{
@@ -26,7 +25,7 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
             let page = await browser.newPage();
 
             await page.goto(url , {waitUntil : 'networkidle0' ,  timeout : 0});
-            console.log(index,'ye rha');
+            //console.log(index,'ye rha');
             let productURLs = await page.evaluate((catalogMainContainer , catalogSingleProduct,index)=>{
                 console.log(index);
                 let product_links = [];
@@ -160,36 +159,49 @@ const findProductURLs = (productPath , baseURL , metaData , page , puppeteer) =>
             }
             else if(productURLs.links.length > 1){
 
-                if(productURLs.links[0].includes("www.") == false){
-               
-                    let p_urls = [];
-                    let mainURL = url;
-                    let partToAdd ;
-                    
-                    if(mainURL.includes("https://")){
-                        mainURL = mainURL.replace("https://","");
-                    }
-                    else if(mainURL.includes("http://")){
-                        mainURL = mainURL.replace("http://","");
-                    }
-                    
-                    partToAdd = mainURL.substr(0,mainURL.indexOf("/")).trim();
-                    
-                    for(let u of productURLs.links){
-                        u = u.trim();
-                        if(u[0] == "/"){
-                            p_urls.push(`https://${partToAdd}${u}`);
-                        }
-                        else{
-                            p_urls.push(`https://${partToAdd}/${u}`)
-                        }
-                        
-                    }
-                    resolve({links : p_urls});;
+                let baseURL = url;
+                
+                if(baseURL.includes("http://")){
+                    baseURL = baseURL.replace("http://","");
                 }
-                else{
+                else if(baseURL.includes("https://")){
+                    baseURL = baseURL.replace("https://","");
+                }
+            
+                let domain = baseURL.substr(0,baseURL.indexOf("/")).trim();
+
+                if(productURLs.links[0].includes(domain)){
                     resolve(productURLs);
                 }
+                else{
+                    
+                    let p_urls = [];
+
+                    for(let l of productURLs.links){
+                        
+                        l = l.trim();
+
+                        if(l.includes("https://")){
+                            l = l.replace("https://","");
+                        }
+                        else if(l.includes("http://")){
+                            l = l.replace("http://","");
+                        }
+
+                        if(l[0] == "/"){
+                            p_urls.push(`https://${domain}${l}`)
+                        }
+                        else{
+                            p_urls.push(`https://${domain}/${l}`)
+                        }
+                   }
+
+                   resolve({links : p_urls});;
+
+                }
+
+
+
             }
             else{
                 resolve(productURLs);
