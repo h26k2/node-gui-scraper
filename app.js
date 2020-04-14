@@ -289,7 +289,7 @@ app.post(`/validateMetadataURLS`,async(req,res)=>{
             
         if(productURLs.links.length > 1){
 
-            let baseURL = url;
+            let baseURL = productCatalogURL;
             
             if(baseURL.includes("http://")){
                 baseURL = baseURL.replace("http://","");
