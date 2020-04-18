@@ -39,7 +39,8 @@ const individualProduct = (app,puppeteer) => {
                 if(current !== undefined && current.classList.contains("h26k2-color") != true){
                     current.classList.add("h26k2-color");
                     prev = current;
-                    e.target.setAttribute("title",e.target.getAttribute("class").replace("h26k2-color",""));
+                    let tooltip = `[${e.target.nodeName}]${e.target.getAttribute("class").replace("h26k2-color","")}`
+                    e.target.setAttribute("title",tooltip);
                 }
                 
             });
@@ -54,6 +55,7 @@ const individualProduct = (app,puppeteer) => {
     
             window.addEventListener("click",async(e)=>{
                 
+                e.preventDefault();
                 let elem = e.target;
                 
                 if(elem != undefined && elem.getAttribute("data-name") == undefined){
