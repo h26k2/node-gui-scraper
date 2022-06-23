@@ -31,7 +31,7 @@
     "express": "^4.17.1",
     "htmlparser2": "^4.0.0",
     "jquery": "^3.4.1",
-    "jsdom": "^16.1.0",
+    "jsdom": "^16.5.0",
     "puppeteer": "^2.0.0",
     "string-to-dom": "^0.1.5"
   }
